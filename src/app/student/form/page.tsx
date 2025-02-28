@@ -1,0 +1,104 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { ArrowDownCircle, Moon, Sun } from "lucide-react";
+import { Button } from "@/components/ui/alunos/button";
+import Sidebar from "@/components/layout/sidebar";
+import checklist from "../../../assets/images/checklist.png";
+import Image from "next/image";
+
+export default function CheckInEmocional({
+  value,
+  className,
+}: {
+  value: number;
+  className?: string;
+}) {
+  const [darkMode, setDarkMode] = useState(false);
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkMode]);
+  return (
+    <div
+      className={`min-h-screen bg-[#F0F7FF] flex flex-row dark:bg-[#141414]`}
+    >
+      <Sidebar />
+      <div className="w-full flex flex-col items-center mt-8">
+        <div className="w-full flex justify-end mb-8 mr-28">
+          <Button onClick={() => setDarkMode(!darkMode)}>
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </Button>
+        </div>
+        <div className="bg-[#FFFFFF] w-[75%] p-8 pr-20 pt-20 pb-20 space-y-2 rounded-3xl dark:bg-black">
+          <h1 className="text-[#0077FF] font-bold text-[24px]">
+            Seu bem-estar importa!
+          </h1>
+          <p className="text-[20px] dark:text-[#ffffff]">
+            A rotina escolar envolve muitos desafios, e sabemos que cada aluno
+            vivencia experiências únicas. Pensando nisso, criamos este espaço
+            para que você possa expressar seus sentimentos, dificuldades e
+            sugestões de forma segura e confidencial. O objetivo deste
+            formulário é entender melhor como você está se sentindo e
+            identificar maneiras de tornar o ambiente escolar mais acolhedor e
+            positivo para todos. Suas respostas são valiosas e podem contribuir
+            para melhorias no dia a dia da instituição.
+          </p>
+          <h1 className="text-[#0077FF] font-bold text-[24px]">
+            Por que preencher este formulário?
+          </h1>
+
+          <div className="flex flex-row gap-8 h-5 items-center">
+            <Image src={checklist} alt="#" width={20} height={20} priority />
+            <p className="text-[20px] dark:text-[#ffffff]">
+              Expressar suas emoções,um espaço para compartilhar como você está
+              se sentindo.
+            </p>
+          </div>
+
+          <div className="flex flex-row gap-8 h-5 items-center">
+            <Image src={checklist} alt="#" width={20} height={20} priority />
+            <p className="text-[20px] dark:text-[#ffffff]">
+              Sugerir melhorias, se há algo que pode ser ajustado, queremos
+              ouvir você.
+            </p>
+          </div>
+
+          <div className="flex flex-row gap-8 h-5 items-center">
+            <Image src={checklist} alt="#" width={20} height={20} priority />
+            <p className="text-[20px] dark:text-[#ffffff]">
+              Ser ouvido com respeito, suas respostas serão analisadas com
+              empatia e seriedade.
+            </p>
+          </div>
+
+          <h1 className="text-[#0077FF] font-bold text-[24px]">
+            Importante lembrar:
+          </h1>
+          <p className="text-[20px] dark:text-[#ffffff]">
+            • Todas as respostas são anônimas e opcionais. Você pode responder
+            apenas as perguntas que desejar.
+          </p>
+          <p className="text-[20px] dark:text-[#ffffff]">
+            • Se precisar de apoio, nossa equipe está disponível para ajudar.
+            Não hesite em procurar ajuda sempre que precisar.
+          </p>
+          <p className="text-[20px] dark:text-[#ffffff]">
+            • Juntos, podemos construir um ambiente escolar mais saudável e
+            acolhedor para todos.
+          </p>
+          <a
+            href=""
+            className="flex w-72 items-center gap-2 border-2 border-blue-500 rounded-full px-4 py-2 text-black font-semibold hover:bg-blue-100 transition-all dark:text-white dark:hover:bg-[#141414]"
+          >
+            <ArrowDownCircle className="text-blue-500" size={24} />
+            <span>Acesse o formulário aqui.</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
