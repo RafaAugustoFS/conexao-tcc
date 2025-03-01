@@ -18,6 +18,7 @@ export default function Dashboard() {
   const [studentName, setStudentName] = useState<string>("Aluno");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [media, setMedia] = useState<number>(0); // Estado para armazenar a média
  
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
@@ -52,6 +53,10 @@ export default function Dashboard() {
  
     fetchStudentData();
   }, []);
+
+  const atualizarMedia = (novaMedia: number) => {
+    setMedia(novaMedia); // Atualiza o estado da média
+  };
  
   return (
     <div
@@ -84,8 +89,8 @@ export default function Dashboard() {
         <div className="grid grid-cols-2 gap-6 mt-6">
           <Card>
             <CardContent>
-              <MediaCard />
-              <Chart />
+              <MediaCard atualizarMedia={atualizarMedia} />
+              <Chart valorAtual={media}/>
             </CardContent>
           </Card>
  
