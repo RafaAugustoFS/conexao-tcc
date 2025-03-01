@@ -8,7 +8,7 @@ import {
 } from "./institution/select";
 
 interface SmallSelectProps {
-  selectedType: string;
+  selectedType: number;
   setSelectedType: (value: string) => void;
   placeholder: string;
   items: string[]; 
@@ -24,7 +24,7 @@ export default function SearchInput({
 
   return (
     <div className="relative w-full max-w-md">
-      <Select value={selectedType} onValueChange={setSelectedType}>
+      <Select value={selectedType} onChange={setSelectedType}>
         <SelectTrigger>
           <SelectValue placeholder={placeholder}>{selectedType}</SelectValue>
         </SelectTrigger>
