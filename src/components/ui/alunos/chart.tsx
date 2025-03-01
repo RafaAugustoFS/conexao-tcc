@@ -1,12 +1,10 @@
-"use client";
-
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
+// Registrar os componentes necessários do Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const Chart = () => {
-  const valorAtual = 75; // Define o valor da nota
+const Chart = ({ valorAtual }: { valorAtual: number }) => {
   const maxValor = 100; // Valor máximo
 
   const data = {
@@ -36,10 +34,9 @@ const Chart = () => {
       <Doughnut data={data} options={options} />
       <div className="text-center mt-[-40px]">
         <p className="text-sm">Valor atual</p>
-        <p className="text-xl font-bold">{valorAtual},0</p>
+        <p className="text-xl font-bold">{valorAtual.toFixed(1)}%</p>
       </div>
     </div>
-    
   );
 };
 

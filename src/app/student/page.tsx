@@ -3,7 +3,6 @@
 import Chart from "@/components/ui/alunos/chart";
 import { Card, CardContent } from "@/components/ui/alunos/card";
 import GradeCard from "@/components/ui/alunos/gradeCard";
-import { MediaCard } from "@/components/ui/alunos/mediaCard";
 import MessageList from "@/components/ui/alunos/messageList";
 import Sidebar from "@/components/layout/sidebar";
 import WelcomeMessage from "@/components/ui/welcomeMessage";
@@ -12,6 +11,7 @@ import { Button } from "@/components/ui/alunos/button";
 import { Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { MediaCard } from "@/components/ui/alunos/mediaCard";
  
 export default function Dashboard() {
   const [darkMode, setDarkMode] = useState(false);
@@ -102,7 +102,7 @@ export default function Dashboard() {
         {/* Lista de Mensagens */}
         <div className="mt-6 w-full">
           <div className="rounded-xl">
-            <MessageList value={0} />
+            <MessageList/>
           </div>
         </div>
       </main>
