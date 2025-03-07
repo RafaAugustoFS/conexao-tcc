@@ -1,13 +1,59 @@
 "use client";
-import  Sidebar  from "@/components/layout/sidebarTeacher"
-import { ProfileInfo } from "@/components/ui/teacher/profile"
-import { Button } from "@/components/ui/alunos/button"
+import Sidebar from "@/components/layout/sidebarTeacher";
+import { ProfileInfo } from "@/components/ui/teacher/profile";
+import WelcomeUser from "@/components/ui/welcomeUser";
+import { Button } from "@/components/ui/alunos/button";
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
+import { jwtDecode } from "jwt-decode";
 
+interface TeacherProfile {
+  nomeDocente: string;
+  emailDocente: string;
+  dataNascimentoDocente: string;
+  telefoneDocente: string;
+  identifierCode: string;
+}
 
-export default function User({ value, className }: { value: number; className?: string }) {
+export default function User({
+  value,
+  className,
+}: {
+  value: number;
+  className?: string;
+}) {
   const [darkMode, setDarkMode] = useState(false);
+  const [docenteData, setDocenteData] = useState<TeacherProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Função de buscar os dados do estudante
+  const fetchDocenteData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Token não encontrado");
+
+      const decoded: any = jwtDecode(token); // Decodificação do JWT
+      const id = decoded?.sub; // Extraindo o id do usuário do token
+      if (!id) throw new Error("ID do usuário não encontrado no token");
+
+      const response = await fetch(`http://localhost:3000/api/teacher/${id}`);
+      if (!response.ok)
+        throw new Error("Não foi possível carregar os dados do estudante");
+
+      const data = await response.json();
+      setDocenteData(data); // Setando os dados do estudante
+    } catch (err: any) {
+      setError(err.message); // Tratamento de erro
+    } finally {
+      setLoading(false); // Finalizando o carregamento
+    }
+  };
+
+  // Chama a função de fetch quando o componente for montado
+  useEffect(() => {
+    fetchDocenteData(); // Chamando a função para carregar os dados
+  }, []);
 
   useEffect(() => {
     if (darkMode) {
@@ -23,23 +69,23 @@ export default function User({ value, className }: { value: number; className?: 
         <div className="p-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-bold text-[#0D0D0D] dark:text-[#ffffff]">Renato</h1>
-              <p className="text-gray-500">Tue, 07 June 2022</p>
+              <WelcomeUser name={docenteData?.nomeDocente || "Nao achou"} />
             </div>
             <Button onClick={() => setDarkMode(!darkMode)}>
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </Button>
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </Button>
           </div>
-          <ProfileInfo
-            name="Renato de Souza"
-            email="renatoa@gmail.com"
-            birthDate="07/01/1990"
-            phone="(11) 99952-8203"
-            registrationNumber="810693449-1"
-            classes = "aaa"
-          />
+          {docenteData && (
+            <ProfileInfo
+              name={docenteData.nomeDocente}
+              email={docenteData.emailDocente}
+              birthDate={docenteData.dataNascimentoDocente}
+              phone={docenteData.telefoneDocente}
+              registrationNumber={docenteData.identifierCode}
+            />
+          )}
         </div>
       </main>
     </div>
-  )
+  );
 }

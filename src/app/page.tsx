@@ -38,7 +38,7 @@ export default function LoginPage() {
           if (token) {
             localStorage.setItem("token", token); // Armazena o token no localStorage
             console.log("Token gerado com sucesso!");
-            router.push("/institution")
+            router.push("/teacher")
           } else {
             console.log("Erro: Token não recebido.");
           }
@@ -98,7 +98,7 @@ export default function LoginPage() {
           if (token) {
             localStorage.setItem("token", token); // Armazena o token no localStorage
             console.log("Token gerado com sucesso!");
-            router.push("/teacher")
+            router.push("/institution")
           } else {
             console.log("Erro: Token não recebido.");
           }
