@@ -86,7 +86,7 @@ export default function Dashboard() {
         </div>
  
         {/* Cartões de Média e Notas */}
-        <div className="grid grid-cols-2 gap-6 mt-6">
+        <div className="grid grid-cols-2 gap-6 mt-6 max-md:grid-cols-1">
           <Card>
             <CardContent>
               <MediaCard atualizarMedia={atualizarMedia} />

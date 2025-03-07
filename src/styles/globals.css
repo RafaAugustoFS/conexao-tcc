@@ -33,4 +33,6 @@ body {
 }
 e{
   object-fit: cover;
+  width: 100px;
+  height: 75px;
 }
