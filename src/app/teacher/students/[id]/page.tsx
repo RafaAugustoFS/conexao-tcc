@@ -9,8 +9,8 @@ import { useParams } from "next/navigation";
 
 interface Student {
   id: number;
-  nome: string;
-  identifierCode: string;
+  nomeTurma: string;
+  periodoTurma: string;
   students:Array<{
     nomeAluno: string;
     id: number;
@@ -27,7 +27,7 @@ export default function StudentsPage({
 }) {
   const params = useParams(); // Obtém os parâmetros da URL
   const id = params.id as string; // Extrai o ID da turma da URL
-  const [students, setStudents] = useState<Student[]>([]);
+  const [estudante, setEstudante] = useState<Student[]>([]);
   const [darkMode, setDarkMode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +40,7 @@ export default function StudentsPage({
         const response = await fetch(`http://localhost:3000/api/class/students/${id}`);
         if (!response.ok) throw new Error("Erro ao buscar alunos");
         const data = await response.json();
-        setStudents(Array.isArray(data.students) ? data.students : []);
+        setEstudante(Array.isArray(data.students) ? data.students : []);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -81,7 +81,7 @@ export default function StudentsPage({
                     </tr>
                   </thead>
                   <tbody>
-                    {students.map((student) => (
+                    {estudante.map((student) => (
                       <tr key={student.id} className="border border-blue-500">
                         <td className="p-2 border border-blue-500 dark:text-white">{student.nomeAluno}</td>
                         <td className="p-2 border border-blue-500 dark:text-[#8A8A8A]">{student.identifierCode}</td>
