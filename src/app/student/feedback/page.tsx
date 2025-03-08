@@ -71,16 +71,16 @@ export default function Home() {
             id="N°11064344B-1"
           />
           <OccurrencesTable />
-          <h1 className="text-[#0077FF] font-bold text-[24px] pt-[20px]">
+          <h1 className="text-[#0077FF] font-bold text-[20px] lg:text-[24px] pt-[20px]">
             A importância do seu feedback
           </h1>
-          <p className="text-[20px]">
+          <p className="text-[16px] lg:text-[20px]">
             O feedback dos alunos é essencial para aprimorar a qualidade do
             ensino. Aqui, você pode compartilhar sua experiência em sala de
             aula, destacando o que está funcionando bem e o que pode ser
             melhorado.
           </p>
-          <p className="text-[20px]">
+          <p className="text-[16px] lg:text-[20px]">
             Seus comentários ajudam os professores a ajustar métodos de ensino,
             tornando as aulas mais dinâmicas e eficazes. Seja claro e respeitoso
             em suas respostas, pois sua opinião contribui para um ambiente de
