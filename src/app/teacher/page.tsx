@@ -74,26 +74,11 @@ export default function DashboardTeacher() {
           <WelcomeMessage name={docenteName} />
         </div>
 
-        <div className="grid grid-cols-2 gap-6 mt-6">
-          {/* Card turma */}
-          <Card>
-            <h2 className="text-blue-600 font-semibold mb-4">Turmas</h2>
-            <div className="max-h-64 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
-              <Class />
-            </div>
-          </Card>
-          {/* Card aviso */}
-          <Card>
-            <h2 className="text-blue-600 font-semibold mb-4">Aviso</h2>
-            <div className="max-h-64 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
-              <NoticeCard />
-            </div>
-          </Card>
-        </div>
+       <NoticeCard/>
         {/* Card avisos */}
         <div className="mt-6 w-full">
           <div className="rounded-xl">
-            <MessageList value={0} />
+            <MessageList/>
           </div>
         </div>
       </main>
