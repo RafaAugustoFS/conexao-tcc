@@ -1,14 +1,14 @@
 "use client";
 import Sidebar from "@/components/layout/sidebarTeacher";
 import { ProfileInfo } from "@/components/ui/teacher/profileStudent";
-import  Occurrence  from "@/components/ui/teacher/ocurrence";
+import Occurrence from "@/components/ui/teacher/ocurrence";
 import { Button } from "@/components/ui/alunos/button";
 import { useEffect, useState } from "react";
-import { Moon, Sun} from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import TablePerformance from "@/components/ui/tablePerfomance";
+import { useParams } from "next/navigation";
 import FeedbackForm from "@/components/ui/teacher/questions";
 import { jwtDecode } from "jwt-decode";
-
 
 interface StudentProfile {
   nome: string;
@@ -25,6 +25,8 @@ export default function User({
   value: number;
   className?: string;
 }) {
+  const params = useParams();
+  const id = params.id as string;
   const [darkMode, setDarkMode] = useState(false);
   const [studentData, setStudentData] = useState<StudentProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -33,18 +35,13 @@ export default function User({
   // Função de buscar os dados do estudante
   const fetchStudentData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("Token não encontrado");
-
-      const decoded: any = jwtDecode(token); // Decodificação do JWT
-      const id = decoded?.sub; // Extraindo o id do usuário do token
-      if (!id) throw new Error("ID do usuário não encontrado no token");
-
-      const response = await fetch(`http://localhost:3000/api/student/${id}`);
+      const response = await fetch(`http://localhost:3000/api/student/${id}`); //aqui
+      console.log(id);
       if (!response.ok)
         throw new Error("Não foi possível carregar os dados do estudante");
 
       const data = await response.json();
+      console.log(data);
       setStudentData(data); // Setando os dados do estudante
     } catch (err: any) {
       setError(err.message); // Tratamento de erro
@@ -55,9 +52,8 @@ export default function User({
 
   // Chama a função de fetch quando o componente for montado
   useEffect(() => {
-    fetchStudentData(); // Chamando a função para carregar os dados
+    fetchStudentData(); // Chamando a função para carregar os dados  //aqui
   }, []);
-
 
   useEffect(() => {
     if (darkMode) {
@@ -77,7 +73,7 @@ export default function User({
             </Button>
           </div>
           <div className="bg-white dark:bg-black rounded-lg shadow-sm p-8 space-y-6 max-h-[800px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 dark:scrollbar-track-black">
-          {studentData && (
+            {studentData && (
               <ProfileInfo
                 name={studentData.nome}
                 email={studentData.emailAluno}
@@ -87,9 +83,8 @@ export default function User({
               />
             )}
             <TablePerformance />
-            <FeedbackForm/>
-            <Occurrence/>
-     
+            <FeedbackForm />
+            <Occurrence />
           </div>
         </div>
       </main>
