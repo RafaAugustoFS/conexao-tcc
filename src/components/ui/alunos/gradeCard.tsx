@@ -31,6 +31,7 @@ interface Subject {
   grade: number
   color: string
   textColor: string
+  status: string
 }
 
 const GradeCard: React.FC = () => {
@@ -46,6 +47,7 @@ const GradeCard: React.FC = () => {
   const [selectedType, setSelectedType] = useState("1º Bimestre")
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [allGrades, setAllGrades] = useState<{ [key: string]: Subject[] }>({})
 
   useEffect(() => {
     fetchStudentData()
@@ -69,6 +71,52 @@ const GradeCard: React.FC = () => {
 
       const data = await response.json()
       setStudentData(data)
+
+      // Organize grades by bimester and subject
+      const gradesByBimester: { [key: string]: Subject[] } = {
+        "1º Bimestre": [],
+        "2º Bimestre": [],
+        "3º Bimestre": [],
+        "4º Bimestre": [],
+      }
+
+      // Group notes by bimester and subject
+      const groupedNotes: { [key: string]: { [subject: string]: any[] } } = {
+        "1º Bimestre": {},
+        "2º Bimestre": {},
+        "3º Bimestre": {},
+        "4º Bimestre": {},
+      }
+
+      // First, group all notes by bimester and subject
+      data.notas.forEach((nota: any) => {
+        const bimesterKey = `${nota.bimestre}º Bimestre`
+        if (!groupedNotes[bimesterKey][nota.nomeDisciplina]) {
+          groupedNotes[bimesterKey][nota.nomeDisciplina] = []
+        }
+
+        groupedNotes[bimesterKey][nota.nomeDisciplina].push(nota)
+      })
+
+      // Then, for each bimester and subject, create entries in gradesByBimester
+      Object.keys(groupedNotes).forEach((bimester) => {
+        Object.keys(groupedNotes[bimester]).forEach((subject) => {
+          const notes = groupedNotes[bimester][subject]
+
+          // Add each note as a separate entry
+          notes.forEach((nota) => {
+            gradesByBimester[bimester].push({
+              name: `${nota.nomeDisciplina} (ID: ${nota.idNota})`,
+              grade: Math.round(nota.nota * 10), // Convertendo para percentual (0-100)
+              color: getColorByGrade(nota.nota),
+              textColor: getTextColorByGrade(nota.nota),
+              status: nota.status,
+            })
+          })
+        })
+      })
+
+      setAllGrades(gradesByBimester)
     } catch (err: any) {
       setError(err.message || "Erro ao buscar dados do aluno")
     } finally {
@@ -76,56 +124,38 @@ const GradeCard: React.FC = () => {
     }
   }
 
-  const getGradeForSelectedBimester = (bimester: string) => {
-    const bimesterNumber = Number.parseInt(bimester.split("º")[0])
-
-    if (!studentData.notas) return 0
-
-    const notasBimestre = studentData.notas.filter((nota) => nota.bimestre === bimesterNumber)
-    if (notasBimestre.length === 0) return 0
-
-    // Calcula a média das notas do bimestre selecionado
-    const media = notasBimestre.reduce((acc, curr) => acc + curr.nota, 0) / notasBimestre.length
-    return Math.round(media * 10) // Convertendo para percentual (0-100)
+  const getColorByGrade = (grade: number): string => {
+    if (grade >= 7) return "#10B981" // Verde para notas boas
+    if (grade >= 5) return "#F59E0B" // Amarelo para notas médias
+    return "#EF4444" // Vermelho para notas baixas
   }
 
-  const getSubjectName = (index: number) => {
-    if (!studentData.notas || studentData.notas.length <= index) {
-      return "Matéria não encontrada"
-    }
-
-    return studentData.notas[index]?.nomeDisciplina || "Matéria não encontrada"
+  const getTextColorByGrade = (grade: number): string => {
+    if (grade >= 7) return "text-emerald-500"
+    if (grade >= 5) return "text-amber-500"
+    return "text-red-500"
   }
 
-  const subjects: Subject[] =
-    loading || !studentData.notas
-      ? []
-      : [
-          {
-            name: "Backend",
-            grade: getGradeForSelectedBimester(selectedType),
-            color: "text-purple-500",
-            textColor: "text-purple-500",
-          },
-          // Adicione mais matérias conforme necessário
-        ]
+  const getBimesterNumber = (bimester: string): number => {
+    return Number.parseInt(bimester.charAt(0))
+  }
+
+  const currentSubjects = allGrades[selectedType] || []
 
   const types = ["1º Bimestre", "2º Bimestre", "3º Bimestre", "4º Bimestre"]
 
-  const handleTypeClick = (type: string) => {
-    setSelectedType(type)
-  }
-
   if (loading) {
-    return <div>Carregando...</div>
+    return <div className="w-80 p-4 rounded-lg bg-gray-100 dark:bg-gray-800">Carregando...</div>
   }
 
   if (error) {
-    return <div>Erro: {error}</div>
+    return (
+      <div className="w-80 p-4 rounded-lg bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200">Erro: {error}</div>
+    )
   }
 
   return (
-    <div className="w-80">
+    <div className="w-80 p-4 rounded-lg bg-white dark:bg-gray-800 shadow-sm">
       <div className="flex flex-row justify-between items-center mb-4">
         <h2 className="text-lg font-bold">Notas</h2>
         <div className="flex flex-row items-center justify-center">
@@ -133,38 +163,68 @@ const GradeCard: React.FC = () => {
             selectedType={selectedType}
             setSelectedType={setSelectedType}
             placeholder="Selecione o Bimestre"
-            items={["1º Bimestre", "2º Bimestre", "3º Bimestre", "4º Bimestre"]}
+            items={types}
           />
         </div>
       </div>
 
       <div className="space-y-6">
-        {subjects.map((subject, index) => (
-          <div key={index} className="flex justify-between items-center">
-            <div>
-              <h3 className="text-md font-bold">{subject.name}</h3>
-            </div>
+        {currentSubjects.length > 0 ? (
+          currentSubjects.map((subject, index) => (
+            <div key={index} className="flex justify-between items-center">
+              <div>
+                <h3 className="text-md font-bold capitalize">{subject.name}</h3>
+                <span className={`text-xs ${subject.textColor}`}>{subject.status}</span>
+              </div>
 
-            <div className="relative w-14 h-14">
-              <CircularProgressbar
-                value={subject.grade}
-                styles={buildStyles({
-                  textSize: "32px",
-                  pathColor: "#0077FF",
-                  trailColor: "#E5E7EB",
-                })}
-              />
-              <span
-                className={`absolute inset-0 flex items-center justify-center text-sm font-bold text-[#000] dark:text-[#fff]`}
-              >
-                {subject.grade}%
-              </span>
+              <div className="relative w-14 h-14">
+                <CircularProgressbar
+                  value={subject.grade}
+                  styles={buildStyles({
+                    textSize: "32px",
+                    pathColor: getColorByGrade(subject.grade / 10),
+                    trailColor: "#E5E7EB",
+                  })}
+                />
+                <span className="absolute inset-0 flex items-center justify-center text-sm font-bold text-[#000] dark:text-[#fff]">
+                  {subject.grade}%
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <div className="text-center py-4 text-gray-500">Nenhuma nota encontrada para este bimestre</div>
+        )}
+      </div>
+
+      {/* Resumo de todas as notas */}
+      <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <h3 className="text-md font-bold mb-3">Resumo de Todas as Notas</h3>
+        <div className="grid grid-cols-2 gap-2">
+          {types.map((type) => {
+            const grades = allGrades[type] || []
+            const avgGrade =
+              grades.length > 0 ? Math.round(grades.reduce((sum, subj) => sum + subj.grade, 0) / grades.length) : 0
+
+            return (
+              <div key={type} className="bg-gray-100 dark:bg-gray-700 p-2 rounded-md">
+                <p className="text-xs font-medium">{type}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">{grades.length} disciplina(s)</span>
+                  <span
+                    className={`text-sm font-bold ${avgGrade >= 70 ? "text-emerald-500" : avgGrade >= 50 ? "text-amber-500" : "text-red-500"}`}
+                  >
+                    {avgGrade}%
+                  </span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
       </div>
     </div>
   )
 }
 
 export default GradeCard
+
