@@ -125,14 +125,14 @@ const GradeCard: React.FC = () => {
   }
 
   const getColorByGrade = (grade: number): string => {
-    if (grade >= 7) return "#10B981" // Verde para notas boas
-    if (grade >= 5) return "#F59E0B" // Amarelo para notas médias
+    if (grade >= 7) return "#3340ff" // Verde para notas boas
+    if (grade >= 5) return "#8EC3FF" // Amarelo para notas médias
     return "#EF4444" // Vermelho para notas baixas
   }
 
   const getTextColorByGrade = (grade: number): string => {
-    if (grade >= 7) return "text-emerald-500"
-    if (grade >= 5) return "text-amber-500"
+    if (grade >= 7) return "text-blue-500"
+    if (grade >= 5) return "text-blue-300"
     return "text-red-500"
   }
 
@@ -168,9 +168,10 @@ const GradeCard: React.FC = () => {
         </div>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-6 max-h-[60px] overflow-y-auto pr scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
         {currentSubjects.length > 0 ? (
           currentSubjects.map((subject, index) => (
+            // aqui ohhhhhhhhhhhhhhhhh
             <div key={index} className="flex justify-between items-center">
               <div>
                 <h3 className="text-md font-bold capitalize">{subject.name}</h3>
@@ -212,7 +213,7 @@ const GradeCard: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-sm">{grades.length} disciplina(s)</span>
                   <span
-                    className={`text-sm font-bold ${avgGrade >= 70 ? "text-emerald-500" : avgGrade >= 50 ? "text-amber-500" : "text-red-500"}`}
+                    className={`text-sm font-bold ${avgGrade >= 70 ? "text-emerald-500" : avgGrade >= 50 ? "text-[#3340ff]" : "text-red-500"}`}
                   >
                     {avgGrade}%
                   </span>
@@ -227,4 +228,3 @@ const GradeCard: React.FC = () => {
 }
 
 export default GradeCard
-
