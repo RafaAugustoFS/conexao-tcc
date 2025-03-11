@@ -5,11 +5,9 @@ interface Message {
   id: number;
   conteudo: string;
   horarioSistema: string;
-  createdBy: {
-    nomeDocente: string;
-    id: number;
-    getInitials: string;
-  };
+  nomeDocente: string;
+  criadoPorNome: string;
+  initials: string;
   classStId: number;
   color: string;
 }
@@ -83,12 +81,12 @@ function MessageList({ className }: { className?: string }) {
               <div className="flex gap-4">
                 {/* Avatar */}
                 <div className={`w-12 h-12 flex items-center justify-center text-white font-semibold rounded-full ${message.color}`}>
-                  {message.createdBy.getInitials}
+                  {message.initials}
                 </div>
                 {/* Conteúdo da Mensagem */}
                 <div className="flex-1">
                   <div className="flex justify-between items-center">
-                    <h3 className="font-bold">{message.createdBy.nomeDocente}</h3>
+                    <h3 className="font-bold">{message.nomeDocente || message.criadoPorNome || "Não encontrado."}</h3>
                     <span className="text-gray-500 text-sm">
                       {new Date(message.horarioSistema).toLocaleTimeString("pt-BR", {
                         hour: "2-digit",

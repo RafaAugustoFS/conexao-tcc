@@ -5,11 +5,9 @@ interface Message {
   id: number;
   conteudo: string;
   horarioSistema: string;
-  createdBy: {
-    nomeDocente: string;
-    id: number;
-    getInitials: string;
-  };
+  nomeDocente: string;
+  criadoPorNome: string;
+  initials: string;
   classStId: number;
   color: string;
 }
@@ -30,28 +28,7 @@ function MessageList({ className }: { className?: string }) {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) throw new Error("Token não encontrado");
-
-        const decoded: any = jwtDecode(token);
-        const userId = decoded?.sub;
-        if (!userId) throw new Error("ID do usuário não encontrado no token");
-
-        // 1️⃣ Buscar o ID da turma com base no aluno
-        const studentResponse = await fetch(`http://localhost:3000/api/student/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (!studentResponse.ok) throw new Error("Erro ao buscar dados do aluno");
-
-        const studentData = await studentResponse.json();
-        const idTurma = studentData.turma.idTurma;
-        if (!idTurma) throw new Error("ID da turma não encontrado");
-
-        // 2️⃣ Buscar os avisos da turma
-        const reminderResponse = await fetch(`http://localhost:3000/api/reminder/${idTurma}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const reminderResponse = await fetch(`http://localhost:3000/api/reminder`);
 
         if (!reminderResponse.ok) throw new Error("Erro ao buscar avisos da turma");
 
@@ -94,12 +71,12 @@ function MessageList({ className }: { className?: string }) {
               <div className="flex gap-4">
                 {/* Avatar */}
                 <div className={`w-12 h-12 flex items-center justify-center text-white font-semibold rounded-full ${message.color}`}>
-                  {message.createdBy.getInitials}
+                  {message.initials}
                 </div>
                 {/* Conteúdo da Mensagem */}
                 <div className="flex-1">
                   <div className="flex justify-between items-center">
-                    <h3 className="font-bold">{message.createdBy.nomeDocente}</h3>
+                    <h3 className="font-bold">{message.nomeDocente || message.criadoPorNome || "Não encontrado."}</h3>
                     <span className="text-gray-500 text-sm">
                       {new Date(message.horarioSistema).toLocaleTimeString("pt-BR", {
                         hour: "2-digit",
