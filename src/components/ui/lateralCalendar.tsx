@@ -102,7 +102,7 @@ export default function LateralCalendar() {
       >
         <div className="max-w-md mx-auto p-4">
           <User />
-          <Calendar events={calendarEvents} />
+          <Calendar/>
           <EventList events={events} value={0} />
         </div>
       </div>
