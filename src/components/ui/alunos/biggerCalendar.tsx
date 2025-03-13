@@ -1,123 +1,106 @@
 "use client"
-
-import { useEffect, useState } from "react"
-import FullCalendar from "@fullcalendar/react"
-import dayGridPlugin from "@fullcalendar/daygrid"
-import interactionPlugin from "@fullcalendar/interaction"
-import timeGridPlugin from "@fullcalendar/timegrid"
-import ptBrLocale from "@fullcalendar/core/locales/pt-br"
-import type { EventSourceInput } from "@fullcalendar/core/index.js"
-import { useMediaQuery } from "@/hooks/use-media-query"
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import { useEffect, useState } from 'react'
+import { Dialog, Transition } from '@headlessui/react'
+import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
+import { EventSourceInput } from '@fullcalendar/core/index.js'
 
 interface Event {
-  title: string
-  start: Date | string
-  allDay: boolean
-  id: number
+  title: string;
+  start: Date | string;
+  allDay: boolean;
+  id: number;
 }
 
-export default function ResponsiveCalendar() {
+export default function BiggerCalendar() {
   const [allEvents, setAllEvents] = useState<Event[]>([])
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [idToDelete, setIdToDelete] = useState<number | null>(null)
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      const response = await fetch("http://localhost:3000/api/event")
-      const data = await response.json()
-      const events = data.map((event: any) => ({
-        id: event.id,
-        title: event.tituloEvento,
-        start: event.dataEvento,
-        allDay: true,
-        backgroundColor: event.dataEvento === new Date().toISOString().split("T")[0] ? "#1e3a8a" : "#3b82f6",
-      }))
-      setAllEvents(events)
-    }
-
-    fetchEvents()
-  }, [])
-
-  useEffect(() => {
-    const draggableEl = document.getElementById("draggable-el")
+    let draggableEl = document.getElementById('draggable-el')
     if (draggableEl) {
-      draggableEl.style.pointerEvents = "none"
+      // Remove interatividade de arrastar e soltar
+      draggableEl.style.pointerEvents = "none";
     }
   }, [])
 
-  // Add custom CSS for the calendar title on mobile
-  useEffect(() => {
-    const addCustomStyles = () => {
-      // Check if the style element already exists
-      let styleElement = document.getElementById("calendar-custom-styles")
+  function handleDeleteModal(data: { event: { id: string } }) {
+    setShowDeleteModal(true)
+    setIdToDelete(Number(data.event.id))
+  }
 
-      if (!styleElement) {
-        // Create a new style element if it doesn't exist
-        styleElement = document.createElement("style")
-        styleElement.id = "calendar-custom-styles"
-        document.head.appendChild(styleElement)
-      }
-
-      // Define the CSS rule for mobile calendar title
-      const cssRule = `
-        @media (max-width: 768px) {
-          .fc .fc-toolbar-title {
-            font-size: 20px !important;
-          }
-        }
-      `
-
-      styleElement.textContent = cssRule
-    }
-
-    addCustomStyles()
-
-    // Clean up function to remove the style element when component unmounts
-    return () => {
-      const styleElement = document.getElementById("calendar-custom-styles")
-      if (styleElement) {
-        document.head.removeChild(styleElement)
-      }
-    }
-  }, [])
+  function handleDelete() {
+    setAllEvents(allEvents.filter(event => Number(event.id) !== Number(idToDelete)))
+    setShowDeleteModal(false)
+    setIdToDelete(null)
+  }
 
   return (
     <>
-      <nav className="flex justify-between mb-4 md:mb-2 border-violet-100 p-2 md:p-4">
-        <h1 className="font-bold text-xl md:text-2xl text-gray-700">Calendário</h1>
+      <nav className="flex justify-between mb-12 border-violet-100 p-4">
+        <h1 className="font-bold text-2xl text-gray-700">Calendar</h1>
       </nav>
-      <main className="flex flex-col items-center justify-between p-2 md:p-6 lg:p-16">
-        <div className="w-full max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
-          <div className="w-full">
+      <main className="flex flex-col items-center justify-between p-24">
+        <div className="grid grid-cols-10">
+          <div className="col-span-8">
             <FullCalendar
-              plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+              plugins={[
+                dayGridPlugin,
+                interactionPlugin,
+                timeGridPlugin
+              ]}
               headerToolbar={{
-                left: isMobile ? "prev,next" : "prev,next today",
-                center: "title",
-                right: isMobile ? "dayGridMonth" : "dayGridMonth,timeGridWeek",
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek'
               }}
               events={allEvents as EventSourceInput}
               nowIndicator={true}
-              editable={false}
-              droppable={false}
-              selectable={false}
-              height={isMobile ? "auto" : undefined}
-              aspectRatio={isMobile ? 0.8 : 1.35}
-              contentHeight="auto"
-              stickyHeaderDates={true}
-              dayMaxEventRows={isMobile ? 2 : true}
-              locale={ptBrLocale}
-              buttonText={{
-                today: "Hoje",
-                month: "Mês",
-                week: "Semana",
-                day: "Dia",
-                list: "Lista",
-              }}
+              editable={false} // Impede edições
+              droppable={false} // Impede soltar eventos
+              selectable={false} // Impede seleção de datas
+              eventClick={(data) => handleDeleteModal(data)}
             />
           </div>
         </div>
+
+        {/* <Transition.Root show={showDeleteModal} as={Transition}>
+          <Dialog as="div" className="relative z-10" onClose={setShowDeleteModal}>
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+            <div className="fixed inset-0 z-10 overflow-y-auto">
+              <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                  <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                    <div className="sm:flex sm:items-start">
+                      <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <ExclamationTriangleIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
+                      </div>
+                      <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                        <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
+                          Delete Event
+                        </Dialog.Title>
+                        <p className="text-sm text-gray-500">Are you sure you want to delete this event?</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                    <button type="button" className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto" onClick={handleDelete}>
+                      Delete
+                    </button>
+                    <button type="button" className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto" onClick={() => setShowDeleteModal(false)}>
+                      Cancel
+                    </button>
+                  </div>
+                </Dialog.Panel>
+              </div>
+            </div>
+          </Dialog>
+        </Transition.Root> */}
       </main>
     </>
   )
 }
-

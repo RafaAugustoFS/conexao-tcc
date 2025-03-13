@@ -11,11 +11,10 @@ const MONTHS = [
 
 interface Event {
   id: number
-  tituloEvento: string
-  dataEvento: string
-  horarioEvento: string
-  localEvento: string
-  descricaoEvento: string
+  uidEvente: string
+  dateTimeEvent: string | null
+  localEvente: string
+  descrfsendEvente: string
 }
 
 interface CalendarProps {
@@ -25,26 +24,26 @@ interface CalendarProps {
 
 export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
   const [currentMonth, setCurrentMonth] = useState("")
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth())
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()) // Mês atual (0-11)
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()) // Ano atual
   const [events, setEvents] = useState<Event[]>([])
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/event");
+        const response = await fetch(`http://localhost:3000/api/event?month=${selectedMonth + 1}&year=${selectedYear}`);
         if (!response.ok) {
           throw new Error("Erro ao buscar eventos");
         }
-        const data: Event[] = await response.json();
+        const data = await response.json();
         setEvents(data);
       } catch (error) {
         console.error("Erro:", error);
       }
     };
-
+  
     fetchEvents();
-  }, []);
+  }, [selectedMonth, selectedYear]); // Aqui o array de dependências é consistente
 
   useEffect(() => {
     const formattedMonth = new Intl.DateTimeFormat("pt-BR", {
@@ -103,15 +102,15 @@ export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
 
         {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
           const event = events.find((e) => {
-            const eventDate = new Date(e.dataEvento)
-            return eventDate.getDate() === day && eventDate.getMonth() === selectedMonth && eventDate.getFullYear() === selectedYear
+            const eventDate = e.dateTimeEvent ? new Date(e.dateTimeEvent) : null
+            return eventDate && eventDate.getDate() === day && eventDate.getMonth() === selectedMonth && eventDate.getFullYear() === selectedYear
           })
           return (
             <button
               key={day}
               className={`h-8 w-8 rounded-full flex items-center justify-center text-sm text-[#666666]
                 ${event ? "bg-blue-500 text-white" : "hover:bg-[#ffffff] dark:hover:bg-[#000000] dark:text-[#666666]"}`}
-              title={event ? event.descricaoEvento : ""}
+              title={event ? event.descrfsendEvente : ""}
             >
               {day}
             </button>
