@@ -14,17 +14,24 @@ const SelectContext = React.createContext<SelectContextType | null>(null);
 
 interface SelectProps {
   children: React.ReactNode;
+  value?: string; // Permitir um valor controlado
   onChange?: (value: string) => void;
 }
 
-export function Select({ children, onChange }: SelectProps) {
-  const [selectedValue, setSelectedValue] = React.useState<string | null>(null);
+export function Select({ children, value, onChange }: SelectProps) {
+  const [selectedValue, setSelectedValue] = React.useState<string | null>(value || null);
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const handleSelect = (value: string) => {
-    setSelectedValue(value);
+  React.useEffect(() => {
+    if (value !== undefined) {
+      setSelectedValue(value); // Atualiza o estado se o `value` externo mudar
+    }
+  }, [value]);
+
+  const handleSelect = (newValue: string) => {
+    setSelectedValue(newValue);
     setIsOpen(false);
-    if (onChange) onChange(value);
+    if (onChange) onChange(newValue); // Chamar a função externa corretamente
   };
 
   return (
@@ -33,6 +40,7 @@ export function Select({ children, onChange }: SelectProps) {
     </SelectContext.Provider>
   );
 }
+
 interface SelectProps {
   children: React.ReactNode;
   onChange?: (value: string) => void;
@@ -81,10 +89,15 @@ interface SelectValueProps {
 
 export function SelectValue({ placeholder = "Tipo de ocorrência" }: SelectValueProps) {
   const context = React.useContext(SelectContext);
-  if (!context) throw new Error("Error");
+  if (!context) throw new Error("SelectValue must be used within a Select");
 
-  return <span className="text-gray-700 dark:text-white  flex flex-row justify-center">{context.selectedValue || placeholder}</span>;
+  return (
+    <span className="text-gray-700 dark:text-white flex flex-row justify-center">
+      {context.selectedValue && context.selectedValue.trim() !== "" ? context.selectedValue : placeholder}
+    </span>
+  );
 }
+
 
 export function SelectContent({ children }: { children: React.ReactNode }) {
   const context = React.useContext(SelectContext);
@@ -102,14 +115,17 @@ interface SelectItemProps {
 
 export function SelectItem({ children, value }: SelectItemProps) {
   const context = React.useContext(SelectContext);
-  if (!context) throw new Error("Error");
+  if (!context) throw new Error("SelectItem must be used within a Select");
 
   return (
     <div
       className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#141414] cursor-pointer"
-      onClick={() => context.setSelectedValue(value)}
+      onClick={() => {
+        context.setSelectedValue(value);
+      }}
     >
       {children}
     </div>
   );
 }
+
