@@ -8,7 +8,7 @@ interface ProfileInfoProps {
   birthDate: string;
   phone: string;
   registrationNumber: string;
-  classes: string;
+  classes: string[]; // Alterado para array de strings
   password: string;
 }
 
@@ -17,7 +17,9 @@ export function ProfileInfo({
   email,
   birthDate,
   phone,
-  registrationNumber
+  registrationNumber,
+  classes,
+  password,
 }: ProfileInfoProps) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -49,7 +51,7 @@ export function ProfileInfo({
             type="text"
             value={name}
             readOnly
-            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700 cursor-not-allowed"
           />
         </div>
 
@@ -62,7 +64,7 @@ export function ProfileInfo({
             type="text"
             value={birthDate}
             readOnly
-            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700 cursor-not-allowed"
           />
         </div>
 
@@ -75,7 +77,7 @@ export function ProfileInfo({
             type="email"
             value={email}
             readOnly
-            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700 cursor-not-allowed"
           />
         </div>
 
@@ -88,7 +90,7 @@ export function ProfileInfo({
             type="tel"
             value={phone}
             readOnly
-            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700 cursor-not-allowed"
           />
         </div>
 
@@ -101,12 +103,9 @@ export function ProfileInfo({
             type="text"
             value={registrationNumber}
             readOnly
-            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700 cursor-not-allowed"
           />
         </div>
-
-        {/* Campo de Senha */}
-        
 
         {/* Turmas */}
         <div className="space-y-2">
@@ -114,10 +113,12 @@ export function ProfileInfo({
             Turmas
           </label>
           <select className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700">
-            <option value="">Selecione uma turma</option>
-            <option value="positivo">Positivo</option>
-            <option value="negativo">Negativo</option>
-            <option value="neutro">Neutro</option>
+            <option value="">Turmas</option>
+            {classes.map((turma, index) => (
+              <option key={index} value={turma}>
+                {turma}
+              </option>
+            ))}
           </select>
         </div>
       </div>
