@@ -4,7 +4,6 @@ import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/alunos/button";
 import Sidebar from "@/components/layout/sidebarTeacher";
 import SearchInput from "@/components/ui/search";
-import CardPerson from "@/components/ui/teacher/cardFeedbackTeacher";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 
