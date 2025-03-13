@@ -29,7 +29,7 @@ export default function CheckInEmocional({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Função de buscar os dados das classes
+  // Função de buscar os dados do estudante
   const fetchDocenteData = async () => {
     try {
       const token = localStorage.getItem("token");
