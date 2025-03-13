@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { ArrowDownCircle, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/alunos/button";
-import Sidebar from "@/components/layout/sidebarTeacher";
+import Sidebar from "@/components/layout/sidebarInstitution";
 import SearchInput from "@/components/ui/search";
 import { useParams } from "next/navigation";
+import FloatingButton from "@/components/ui/institution/FloatingButton";
 
 interface Student {
   id: number;
@@ -76,7 +77,7 @@ export default function StudentsPage({
                     <tr className="bg-[#1A85FF] text-white">
                       <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414]">Nome do aluno</th>
                       <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414]">Nº da Matrícula</th>
-                      <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414]">Média(%)</th>
+                      <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414]">Perfil</th>
                       <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414]">Notas</th>
                     </tr>
                   </thead>
@@ -85,7 +86,9 @@ export default function StudentsPage({
                       <tr key={student.id} className="border border-blue-500">
                         <td className="p-2 border border-blue-500 dark:text-white">{student.nomeAluno}</td>
                         <td className="p-2 border border-blue-500 dark:text-[#8A8A8A]">{student.identifierCode}</td>
-                        <td className="p-2 border border-blue-500 dark:text-white"></td>
+                        <td className="p-2 border border-blue-500 dark:text-white">
+                          <a href={`/institution/class/viewclass/profile/${student.id}`} className="text-blue-500">Ver perfil</a>
+                        </td>
                         <td className="p-2 border border-blue-500 cursor-pointer">
                           <a href={`/institution/class/viewclass/notes/${student.id}`} className="text-blue-500">Ver Notas</a>
                         </td>
@@ -98,6 +101,7 @@ export default function StudentsPage({
           </div>
         </div>
       </div>
+      {/* <FloatingButton rote=" "> */}
     </div>
   );
 }

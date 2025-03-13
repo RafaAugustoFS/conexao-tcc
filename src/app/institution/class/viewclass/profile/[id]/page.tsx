@@ -1,11 +1,20 @@
 "use client";
 import Sidebar from "@/components/layout/sidebarInstitution";
-import { ProfileInfo } from "@/components/ui/teacher/profile";
+import { ProfileInfo } from "@/components/ui/alunos/profile";
 import { Button } from "@/components/ui/alunos/button";
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { Moon, Pencil, Sun, Trash } from "lucide-react";
 import Link from "next/link";
 import DeleteModal from "@/components/modals/modelDelete";
+
+interface StudentProfile {
+  nome: string;
+  emailAluno: string;
+  dataNascimentoAluno: string;
+  telefoneAluno: string;
+  matriculaAluno: string;
+}
 
 export default function User({
   value,
@@ -14,8 +23,33 @@ export default function User({
   value: number;
   className?: string;
 }) {
+  const params = useParams();
   const [darkMode, setDarkMode] = useState(false);
+  const id = params.id as string; // Extrai o ID da turma da URL
+  const [studentData, setStudentData] = useState<StudentProfile | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Função de buscar os dados do estudante
+      const fetchStudentData = async () => {
+        try {
+          const response = await fetch(`http://localhost:3000/api/student/${id}`);
+          if (!response.ok) throw new Error("Não foi possível carregar os dados do estudante");
+   
+          const data = await response.json();
+          setStudentData(data); // Setando os dados do estudante
+        } catch (err: any) {
+          setError(err.message); // Tratamento de erro
+        } finally {
+          setLoading(false); // Finalizando o carregamento
+        }
+      };
+   
+      // Chama a função de fetch quando o componente for montado
+      useEffect(() => {
+        fetchStudentData(); // Chamando a função para carregar os dados
+      }, []);
 
   useEffect(() => {
     if (darkMode) {
@@ -36,15 +70,15 @@ export default function User({
             </Button>
           </div>
           <div className="bg-white dark:bg-black rounded-lg shadow-sm p-3">
-            <ProfileInfo
-              name="Renato de Souza"
-              email="renatoa@gmail.com"
-              birthDate="07/01/1990"
-              phone="(11) 99952-8203"
-              registrationNumber="810693449-1"
-              classes={""}
-              password={""}
-            />
+            {studentData && (
+                        <ProfileInfo
+                          name={studentData.nome}
+                          email={studentData.emailAluno}
+                          birthDate={studentData.dataNascimentoAluno}
+                          phone={studentData.telefoneAluno}
+                          registrationNumber={studentData.matriculaAluno} 
+                        />
+                      )}
             <div className="w-full flex flex-row justify-end space-x-4 pr-8">
               <Link href="profile/editprofile">
                 <button className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600">
