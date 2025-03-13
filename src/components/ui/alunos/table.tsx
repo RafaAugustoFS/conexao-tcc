@@ -21,3 +21,11 @@ export function TableRow({ children }: { children: React.ReactNode }) {
 export function TableHead({ children, className }: { children: React.ReactNode; className?: string }) {
   return <th className={`px-4 py-2 text-left ${className}`}>{children}</th>;
 }
+
+export function TableCell({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <td className={`px-4 py-2 dark:bg-[#141414] dark:text-[#ffffffd8] ${className}`}>
+      {children}
+    </td>
+  );
+}

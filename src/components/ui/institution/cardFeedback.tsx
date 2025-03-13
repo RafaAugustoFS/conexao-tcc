@@ -2,13 +2,15 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
-
 interface CardFeedbackProps {
-  persons?: string[];
+  persons?: string | string[]; // Aceita string ou array de strings
   rote?: string;
 }
 
-export default function CardFeedback({ persons = [], rote = "/" }: CardFeedbackProps) {
+export default function CardFeedback({
+  persons = [],
+  rote = "/",
+}: CardFeedbackProps) {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const studentsPerPage = 6;
@@ -29,8 +31,11 @@ export default function CardFeedback({ persons = [], rote = "/" }: CardFeedbackP
     setCurrentPage(1);
   }, [search]);
 
+  // Converte `persons` para um array, caso seja uma string
+  const personsArray = Array.isArray(persons) ? persons : [persons];
+
   // Filtra os estudantes com base na pesquisa
-  const filteredStudents = persons.filter((person) =>
+  const filteredStudents = personsArray.filter((person) =>
     person.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -42,7 +47,6 @@ export default function CardFeedback({ persons = [], rote = "/" }: CardFeedbackP
 
   return (
     <div>
-
       {/* Lista de estudantes */}
       <div className="grid grid-cols-3 gap-6">
         {displayedStudents.map((person, index) => (
@@ -53,10 +57,10 @@ export default function CardFeedback({ persons = [], rote = "/" }: CardFeedbackP
               </div>
               <span className="font-medium">{person}</span>
               <Link href={rote}>
-                    <div className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
-                      Ver
-                    </div>
-                  </Link>
+                <div className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
+                  Ver
+                </div>
+              </Link>
             </div>
           </button>
         ))}
