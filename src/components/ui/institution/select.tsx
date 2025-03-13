@@ -14,7 +14,7 @@ const SelectContext = React.createContext<SelectContextType | null>(null);
 
 interface SelectProps {
   children: React.ReactNode;
-  value?: string; // Permitir um valor controlado
+  value?: string;
   onChange?: (value: string) => void;
 }
 
@@ -24,14 +24,14 @@ export function Select({ children, value, onChange }: SelectProps) {
 
   React.useEffect(() => {
     if (value !== undefined) {
-      setSelectedValue(value); // Atualiza o estado se o `value` externo mudar
+      setSelectedValue(value);
     }
   }, [value]);
 
   const handleSelect = (newValue: string) => {
     setSelectedValue(newValue);
     setIsOpen(false);
-    if (onChange) onChange(newValue); // Chamar a função externa corretamente
+    if (onChange) onChange(newValue);
   };
 
   return (

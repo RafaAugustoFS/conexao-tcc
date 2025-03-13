@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import SmallSelect from "@/components/ui/smallSelect";
+import SmallSelect from "@/components/ui/alunos/smallselect";
 import { jwtDecode } from "jwt-decode";
 
 export function MediaCard({ atualizarMedia }: { atualizarMedia: (media: number) => void }) {
@@ -37,14 +37,22 @@ export function MediaCard({ atualizarMedia }: { atualizarMedia: (media: number) 
     fetchNotas();
   }, []);
 
-  function valorVindoDoSelect(e) {
-    const bimestre2 = parseInt(e[0])
-    console.log(bimestre2);
-    if(isNaN(bimestre2)){
-      return setSelectedType(0)
-    }else{
-      setSelectedType(bimestre2)
-      return bimestre2
+  function valorVindoDoSelect(value: string) {
+    switch (value) {
+      case "1º Bimestre":
+        setSelectedType(1);
+        break;
+      case "2º Bimestre":
+        setSelectedType(2);
+        break;
+      case "3º Bimestre":
+        setSelectedType(3);
+        break;
+      case "4º Bimestre":
+        setSelectedType(4);
+        break;
+      default:
+        setSelectedType(0); // "Todas"
     }
   }
 

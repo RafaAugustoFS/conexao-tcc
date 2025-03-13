@@ -5,7 +5,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./institution/select";
+} from "../institution/select";
 
 interface SmallSelectProps {
   selectedType: number; // O valor selecionado é um número
