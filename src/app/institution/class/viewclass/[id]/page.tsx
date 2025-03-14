@@ -90,7 +90,7 @@ export default function StudentsPage({
                           <a href={`/institution/class/viewclass/profile/${student.id}`} className="text-blue-500">Ver perfil</a>
                         </td>
                         <td className="p-2 border border-blue-500 cursor-pointer">
-                          <a href={`/institution/class/viewclass/notes/${student.id}`} className="text-blue-500">Ver Notas</a>
+                          <a href={`/institution/student/notes/${student.id}`} className="text-blue-500">Ver Notas</a>
                         </td>
                       </tr>
                     ))}
