@@ -13,7 +13,7 @@ interface ClassProfile {
   id: number;
   nomeTurma: string;
   codigo: string;
-  quantidadeAlunos: number;
+  alunosAtivos: number;
 }
 
 export default function CheckInEmocional({
@@ -146,7 +146,7 @@ export default function CheckInEmocional({
                     </span>
                   </h3>
                   <p className="text-gray-700 dark:text-white">
-                    {turma.quantidadeAlunos} alunos ativos
+                    {turma.alunosAtivos} alunos ativos
                   </p>
                   <div className="flex flex-row items-center space-x-16">
                     <Link href={`class/viewclass/${turma.id}`}>
@@ -155,7 +155,7 @@ export default function CheckInEmocional({
                       </button>
                     </Link>
                     <div className="space-x-4">
-                      <Link href="class/editclass">
+                      <Link href={`class/editclass/${turma.id}`}>
                         <button className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600">
                           <Pencil size={20} />
                         </button>
