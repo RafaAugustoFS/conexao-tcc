@@ -101,7 +101,7 @@ export default function StudentsPage({
           </div>
         </div>
       </div>
-      {/* <FloatingButton rote=" "> */}
+      <FloatingButton rote={`../../student/createStudent/${id}`} />
     </div>
   );
 }
