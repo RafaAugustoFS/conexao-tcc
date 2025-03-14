@@ -1,11 +1,11 @@
 "use client";
 import { ProfileCard } from "@/components/ui/alunos/profile-card";
-import { OccurrencesTable } from "@/components/ui/alunos/occurrences-table";
 import Sidebar from "@/components/layout/sidebar";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/alunos/button";
 import { Moon, Sun } from "lucide-react";
 import CardPerson from "@/components/ui/alunos/cardFeedbackStudent";
+import EngagementChart from "@/components/ui/alunos/chartFeedback";
 const students = [
   "Ana Souza",
   "Carlos Mendes",
@@ -70,7 +70,7 @@ export default function Home() {
             email="rvieira@gmail.com"
             id="N°11064344B-1"
           />
-          <OccurrencesTable />
+          <EngagementChart />
           <h1 className="text-[#0077FF] font-bold text-[20px] lg:text-[24px] pt-[20px]">
             A importância do seu feedback
           </h1>
