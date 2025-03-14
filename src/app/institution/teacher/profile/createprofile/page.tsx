@@ -1,96 +1,120 @@
 "use client";
 import Sidebar from "@/components/layout/sidebarInstitution";
-import { Button } from "@/components/ui/alunos/button";
+import { Button } from "@/components/ui/institution/buttonSubmit";
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import Image from "next/image";
-import { Input } from "@/components/ui/institution/input"; // Ajuste o caminho conforme necessário
-import { Checkbox } from "@/components/ui/institution/checkbox"; // Ajuste o caminho conforme necessário
-
-interface Docente {
-  id: number;
-  nomeDocente: string;
-}
+import { Input } from "@/components/ui/institution/input";
+import { Checkbox } from "@/components/ui/institution/checkbox";
+import { useParams } from "next/navigation";
 
 interface Disciplina {
   id: number;
   nomeDisciplina: string;
 }
 
-export default function Profile({ value, className }: { value: number; className?: string }) {
-  const [docentes, setDocentes] = useState<Docente[]>([]);
+export default function Profile() {
+  const params = useParams();
+  const id = params.id as string;
   const [disciplinas, setDisciplinas] = useState<Disciplina[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    birthDate: "",
-    phone: "",
-    registrationNumber: "",
-    password: "",
+    nomeDocente: "",
+    emailDocente: "",
+    dataNascimentoDocente: "",
+    telefoneDocente: "",
   });
-  const [disciplineIds, setDisciplineIds] = useState<number[]>([]); // IDs das disciplinas selecionadas
-  const [idTeachers, setIdTeachers] = useState<number[]>([]); // IDs dos professores selecionados
+  const [disciplineId, setDisciplineId] = useState<number[]>([]);
   const [darkMode, setDarkMode] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Buscar disciplinas
   useEffect(() => {
+    setLoading(true);
     fetch("http://localhost:3000/api/discipline")
       .then((response) => response.json())
-      .then((data: Disciplina[]) => setDisciplinas(data))
-      .catch((error) => console.error("Erro ao buscar disciplinas:", error));
+      .then((data: Disciplina[]) => {
+        setDisciplinas(data);
+        setError(null);
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar disciplinas:", error);
+        setError("Erro ao carregar disciplinas. Tente novamente mais tarde.");
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-
-  // Função para lidar com a seleção de disciplinas
-  const handleDisciplineSelection = (id: number) => {
-    setDisciplineIds((prev) =>
-      prev.includes(id)
-        ? prev.filter((did) => did !== id) // Remove o ID se já estiver selecionado
-        : [...prev, id] // Adiciona o ID se não estiver selecionado
-    );
+  const validateEmail = (email: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
   };
 
-  // Função para atualizar o estado do formulário
+  const validatePhone = (phone: string) => {
+    const regex = /^\d{10,11}$/;
+    return regex.test(phone);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
     }));
   };
 
-  // Função para enviar os dados do formulário
+  const handleDisciplineSelection = (id: number) => {
+    setDisciplineId((prev) =>
+      prev.includes(id) ? prev.filter((did) => did !== id) : [...prev, id]
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validação básica dos campos
+    setIsSubmitting(true);
+  
+    // Validação dos campos
     if (
-      !formData.name ||
-      !formData.email ||
-      !formData.birthDate ||
-      !formData.phone ||
-      !formData.registrationNumber ||
-      disciplineIds.length === 0
+      !formData.nomeDocente ||
+      !formData.emailDocente ||
+      !formData.dataNascimentoDocente ||
+      !formData.telefoneDocente ||
+      disciplineId.length === 0
     ) {
       alert("Por favor, preencha todos os campos obrigatórios.");
+      setIsSubmitting(false);
       return;
     }
-
+  
+    if (!validateEmail(formData.emailDocente)) {
+      alert("Por favor, insira um email válido.");
+      setIsSubmitting(false);
+      return;
+    }
+  
+    if (!validatePhone(formData.telefoneDocente)) {
+      alert("Por favor, insira um telefone válido.");
+      setIsSubmitting(false);
+      return;
+    }
+  
     const token = localStorage.getItem("token");
-
     if (!token) {
-      console.error("❌ Token JWT não encontrado!");
       alert("Usuário não autenticado. Faça login novamente.");
+      setIsSubmitting(false);
       return;
     }
-
-    const payload = {
-      ...formData,
-      disciplineIds,
-      idTeachers,
-    };
-
+  
     try {
+      const payload = {
+        name: formData.nomeDocente,
+        email: formData.emailDocente,
+        birthDate: formData.dataNascimentoDocente,
+        phone: formData.telefoneDocente,
+        disciplineId: disciplineId,
+      };
+  
+      console.log("Dados enviados:", payload); // Log para depuração
+  
       const response = await fetch("http://localhost:3000/api/teacher", {
         method: "POST",
         headers: {
@@ -99,32 +123,44 @@ export default function Profile({ value, className }: { value: number; className
         },
         body: JSON.stringify(payload),
       });
-
-      const responseData = await response.json().catch(() => null);
-
+  
+      const responseData = await response.json();
+  
       if (!response.ok) {
-        throw new Error("Erro ao criar o perfil.");
+        throw new Error(responseData.message || "Erro ao criar o perfil.");
       }
-
+  
       alert("✅ Perfil criado com sucesso!");
+  
       // Limpar campos após o envio
       setFormData({
-        name: "",
-        email: "",
-        birthDate: "",
-        phone: "",
-        registrationNumber: "",
-        password: "",
+        nomeDocente: "",
+        emailDocente: "",
+        dataNascimentoDocente: "",
+        telefoneDocente: ""
       });
-      setDisciplineIds([]);
+      setDisciplineId([]);
     } catch (error) {
       console.error("❌ Erro ao criar perfil:", error);
-      alert("Erro ao criar perfil.");
+      if (error instanceof Error) {
+        alert(`Erro: ${error.message}`);
+      } else if (typeof error === "string") {
+        alert(`Erro: ${error}`);
+      } else {
+        alert("Erro ao criar perfil. Tente novamente.");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  // Aplicar modo escuro
   useEffect(() => {
+    const savedDarkMode = localStorage.getItem("darkMode") === "true";
+    setDarkMode(savedDarkMode);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("darkMode", darkMode.toString());
     if (darkMode) {
       document.documentElement.classList.add("dark");
     } else {
@@ -139,7 +175,9 @@ export default function Profile({ value, className }: { value: number; className
         <div className="p-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-bold text-[#0D0D0D] dark:text-[#ffffff]">Renato</h1>
+              <h1 className="text-2xl font-bold text-[#0D0D0D] dark:text-[#ffffff]">
+                Renato
+              </h1>
               <p className="text-gray-500">Tue, 07 June 2022</p>
             </div>
             <Button onClick={() => setDarkMode(!darkMode)}>
@@ -160,13 +198,18 @@ export default function Profile({ value, className }: { value: number; className
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[
                 { label: "Nome Completo", type: "text", name: "name" },
-                { label: "Data de Nascimento", type: "date", name: "birthDate" },
+                {
+                  label: "Data de Nascimento",
+                  type: "date",
+                  name: "birthDate",
+                },
                 { label: "Email", type: "email", name: "email" },
                 { label: "Telefone", type: "tel", name: "phone" },
-                { label: "Nº Matrícula", type: "text", name: "registrationNumber" },
               ].map(({ label, type, name }) => (
                 <div key={name} className="space-y-2">
-                  <label className="text-sm text-muted-foreground">{label}</label>
+                  <label className="text-sm text-muted-foreground">
+                    {label}
+                  </label>
                   <Input
                     type={type}
                     name={name}
@@ -180,21 +223,34 @@ export default function Profile({ value, className }: { value: number; className
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h3 className="text-sm text-muted-foreground mb-4">Seleção de disciplinas</h3>
-                <div className="space-y-3">
-                  {disciplinas.map((disciplina) => (
-                    <div key={disciplina.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={`disciplina-${disciplina.id}`}
-                        checked={disciplineIds.includes(disciplina.id)}
-                        onCheckedChange={() => handleDisciplineSelection(disciplina.id)}
-                      />
-                      <label htmlFor={`disciplina-${disciplina.id}`}>
-                        {disciplina.nomeDisciplina}
-                      </label>
-                    </div>
-                  ))}
-                </div>
+                <h3 className="text-sm text-muted-foreground mb-4">
+                  Seleção de disciplinas
+                </h3>
+                {loading ? (
+                  <p>Carregando disciplinas...</p>
+                ) : error ? (
+                  <p className="text-red-500">{error}</p>
+                ) : (
+                  <div className="space-y-3">
+                    {disciplinas.map((disciplina) => (
+                      <div
+                        key={disciplina.id}
+                        className="flex items-center space-x-2"
+                      >
+                        <Checkbox
+                          id={`disciplina-${disciplina.id}`}
+                          checked={disciplineId.includes(disciplina.id)}
+                          onCheckedChange={() =>
+                            handleDisciplineSelection(disciplina.id)
+                          }
+                        />
+                        <label htmlFor={`disciplina-${disciplina.id}`}>
+                          {disciplina.nomeDisciplina}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -203,7 +259,7 @@ export default function Profile({ value, className }: { value: number; className
                 className="bg-blue-500 hover:bg-blue-600 text-white px-8"
                 onClick={handleSubmit}
               >
-                Salvar
+                {isSubmitting ? "Salvando..." : "Salvar"}
               </Button>
             </div>
           </div>
