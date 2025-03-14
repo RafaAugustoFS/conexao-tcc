@@ -80,7 +80,7 @@ export default function User({
                         />
                       )}
             <div className="w-full flex flex-row justify-end space-x-4 pr-8">
-              <Link href="profile/editprofile">
+              <Link href={`../../../student/editprofile/${id}`}>
                 <button className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600">
                   <Pencil size={20} />
                 </button>
