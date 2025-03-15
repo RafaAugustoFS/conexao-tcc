@@ -106,10 +106,10 @@ export default function Profile() {
   
     try {
       const payload = {
-        name: formData.nomeDocente,
-        email: formData.emailDocente,
-        birthDate: formData.dataNascimentoDocente,
-        phone: formData.telefoneDocente,
+        nomeDocente: formData.nomeDocente,
+        emailDocente: formData.emailDocente,
+        dataNascimentoDocente: formData.dataNascimentoDocente,
+        telefoneDocente: formData.telefoneDocente,
         disciplineId: disciplineId,
       };
   
@@ -138,6 +138,7 @@ export default function Profile() {
         emailDocente: "",
         dataNascimentoDocente: "",
         telefoneDocente: ""
+        
       });
       setDisciplineId([]);
     } catch (error) {
@@ -197,14 +198,14 @@ export default function Profile() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[
-                { label: "Nome Completo", type: "text", name: "name" },
+                { label: "Nome Completo", type: "text", name: "nomeDocente" },
                 {
                   label: "Data de Nascimento",
                   type: "date",
-                  name: "birthDate",
+                  name: "dataNascimentoDocente",
                 },
-                { label: "Email", type: "email", name: "email" },
-                { label: "Telefone", type: "tel", name: "phone" },
+                { label: "Email", type: "email", name: "emailDocente" },
+                { label: "Telefone", type: "tel", name: "telefoneDocente" },
               ].map(({ label, type, name }) => (
                 <div key={name} className="space-y-2">
                   <label className="text-sm text-muted-foreground">

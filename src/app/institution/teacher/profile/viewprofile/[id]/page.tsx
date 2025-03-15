@@ -14,8 +14,10 @@ import {
   TableCell,
 } from "@/components/ui/alunos/table";
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
 interface TeacherProfile {
+  id: number;
   nomeDocente: string;
   emailDocente: string;
   dataNascimentoDocente: string;
@@ -48,6 +50,8 @@ export default function User({
   const [darkMode, setDarkMode] = useState(false);
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const params = useParams(); // Obtém os parâmetros da URL
+  const id = params.id as string; // Extrai o ID da turma da URL
 
   // Função para buscar os dados do docente
   const fetchDocenteData = async () => {
@@ -55,17 +59,15 @@ export default function User({
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token não encontrado");
 
-      const decoded: any = jwtDecode(token); // Decodifica o token
-      const id = decoded?.sub; // Extrai o ID do usuário
-      if (!id) throw new Error("ID do usuário não encontrado no token");
-
       const response = await fetch(`http://localhost:3000/api/teacher/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (!response.ok)
+
+      if (!response.ok) {
         throw new Error("Não foi possível carregar os dados do docente");
+      }
 
       const data = await response.json();
       setDocenteData(data); // Atualiza os dados do docente
@@ -109,7 +111,7 @@ export default function User({
   useEffect(() => {
     fetchDocenteData();
     fetchFeedbacks();
-  }, []);
+  }, [id]); // Adicionado `id` como dependência
 
   // Inicializa o modo escuro a partir do localStorage
   useEffect(() => {
@@ -144,28 +146,30 @@ export default function User({
               </Button>
             </div>
             {docenteData && (
-              <ProfileInfo
-                name={docenteData.nomeDocente}
-                email={docenteData.emailDocente}
-                birthDate={docenteData.dataNascimentoDocente}
-                phone={docenteData.telefoneDocente}
-                registrationNumber={docenteData.identifierCode}
-                classes={docenteData.classes.map((classe) => classe.nomeTurma)}
-              />
+              <>
+                <ProfileInfo
+                  name={docenteData.nomeDocente}
+                  email={docenteData.emailDocente}
+                  birthDate={docenteData.dataNascimentoDocente}
+                  phone={docenteData.telefoneDocente}
+                  registrationNumber={docenteData.identifierCode}
+                  classes={docenteData.classes.map((classe) => classe.nomeTurma)}
+                />
+                <div className="w-full flex flex-row justify-end space-x-4 pr-8">
+                  <Link href={`/institution/teacher/profile/editprofile/${docenteData.id}`}>
+                    <button className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600">
+                      <Pencil size={20} />
+                    </button>
+                  </Link>
+                  <button
+                    className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600"
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    <Ban size={20} />
+                  </button>
+                </div>
+              </>
             )}
-            <div className="w-full flex flex-row justify-end space-x-4 pr-8">
-              <Link href="profile/editprofile">
-                <button className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600">
-                  <Pencil size={20} />
-                </button>
-              </Link>
-              <button
-                className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600"
-                onClick={() => setIsModalOpen(true)}
-              >
-                <Ban size={20} />
-              </button>
-            </div>
             <div className="space-y-4 flex flex-col pb-[30px] border-b border-[#00000050] dark:border-[#ffffff50]">
               {/* Tabela de feedbacks */}
               <div className="max-h-64 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">

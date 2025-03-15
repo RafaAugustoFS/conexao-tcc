@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/alunos/button";
 import CardFeedback from "@/components/ui/institution/cardFeedback";
 import FloatingButton from "@/components/ui/institution/FloatingButton";
 import SearchInput from "@/components/ui/search";
-import { jwtDecode } from "jwt-decode";
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -19,7 +18,7 @@ interface TeacherProfile {
 }
 
 export default function Page() {
-  const [docenteData, setDocenteData] = useState<TeacherProfile | null>(null);
+  const [docenteData, setDocenteData] = useState<TeacherProfile[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [darkMode, setDarkMode] = useState(() => {
@@ -51,20 +50,16 @@ export default function Page() {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token não encontrado");
 
-      const decoded: any = jwtDecode(token); // Decodifica o token
-      const id = decoded?.sub; // Extrai o ID do usuário
-      if (!id) throw new Error("ID do usuário não encontrado no token");
-
-      const response = await fetch(`http://localhost:3000/api/teacher/${id}`, {
+      const response = await fetch(`http://localhost:3000/api/teacher`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok)
-        throw new Error("Não foi possível carregar os dados do docente");
+        throw new Error("Não foi possível carregar os dados dos docentes");
 
       const data = await response.json();
-      setDocenteData(data); // Atualiza os dados do docente
+      setDocenteData(data); // Atualiza a lista de professores
     } catch (err: any) {
       setError(err.message); // Define a mensagem de erro
     } finally {
@@ -72,9 +67,9 @@ export default function Page() {
     }
   };
 
-  const filteredTeachers = docenteData?.classes
-    ? docenteData.classes.filter((classe) =>
-        classe.nomeTurma.toLowerCase().includes(search.toLowerCase())
+  const filteredTeachers = docenteData
+    ? docenteData.filter((docente) =>
+        docente.nomeDocente.toLowerCase().includes(search.toLowerCase())
       )
     : [];
 
@@ -104,28 +99,40 @@ export default function Page() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <CardFeedback
-            persons={docenteData?.nomeDocente || "Carregando..."}
-            rote={`/institution/teacher/profile/viewprofile/${docenteData?.id}`}
-          />
 
-          {/* Paginação */}
-          {totalPages > 1 && (
-            <div className="flex justify-center mt-6">
-              {Array.from({ length: totalPages }, (_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={`px-4 py-2 mx-1 rounded-md transition ${
-                    currentPage === i + 1
-                      ? "bg-blue-500 text-white dark:text-black"
-                      : "bg-[#F0F7FF] text-blue-500 hover:bg-gray-300 dark:bg-[#141414]"
-                  }`}
-                >
-                  {i + 1}
-                </button>
+          {loading ? (
+            <p>Carregando...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            <>
+              {displayedTeachers.map((docente) => (
+                <CardFeedback
+                  key={docente.id}
+                  persons={docente.nomeDocente}
+                  rote={`/institution/teacher/profile/viewprofile/${docente.id}`}
+                />
               ))}
-            </div>
+
+              {/* Paginação */}
+              {totalPages > 1 && (
+                <div className="flex justify-center mt-6">
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`px-4 py-2 mx-1 rounded-md transition ${
+                        currentPage === i + 1
+                          ? "bg-blue-500 text-white dark:text-black"
+                          : "bg-[#F0F7FF] text-blue-500 hover:bg-gray-300 dark:bg-[#141414]"
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>
