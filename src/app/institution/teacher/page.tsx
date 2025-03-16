@@ -6,6 +6,7 @@ import FloatingButton from "@/components/ui/institution/FloatingButton";
 import SearchInput from "@/components/ui/search";
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTheme } from "@/components/ThemeProvider";
 
 interface TeacherProfile {
   id: number;
@@ -21,20 +22,14 @@ export default function Page() {
   const [docenteData, setDocenteData] = useState<TeacherProfile[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("darkMode") === "true";
-  });
-
+  const { darkMode, toggleTheme } = useTheme(); 
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const teachersPerPage = 6;
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   useEffect(() => {
@@ -85,9 +80,9 @@ export default function Page() {
       <main className="flex-1">
         <div className="p-8">
           <div className="flex items-center justify-end mb-8 w-full">
-            <Button onClick={() => setDarkMode(!darkMode)}>
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </Button>
+          <Button onClick={toggleTheme}>
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </Button>
           </div>
         </div>
 

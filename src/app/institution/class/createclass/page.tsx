@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/institution/select";
 import Sidebar from "@/components/layout/sidebarInstitution";
 import SearchInput from "@/components/ui/search";
+import { useTheme } from "@/components/ThemeProvider";
+
 
 export default function CreateClass() {
   const [docentes, setDocentes] = useState([]);
@@ -25,6 +27,7 @@ export default function CreateClass() {
   const [idTeacher, setIdTeacher] = useState(null);
   const [disciplineIds, setDisciplineIds] = useState([]);
   const [idTeachers, setIdTeachers] = useState([]); // 🔹 Agora é um array
+  const { darkMode, toggleTheme } = useTheme(); 
 
   // Buscar docentes
   useEffect(() => {
@@ -41,6 +44,11 @@ export default function CreateClass() {
       .then((data) => setDisciplinas(data))
       .catch((error) => console.error("Erro ao buscar disciplinas:", error));
   }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
 
   // 🔹 Função para lidar com a seleção de professores
   const handleTeacherSelection = (id) => {

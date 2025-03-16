@@ -7,6 +7,8 @@ import Image from "next/image";
 import { Input } from "@/components/ui/institution/input";
 import { Checkbox } from "@/components/ui/institution/checkbox";
 import { useParams } from "next/navigation";
+import { useTheme } from "@/components/ThemeProvider";
+
 
 interface Disciplina {
   id: number;
@@ -26,7 +28,7 @@ export default function Profile() {
     telefoneDocente: "",
   });
   const [disciplineId, setDisciplineId] = useState<number[]>([]);
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleTheme } = useTheme(); 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -156,9 +158,9 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    const savedDarkMode = localStorage.getItem("darkMode") === "true";
-    setDarkMode(savedDarkMode);
-  }, []);
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
 
   useEffect(() => {
     localStorage.setItem("darkMode", darkMode.toString());
@@ -181,9 +183,9 @@ export default function Profile() {
               </h1>
               <p className="text-gray-500">Tue, 07 June 2022</p>
             </div>
-            <Button onClick={() => setDarkMode(!darkMode)}>
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </Button>
+            <Button onClick={toggleTheme}>
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </Button>
           </div>
           <div className="container mx-auto p-6 space-y-6 max-w-5xl h-1/2 bg-[#ffffff] dark:bg-[#1a1a1a] rounded-3xl">
             <div className="flex items-start gap-6">

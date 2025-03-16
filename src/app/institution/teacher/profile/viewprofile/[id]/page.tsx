@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/alunos/table";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { useTheme } from "@/components/ThemeProvider";
+
 
 interface TeacherProfile {
   id: number;
@@ -47,11 +49,12 @@ export default function User({
   const [docenteData, setDocenteData] = useState<TeacherProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleTheme } = useTheme(); 
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const params = useParams(); // Obtém os parâmetros da URL
   const id = params.id as string; // Extrai o ID da turma da URL
+
 
   // Função para buscar os dados do docente
   const fetchDocenteData = async () => {
@@ -115,8 +118,8 @@ export default function User({
 
   // Inicializa o modo escuro a partir do localStorage
   useEffect(() => {
-    const savedDarkMode = localStorage.getItem("darkMode") === "true";
-    setDarkMode(savedDarkMode);
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, []);
 
   // Aplica o modo escuro e salva no localStorage
@@ -141,9 +144,9 @@ export default function User({
         <div className="p-8">
           <div className="space-y-6 bg-[#FFFFFF] dark:bg-black dark:text-[#ffffffd8] p-8 rounded-2xl">
             <div className="flex items-center justify-end mb-8 w-full">
-              <Button onClick={() => setDarkMode(!darkMode)}>
-                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-              </Button>
+            <Button onClick={toggleTheme}>
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </Button>
             </div>
             {docenteData && (
               <>

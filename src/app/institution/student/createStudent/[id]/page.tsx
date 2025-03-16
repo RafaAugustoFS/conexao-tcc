@@ -7,6 +7,8 @@ import { Moon, Sun } from "lucide-react";
 import Image from "next/image";
 import { Input } from "@/components/ui/institution/input";
 import { useParams } from "next/navigation";
+import { useTheme } from "@/components/ThemeProvider";
+
 
 interface Turma {
   id: number;
@@ -28,7 +30,9 @@ export default function Profile({
   const [dataNascimentoAluno, setBirthDate] = useState("");
   const [telefoneAluno, setPhone] = useState("");
   const [turma, setTurma] = useState("");
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleTheme } = useTheme(); 
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,6 +89,7 @@ export default function Profile({
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   useEffect(() => {
@@ -101,7 +106,7 @@ export default function Profile({
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold dark:text-white">{turma.nomeTurma}</h1>
           <p className="text-gray-500">{getCurrentDate()}</p>
-          <Button onClick={() => setDarkMode(!darkMode)}>
+          <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>

@@ -8,6 +8,8 @@ import Sidebar from "@/components/layout/sidebarInstitution";
 import SearchInput from "@/components/ui/search"
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
+import { useTheme } from "@/components/ThemeProvider";
+
 export default function EditClass() {
   const params = useParams(); // Obtém os parâmetros da URL
   const id = params.id as string; // Extrai o ID da turma da URL
@@ -18,10 +20,16 @@ export default function EditClass() {
     const [periodoTurma, setPeriodoTurma] = useState("");
     const [capacidadeTurma, setCapacidadeTurma] = useState("");
     const [salaTurma, setSalaTurma] = useState("");
-    const [idTeacher, setIdTeacher] = useState(null);
+    const { darkMode, toggleTheme } = useTheme(); 
     const [disciplineIds, setDisciplineIds] = useState([]);
     const [idTeachers, setIdTeachers] = useState([]); // 🔹 Agora é um array
   
+
+    useEffect(() => {
+      document.documentElement.classList.toggle("dark", darkMode);
+      localStorage.setItem("theme", darkMode ? "dark" : "light");
+    }, [darkMode]);
+    
     // Buscar docentes
     useEffect(() => {
       fetch("http://localhost:3000/api/teacher")

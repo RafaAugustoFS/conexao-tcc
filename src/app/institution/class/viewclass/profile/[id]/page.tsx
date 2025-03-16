@@ -7,6 +7,8 @@ import { useParams } from "next/navigation";
 import { Moon, Pencil, Sun, Trash } from "lucide-react";
 import Link from "next/link";
 import DeleteModal from "@/components/modals/modelDelete";
+import { useTheme } from "@/components/ThemeProvider";
+
 
 interface StudentProfile {
   nome: string;
@@ -24,7 +26,7 @@ export default function User({
   className?: string;
 }) {
   const params = useParams();
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleTheme } = useTheme();
   const id = params.id as string; // Extrai o ID da turma da URL
   const [studentData, setStudentData] = useState<StudentProfile | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,31 +34,28 @@ export default function User({
   const [error, setError] = useState<string | null>(null);
 
   // Função de buscar os dados do estudante
-      const fetchStudentData = async () => {
-        try {
-          const response = await fetch(`http://localhost:3000/api/student/${id}`);
-          if (!response.ok) throw new Error("Não foi possível carregar os dados do estudante");
-   
-          const data = await response.json();
-          setStudentData(data); // Setando os dados do estudante
-        } catch (err: any) {
-          setError(err.message); // Tratamento de erro
-        } finally {
-          setLoading(false); // Finalizando o carregamento
-        }
-      };
-   
-      // Chama a função de fetch quando o componente for montado
-      useEffect(() => {
-        fetchStudentData(); // Chamando a função para carregar os dados
-      }, []);
+  const fetchStudentData = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/student/${id}`);
+      if (!response.ok) throw new Error("Não foi possível carregar os dados do estudante");
+
+      const data = await response.json();
+      setStudentData(data); // Setando os dados do estudante
+    } catch (err: any) {
+      setError(err.message); // Tratamento de erro
+    } finally {
+      setLoading(false); // Finalizando o carregamento
+    }
+  };
+
+  // Chama a função de fetch quando o componente for montado
+  useEffect(() => {
+    fetchStudentData(); // Chamando a função para carregar os dados
+  }, []);
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   return (
@@ -65,20 +64,20 @@ export default function User({
       <main className="flex-1">
         <div className="p-8">
           <div className="flex items-center justify-end mb-8 w-full">
-            <Button onClick={() => setDarkMode(!darkMode)}>
+            <Button onClick={toggleTheme}>
               {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </Button>
           </div>
           <div className="bg-white dark:bg-black rounded-lg shadow-sm p-3">
             {studentData && (
-                        <ProfileInfo
-                          name={studentData.nome}
-                          email={studentData.emailAluno}
-                          birthDate={studentData.dataNascimentoAluno}
-                          phone={studentData.telefoneAluno}
-                          registrationNumber={studentData.matriculaAluno} 
-                        />
-                      )}
+              <ProfileInfo
+                name={studentData.nome}
+                email={studentData.emailAluno}
+                birthDate={studentData.dataNascimentoAluno}
+                phone={studentData.telefoneAluno}
+                registrationNumber={studentData.matriculaAluno}
+              />
+            )}
             <div className="w-full flex flex-row justify-end space-x-4 pr-8">
               <Link href={`../../../student/editprofile/${id}`}>
                 <button className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600">
@@ -93,7 +92,7 @@ export default function User({
               </button>
             </div>
             <div className="flex justify-center w-full">
-            <Link className="text-[#4184ff] hover:underline" href="profile/feedback">Ver Mais</Link>
+              <Link className="text-[#4184ff] hover:underline" href="profile/feedback">Ver Mais</Link>
             </div>
           </div>
         </div>

@@ -7,6 +7,7 @@ import Sidebar from "@/components/layout/sidebarInstitution";
 import SearchInput from "@/components/ui/search";
 import { useParams } from "next/navigation";
 import FloatingButton from "@/components/ui/institution/FloatingButton";
+import { useTheme } from "@/components/ThemeProvider";
 
 interface Student {
   id: number;
@@ -29,9 +30,14 @@ export default function StudentsPage({
   const params = useParams(); // Obtém os parâmetros da URL
   const id = params.id as string; // Extrai o ID da turma da URL
   const [estudante, setEstudante] = useState<Student[]>([]);
-  const [darkMode, setDarkMode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { darkMode, toggleTheme } = useTheme(); 
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
 
   useEffect(() => {
     if (!id) return;
@@ -57,7 +63,7 @@ export default function StudentsPage({
       <Sidebar />
       <div className="w-full flex flex-col items-center mt-8">
         <div className="w-full flex justify-end mb-8 mr-28">
-          <Button onClick={() => setDarkMode(!darkMode)}>
+        <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>

@@ -7,6 +7,8 @@ import { OccurrencesTable } from "@/components/ui/alunos/occurrences-table";
 import Sidebar from "@/components/layout/sidebarInstitution";
 import { Button } from "@/components/ui/alunos/button";
 import { Moon, Sun } from "lucide-react";
+import { useTheme } from "@/components/ThemeProvider";
+
 
 const dataByBimester = {
   "1º Bimestre": [
@@ -42,9 +44,7 @@ const dataByBimester = {
 type Bimester = "1º Bimestre" | "2º Bimestre" | "3º Bimestre" | "4º Bimestre";
 
 export default function Home() {
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("darkMode") === "true";
-  });
+  const { darkMode, toggleTheme } = useTheme(); 
 
   const [selectedBimester, setSelectedBimester] = useState<Bimester>("1º Bimestre");
 
@@ -57,7 +57,7 @@ export default function Home() {
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
-    localStorage.setItem("darkMode", darkMode.toString());
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   return (
@@ -65,7 +65,7 @@ export default function Home() {
       <Sidebar />
       <div className="container mx-auto p-4">
         <div className="w-full flex flex-row justify-end">
-          <Button onClick={() => setDarkMode(!darkMode)}>
+        <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>

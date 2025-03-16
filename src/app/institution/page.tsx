@@ -10,15 +10,14 @@ import WelcomeMessage from "@/components/ui/welcomeMessage";
 import { Class } from "@/components/ui/teacher/class";
 import { NoticeCard } from "@/components/ui/institution/noticeCard";
 import LateralCalendar from "@/components/ui/lateralCalendar";
+import { useTheme } from "@/components/ThemeProvider";
+
 
 export default function DashboardTeacher() {
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleTheme } = useTheme(); 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   return (
@@ -30,7 +29,7 @@ export default function DashboardTeacher() {
       <SidebarInstitution />
       <main className="flex-1 pl-6 pb-6 pr-6 pt-2">
         <div className="flex flex-col items-end">
-          <Button onClick={() => setDarkMode(!darkMode)}>
+        <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>

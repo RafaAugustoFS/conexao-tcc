@@ -7,17 +7,16 @@ import { Moon, Plus, Sun } from "lucide-react";
 import { EventSidebar } from "@/components/ui/alunos/event-sidebar";
 import FloatingButton from "@/components/ui/institution/FloatingButton";
 import Modal from "@/components/modals/modalFloatingButton";
+import { useTheme } from "@/components/ThemeProvider";
+
 
 export default function Event() {
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleTheme } = useTheme(); 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   return (
@@ -32,9 +31,9 @@ export default function Event() {
               </h1>
               <p className="text-gray-500">Tue, 07 June 2022</p>
             </div>
-            <Button onClick={() => setDarkMode(!darkMode)}>
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </Button>
+            <Button onClick={toggleTheme}>
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </Button>
           </div>
         </div>
 

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/institution/input";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { Checkbox } from "@/components/ui/institution/checkbox";
+import { useTheme } from "@/components/ThemeProvider";
 
 interface Disciplina {
   id: number;
@@ -16,7 +17,7 @@ interface Disciplina {
 export default function Profile({ value, className }: { value: number; className?: string }) {
   const params = useParams(); // Obtém os parâmetros da URL
   const id = params.id as string; // Extrai o ID da turma da URL
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleTheme } = useTheme(); 
   const [nomeDocente, setNomeDocente] = useState("");
   const [emailDocente, setEmailDocente] = useState("");
   const [dataNascimentoDocente, setDataNascimentoDocente] = useState("");
@@ -127,11 +128,8 @@ export default function Profile({ value, className }: { value: number; className
   };
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   return (
@@ -141,7 +139,7 @@ export default function Profile({ value, className }: { value: number; className
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold dark:text-white">Editar docente</h1>
           <p className="text-gray-500">{getCurrentDate()}</p>
-          <Button onClick={() => setDarkMode(!darkMode)}>
+          <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>

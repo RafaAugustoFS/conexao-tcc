@@ -8,6 +8,8 @@ import SearchInput from "@/components/ui/search";
 import FloatingButton from "@/components/ui/institution/FloatingButton";
 import Link from "next/link";
 import DeleteModal from "@/components/modals/modelDelete";
+import { useTheme } from "@/components/ThemeProvider";
+
 
 interface ClassProfile {
   id: number;
@@ -23,7 +25,7 @@ export default function CheckInEmocional({
   value: number;
   className?: string;
 }) {
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleTheme } = useTheme(); 
   const [classes, setClasses] = useState<ClassProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -84,11 +86,8 @@ export default function CheckInEmocional({
   }, []);
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   useEffect(() => {
@@ -114,7 +113,7 @@ export default function CheckInEmocional({
       <Sidebar />
       <div className="w-full flex flex-col items-center mt-8">
         <div className="w-full flex justify-end mb-8 mr-28">
-          <Button onClick={() => setDarkMode(!darkMode)}>
+        <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>
