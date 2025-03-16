@@ -6,19 +6,17 @@ import { Moon, Sun } from "lucide-react"
 import { useEffect, useState } from "react"
 import { EventSidebar } from "@/components/ui/alunos/event-sidebar"
 import { jwtDecode } from "jwt-decode"
+import { useTheme } from "@/components/ThemeProvider";
 
 export default function Event() {
-  const [darkMode, setDarkMode] = useState(false)
+  const { darkMode, toggleTheme } = useTheme(); 
   const [nome, setNome] = useState("")
   const [currentDate, setCurrentDate] = useState("")
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark")
-    } else {
-      document.documentElement.classList.remove("dark")
-    }
-  }, [darkMode])
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
 
   useEffect(() => {
     // Format current date
@@ -75,7 +73,9 @@ export default function Event() {
               <h1 className="text-2xl font-bold text-[#0D0D0D] dark:text-[#ffffff]">Bem-Vindo(a), {nome}</h1>
               <p className="text-gray-500">{currentDate}</p>
             </div>
-            <Button onClick={() => setDarkMode(!darkMode)}>{darkMode ? <Sun size={20} /> : <Moon size={20} />}</Button>
+            <Button onClick={toggleTheme}>
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </Button>
           </div>
         </div>
 

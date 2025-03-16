@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/alunos/button";
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
- 
+import { useTheme } from "@/components/ThemeProvider"; // Importe o hook useTheme
+
 interface StudentProfile {
   nome: string;
   emailAluno: string;
@@ -22,11 +23,18 @@ export default function User({
   value: number;
   className?: string;
 }) {
-  const [darkMode, setDarkMode] = useState(false);
+
+ 
   const [studentData, setStudentData] = useState<StudentProfile | null>(null);
+  const { darkMode, toggleTheme } = useTheme(); // Use o hook useTheme
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
  
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
+
     // Função de buscar os dados do estudante
     const fetchStudentData = async () => {
       try {
@@ -54,14 +62,6 @@ export default function User({
       fetchStudentData(); // Chamando a função para carregar os dados
     }, []);
  
- 
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [darkMode]);
   return (
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
       <Sidebar />
@@ -69,9 +69,11 @@ export default function User({
         <div className="p-8">
           <div className="flex items-center justify-between mb-8">
             <WelcomeUser name={studentData?.nome || "Nao achou"} />
-            <Button onClick={() => setDarkMode(!darkMode)}>
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </Button>
+            <div className="flex justify-end">
+          <Button onClick={toggleTheme}>
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </Button>
+        </div>
           </div>
           {studentData && (
             <ProfileInfo

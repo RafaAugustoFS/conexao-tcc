@@ -1,6 +1,13 @@
+// src/app/layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../styles/globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
+
+export const metadata: Metadata = {
+  title: "On Academy",
+  description: "On Academy",
+};
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,22 +19,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "On Academy",
-  description: "On Academy",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-br">
+    <html lang="pt-br" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

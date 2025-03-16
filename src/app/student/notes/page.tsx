@@ -7,6 +7,7 @@ import Sidebar from "@/components/layout/sidebar";
 import { Button } from "@/components/ui/alunos/button";
 import { Moon, Sun } from "lucide-react";
 import {jwtDecode} from 'jwt-decode'; // Biblioteca para decodificar JWT
+import { useTheme } from "@/components/ThemeProvider";
 
 // Tipagem para os dados do estudante
 interface StudentData {
@@ -29,7 +30,7 @@ interface StudentData {
 }
 
 export default function Notes({ value, className }: { value: number; className?: string }){
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleTheme } = useTheme(); 
   const [studentData, setStudentData] = useState<StudentData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,13 +63,8 @@ export default function Notes({ value, className }: { value: number; className?:
   // Efeito para buscar os dados do estudante quando o componente for montado
   useEffect(() => {
     fetchStudentData();
-    
-    // Controlando o tema
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   const getCurrentDate = () => {
@@ -99,9 +95,9 @@ export default function Notes({ value, className }: { value: number; className?:
             <h1 className="text-2xl font-bold text-[#0D0D0D] dark:text-[#ffffff]">Bem-Vindo, {studentData?.nome}!</h1>
             <p className="text-gray-500">{getCurrentDate()}</p>
             </div>
-            <Button onClick={() => setDarkMode(!darkMode)}>
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </Button>
+            <Button onClick={toggleTheme}>
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </Button>
           </div>
 
           <Table />

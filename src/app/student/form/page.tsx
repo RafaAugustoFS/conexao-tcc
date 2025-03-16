@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/alunos/button";
 import Sidebar from "@/components/layout/sidebar";
 import checklist from "../../../assets/images/checklist.png";
 import Image from "next/image";
+import { useTheme } from "@/components/ThemeProvider";
 
 export default function CheckInEmocional({
   value,
@@ -14,13 +15,10 @@ export default function CheckInEmocional({
   value: number;
   className?: string;
 }) {
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleTheme } = useTheme(); 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
   return (
     <div
@@ -29,7 +27,7 @@ export default function CheckInEmocional({
       <Sidebar />
       <div className="w-full flex flex-col items-center mt-8 px-4 lg:px-0">
         <div className="w-full flex justify-end mb-8 lg:mr-28">
-          <Button onClick={() => setDarkMode(!darkMode)}>
+        <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>
