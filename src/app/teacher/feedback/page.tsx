@@ -7,6 +7,8 @@ import Sidebar from "@/components/layout/sidebarTeacher";
 import SearchInput from "@/components/ui/search";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
+import { useTheme } from "@/components/ThemeProvider";
+
 
 interface TeacherProfile {
   nomeDocente: string;
@@ -24,10 +26,10 @@ export default function CheckInEmocional({
   value: number;
   className?: string;
 }) {
-  const [darkMode, setDarkMode] = useState(false);
   const [docenteData, setDocenteData] = useState<TeacherProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { darkMode, toggleTheme } = useTheme(); 
 
   // Função de buscar os dados do estudante
   const fetchDocenteData = async () => {
@@ -60,11 +62,8 @@ export default function CheckInEmocional({
   }, []);
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+  document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
   const router = useRouter();
   return (
@@ -72,7 +71,7 @@ export default function CheckInEmocional({
       <Sidebar />
       <div className="w-full flex flex-col items-center mt-8">
         <div className="w-full flex justify-end mb-8 mr-28">
-          <Button onClick={() => setDarkMode(!darkMode)}>
+        <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>

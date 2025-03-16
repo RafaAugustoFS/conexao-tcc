@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/alunos/button";
 import Sidebar from "@/components/layout/sidebarTeacher";
 import SearchInput from "@/components/ui/search";
 import { useParams } from "next/navigation";
+import { useTheme } from "@/components/ThemeProvider";
+
 
 interface Student {
   id: number;
@@ -28,7 +30,7 @@ export default function StudentsPage({
   const params = useParams(); // Obtém os parâmetros da URL
   const id = params.id as string; // Extrai o ID da turma da URL
   const [estudante, setEstudante] = useState<Student[]>([]);
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleTheme } = useTheme(); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,12 +53,17 @@ export default function StudentsPage({
     fetchStudents();
   }, [id]);
 
+   useEffect(() => {
+      document.documentElement.classList.toggle("dark", darkMode);
+      localStorage.setItem("theme", darkMode ? "dark" : "light");
+    }, [darkMode]);
+
   return (
     <div className={`min-h-screen bg-[#F0F7FF] flex flex-row dark:bg-[#141414]`}>
       <Sidebar />
       <div className="w-full flex flex-col items-center mt-8">
         <div className="w-full flex justify-end mb-8 mr-28">
-          <Button onClick={() => setDarkMode(!darkMode)}>
+        <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>

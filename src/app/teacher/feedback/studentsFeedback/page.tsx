@@ -7,6 +7,8 @@ import SearchInput from "@/components/ui/search";
 import CardPerson from "@/components/ui/teacher/cardFeedbackTeacher";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { useTheme } from "@/components/ThemeProvider";
+
 
 interface Student {
   id: number;
@@ -34,9 +36,7 @@ export default function TeacherList({
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const studentsPerPage = 6;
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("darkMode") === "true";
-  });
+  const { darkMode, toggleTheme } = useTheme(); 
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
@@ -83,7 +83,7 @@ export default function TeacherList({
       <Sidebar />
       <div className="w-full flex flex-col items-center mt-8">
         <div className="w-full flex justify-end mb-8 mr-28">
-          <Button onClick={() => setDarkMode(!darkMode)}>
+        <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>

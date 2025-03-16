@@ -8,7 +8,8 @@ import { Moon, Sun } from "lucide-react";
 import TablePerformance from "@/components/ui/tablePerfomance";
 import { useParams } from "next/navigation";
 import FeedbackForm from "@/components/ui/teacher/questions";
-import { jwtDecode } from "jwt-decode";
+import { useTheme } from "@/components/ThemeProvider";
+
 
 interface StudentProfile {
   nome: string;
@@ -27,7 +28,7 @@ export default function User({
 }) {
   const params = useParams();
   const id = params.id as string;
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleTheme } = useTheme(); 
   const [studentData, setStudentData] = useState<StudentProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,11 +57,8 @@ export default function User({
   }, []);
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
   return (
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
@@ -68,9 +66,9 @@ export default function User({
       <main className="flex-1">
         <div className="p-8">
           <div className="flex items-center justify-between mb-8 ">
-            <Button onClick={() => setDarkMode(!darkMode)}>
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </Button>
+          <Button onClick={toggleTheme}>
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </Button>
           </div>
           <div className="bg-white dark:bg-black rounded-lg shadow-sm p-8 space-y-6 max-h-[800px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 dark:scrollbar-track-black">
             {studentData && (
