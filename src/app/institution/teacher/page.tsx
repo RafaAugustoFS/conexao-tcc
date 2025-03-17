@@ -19,7 +19,7 @@ interface TeacherProfile {
 }
 
 export default function Page() {
-  const [docenteData, setDocenteData] = useState<TeacherProfile[] | null>(null);
+  const [docenteData, setDocenteData] = useState<TeacherProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { darkMode, toggleTheme } = useTheme(); 
@@ -101,13 +101,16 @@ export default function Page() {
             <p className="text-red-500">{error}</p>
           ) : (
             <>
-              {displayedTeachers.map((docente) => (
-                <CardFeedback
-                  key={docente.id}
-                  persons={docente.nomeDocente}
-                  rote={`/institution/teacher/profile/viewprofile/${docente.id}`}
-                />
-              ))}
+              {/* Grid de professores */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {displayedTeachers.map((docente) => (
+                  <CardFeedback
+                    key={docente.id}
+                    person={docente.nomeDocente}
+                    rote={`/institution/teacher/profile/viewprofile/${docente.id}`}
+                  />
+                ))}
+              </div>
 
               {/* Paginação */}
               {totalPages > 1 && (
