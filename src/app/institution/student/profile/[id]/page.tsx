@@ -32,6 +32,7 @@ export default function User({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
 
   // Função de buscar os dados do estudante
   const fetchStudentData = async () => {
@@ -48,10 +49,36 @@ export default function User({
     }
   };
 
+  const deleteStudent = async (id: string) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/student/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Erro ao excluir o estudante");
+      
+      setStudentData(null);
+      setIsModalOpen(false);
+      setSelectedStudentId(null);
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
   // Chama a função de fetch quando o componente for montado
   useEffect(() => {
     fetchStudentData(); // Chamando a função para carregar os dados
   }, []);
+
+  const handleDeleteClick = (id: string) => {
+    setSelectedStudentId(id);
+    setIsModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (selectedStudentId) {
+      deleteStudent(selectedStudentId);
+    }
+  };
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
@@ -86,7 +113,7 @@ export default function User({
               </Link>
               <button
                 className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600"
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => handleDeleteClick(id)}
               >
                 <Trash size={20} />
               </button>
@@ -100,10 +127,7 @@ export default function User({
       <DeleteModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onConfirm={() => {
-          setIsModalOpen(false);
-          console.log("Item excluído");
-        }}
+        onConfirm={confirmDelete} // Só exclui quando confirmar
       />
     </div>
   );
