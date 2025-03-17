@@ -58,10 +58,9 @@ export default function StudentsPage({
     fetchStudents(); // Executa a função para buscar os dados
   }, [id]);
 
-  // Efeito para aplicar o tema escuro/claro ao HTML e salvar no localStorage
   useEffect(() => {
+    // Aplica o tema ao carregar a página
     document.documentElement.classList.toggle("dark", darkMode);
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   return (
