@@ -59,20 +59,20 @@ export function MediaCard({ atualizarMedia }: { atualizarMedia: (media: number) 
   const calcularMediaPorBimestre = () => {
     let bimestreNotas = [];
     let media = 0;
-
+  
     if (selectedType === 0) {
       bimestreNotas = notas;
     } else {
-      console.log("aaa");
       bimestreNotas = notas.filter((nota) => nota.bimestre === selectedType);
     }
-
+  
     const somaNotas = bimestreNotas.reduce((acc, nota) => acc + nota.nota, 0);
     media = bimestreNotas.length > 0 ? somaNotas / bimestreNotas.length : 0;
-
-    console.log(somaNotas);
-   
-    return media;
+  
+    // Transformar a média em porcentagem
+    const mediaPorcentagem = media * 10;
+  
+    return mediaPorcentagem;
   };
 
   useEffect(() => {
@@ -86,7 +86,7 @@ export function MediaCard({ atualizarMedia }: { atualizarMedia: (media: number) 
   return (
     <div className="flex flex-row justify-between">
       <h2 className="text-lg font-bold">Média de notas</h2>
-      <div className="flex flex-row items-center justify-center">
+      <div className="flex flex-row items-center justify-center w-32">
         <SmallSelect
           selectedType={selectedType}
           setSelectedType={valorVindoDoSelect}

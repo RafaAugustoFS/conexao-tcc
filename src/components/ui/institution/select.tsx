@@ -75,7 +75,7 @@ export function SelectTrigger({ children, className }: SelectTriggerProps) {
 
   return (
     <button
-      className={`flex flex-row justify-start border dark:border-[#0077FF] px-4 py-2 rounded w-full text-left ${className} w-[180px]`}
+      className={`flex flex-row justify-center border dark:border-[#0077FF] px-4 py-2 rounded w-full text-left ${className} w-[180px]`}
       onClick={() => context.setIsOpen(!context.isOpen)}
     >
       {children}
