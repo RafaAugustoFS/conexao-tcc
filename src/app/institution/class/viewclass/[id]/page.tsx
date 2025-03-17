@@ -93,7 +93,7 @@ export default function StudentsPage({
                         <td className="p-2 border border-blue-500 dark:text-white">{student.nomeAluno}</td>
                         <td className="p-2 border border-blue-500 dark:text-[#8A8A8A]">{student.identifierCode}</td>
                         <td className="p-2 border border-blue-500 dark:text-white">
-                          <a href={`/institution/class/viewclass/profile/${student.id}`} className="text-blue-500">Ver perfil</a>
+                          <a href={`/institution/student/profile/${student.id}`} className="text-blue-500">Ver perfil</a>
                         </td>
                         <td className="p-2 border border-blue-500 cursor-pointer">
                           <a href={`/institution/student/notes/${student.id}`} className="text-blue-500">Ver Notas</a>
