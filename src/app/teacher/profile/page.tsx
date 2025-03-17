@@ -1,86 +1,101 @@
-"use client";
-import Sidebar from "@/components/layout/sidebarTeacher";
-import { ProfileInfo } from "@/components/ui/teacher/profile";
-import WelcomeUser from "@/components/ui/welcomeUser";
-import { Button } from "@/components/ui/alunos/button";
-import { useEffect, useState } from "react";
-import { Moon, Sun } from "lucide-react";
-import { jwtDecode } from "jwt-decode";
-import { useTheme } from "@/components/ThemeProvider";
+"use client"; // Indica que este é um componente do lado do cliente no Next.js
 
+import Sidebar from "@/components/layout/sidebarTeacher"; // Barra lateral do professor
+import { ProfileInfo } from "@/components/ui/teacher/profile"; // Componente para exibir informações do perfil do professor
+import WelcomeUser from "@/components/ui/welcomeUser"; // Componente para exibir uma mensagem de boas-vindas personalizada
+import { Button } from "@/components/ui/alunos/button"; // Componente de botão personalizado
+import { useEffect, useState } from "react"; // Hooks do React para efeitos colaterais e estado
+import { Moon, Sun } from "lucide-react"; // Ícones para o tema claro e escuro
+import { jwtDecode } from "jwt-decode"; // Biblioteca para decodificar tokens JWT
+import { useTheme } from "@/components/ThemeProvider"; // Hook para gerenciar o tema (claro/escuro)
 
+// Interface para definir a estrutura dos dados do perfil do professor
 interface TeacherProfile {
-  nomeDocente: string;
-  emailDocente: string;
-  dataNascimentoDocente: string;
-  telefoneDocente: string;
-  identifierCode: string;
+  nomeDocente: string; // Nome do professor
+  emailDocente: string; // E-mail do professor
+  dataNascimentoDocente: string; // Data de nascimento do professor
+  telefoneDocente: string; // Telefone do professor
+  identifierCode: string; // Código identificador do professor
 }
 
-export default function User({
+// Componente principal da página de perfil do professor
+export default function TeacherProfile({
   value,
   className,
 }: {
   value: number;
   className?: string;
 }) {
-  const { darkMode, toggleTheme } = useTheme(); 
-  const [docenteData, setDocenteData] = useState<TeacherProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { darkMode, toggleTheme } = useTheme(); // Estado e função para alternar o tema
+  const [docenteData, setDocenteData] = useState<TeacherProfile | null>(null); // Estado para armazenar os dados do professor
+  const [loading, setLoading] = useState(true); // Estado para indicar se os dados estão sendo carregados
+  const [error, setError] = useState<string | null>(null); // Estado para armazenar erros, se houver
 
-  // Função de buscar os dados do estudante
+  // Função para buscar os dados do professor
   const fetchDocenteData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("Token não encontrado");
+      const token = localStorage.getItem("token"); // Obtém o token do localStorage
+      if (!token) throw new Error("Token não encontrado"); // Lança erro se o token não existir
 
-      const decoded: any = jwtDecode(token); // Decodificação do JWT
-      const id = decoded?.sub; // Extraindo o id do usuário do token
-      if (!id) throw new Error("ID do usuário não encontrado no token");
+      const decoded: any = jwtDecode(token); // Decodifica o token JWT
+      const id = decoded?.sub; // Obtém o ID do usuário do token
+      if (!id) throw new Error("ID do usuário não encontrado no token"); // Lança erro se o ID não existir
 
+      // Faz uma requisição para buscar os dados do professor
       const response = await fetch(`http://localhost:3000/api/teacher/${id}`);
       if (!response.ok)
-        throw new Error("Não foi possível carregar os dados do estudante");
+        throw new Error("Não foi possível carregar os dados do estudante"); // Lança erro se a requisição falhar
 
-      const data = await response.json();
-      setDocenteData(data); // Setando os dados do estudante
+      const data = await response.json(); // Converte a resposta para JSON
+      setDocenteData(data); // Atualiza os dados do professor
     } catch (err: any) {
-      setError(err.message); // Tratamento de erro
+      setError(err.message); // Define a mensagem de erro
     } finally {
-      setLoading(false); // Finalizando o carregamento
+      setLoading(false); // Finaliza o carregamento
     }
   };
 
-  // Chama a função de fetch quando o componente for montado
+  // Efeito para buscar os dados do professor ao carregar o componente
   useEffect(() => {
-    fetchDocenteData(); // Chamando a função para carregar os dados
+    fetchDocenteData(); // Executa a função para buscar os dados
   }, []);
 
+  // Efeito para aplicar o tema escuro/claro ao HTML e salvar no localStorage
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
+
   return (
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
+      {/* Barra lateral do professor */}
       <Sidebar />
+
+      {/* Conteúdo principal */}
       <main className="flex-1">
         <div className="p-8">
+          {/* Cabeçalho com mensagem de boas-vindas e botão de alternar tema */}
           <div className="flex items-center justify-between mb-8">
             <div>
+              {/* Mensagem de boas-vindas personalizada com o nome do professor */}
               <WelcomeUser name={docenteData?.nomeDocente || "Nao achou"} />
             </div>
+            {/* Botão para alternar entre tema claro e escuro */}
             <Button onClick={toggleTheme}>
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </Button>
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </Button>
           </div>
+
+          {/* Exibe as informações do perfil do professor, se disponíveis */}
           {docenteData && (
             <ProfileInfo
-              name={docenteData.nomeDocente}
-              email={docenteData.emailDocente}
-              birthDate={docenteData.dataNascimentoDocente}
-              phone={docenteData.telefoneDocente}
-              registrationNumber={docenteData.identifierCode}
+              name={docenteData.nomeDocente} // Nome do professor
+              email={docenteData.emailDocente} // E-mail do professor
+              birthDate={docenteData.dataNascimentoDocente} // Data de nascimento do professor
+              phone={docenteData.telefoneDocente} // Telefone do professor
+              registrationNumber={docenteData.identifierCode} // Código identificador do professor
+              classes={[]} // Lista de turmas (vazia neste exemplo)
+              password={""} // Senha (vazia neste exemplo)
             />
           )}
         </div>
