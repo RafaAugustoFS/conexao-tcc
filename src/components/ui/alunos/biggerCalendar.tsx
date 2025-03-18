@@ -83,12 +83,12 @@ export default function ResponsiveCalendar() {
   return (
     <>
       <nav className="flex justify-between mb-4 md:mb-2 border-violet-100 p-2 md:p-4">
-        <h1 className="font-bold text-xl md:text-2xl text-gray-700">Calendário</h1>
+        <h1 className="font-bold text-xl md:text-2xl text-gray-700 dark:text-[#ffffff]">Calendário</h1>
       </nav>
       <main className="flex flex-col items-center justify-between p-2 md:p-6 lg:p-16">
         <div className="w-full max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
-          <div className="w-full">
-            <FullCalendar
+          <div className="w-full dark:text-[#ffffff]">
+          <FullCalendar
               plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
               headerToolbar={{
                 left: isMobile ? "prev,next" : "prev,next today",

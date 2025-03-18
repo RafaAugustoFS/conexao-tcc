@@ -106,7 +106,7 @@ const GradeCard: React.FC = () => {
           // Add each note as a separate entry
           notes.forEach((nota) => {
             gradesByBimester[bimester].push({
-              name: `${nota.nomeDisciplina} (ID: ${nota.idNota})`,
+              name: nota.nomeDisciplina, // Nome da disciplina sem o ID
               grade: Math.round(nota.nota * 10), // Convertendo para percentual (0-100)
               color: getColorByGrade(nota.nota),
               textColor: getTextColorByGrade(nota.nota),
@@ -171,7 +171,6 @@ const GradeCard: React.FC = () => {
       <div className="space-y-6 max-h-[60px] overflow-y-auto pr scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
         {currentSubjects.length > 0 ? (
           currentSubjects.map((subject, index) => (
-            // aqui ohhhhhhhhhhhhhhhhh
             <div key={index} className="flex justify-between items-center">
               <div>
                 <h3 className="text-md font-bold capitalize">{subject.name}</h3>
