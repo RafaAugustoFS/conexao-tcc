@@ -33,8 +33,6 @@ export default function CheckInEmocional({ classes = [] }: Classes) {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [inputValue, setInputValue] = useState("");
   const classesPerPage = 6; // Número de turmas por página
   const router = useRouter();
 
@@ -93,48 +91,6 @@ export default function CheckInEmocional({ classes = [] }: Classes) {
     fetchDocenteData();
   }, []);
 
-  // Função para enviar feedback (adaptada para turmas)
-  const handleSendFeedback = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("Token não encontrado");
-
-      const decoded: any = jwtDecode(token);
-      const userId = decoded?.sub;
-      if (!userId) throw new Error("ID do usuário não encontrado no token");
-
-      if (!selectedId || !inputValue) {
-        alert("Selecione uma turma e digite um feedback.");
-        return;
-      }
-
-      const feedbackData = {
-        conteudo: inputValue,
-        createdBy: { id: parseInt(userId) },
-        recipientClass: { id: selectedId }, // Adaptado para turmas
-      };
-
-      const response = await fetch("http://localhost:3000/api/feedbackStudent", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(feedbackData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Erro ao enviar feedback");
-      }
-
-      alert("Feedback enviado com sucesso!");
-      setInputValue(""); // Limpa o input após o envio
-    } catch (error) {
-      console.error("Erro:", error);
-      alert("Erro ao enviar feedback.");
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#F0F7FF] flex flex-row dark:bg-[#141414]">
       <Sidebar />
@@ -162,48 +118,24 @@ export default function CheckInEmocional({ classes = [] }: Classes) {
             <>
               <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {displayedClasses?.map((turma) => (
-                  <div key={turma.id} className="w-full">
-                    <button
-                      onClick={() => setSelectedId(turma.id)}
-                      className="w-full"
-                    >
-                      <div
-                        className={`flex flex-col items-center p-4 rounded-lg shadow-md bg-blue-50 dark:bg-[#141414] dark:text-white cursor-pointer transition-all border-2 ${
-                          selectedId === turma.id
-                            ? "border-blue-500 dark:border-blue-400"
-                            : "border-transparent"
-                        }`}
-                      >
-                        <h3 className="font-bold text-lg">
-                          {turma.nomeTurma}{" "}
-                          <span className="text-gray-500 text-sm dark:text-[#8A8A8A]">
-                            Nº{turma.id}
-                          </span>
-                        </h3>
-                        <p className="text-gray-700 dark:text-white">
-                          {turma.quantidadeAlunos} alunos ativos
-                        </p>
-                      </div>
-                    </button>
-
-                    {/* Input exibido quando a turma é selecionada */}
-                    {selectedId === turma.id && (
-                      <div className="mt-2">
-                        <input
-                          type="text"
-                          value={inputValue}
-                          onChange={(e) => setInputValue(e.target.value)}
-                          placeholder="Digite seu feedback..."
-                          className="w-full p-2 border rounded-lg dark:bg-[#222] dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        <button
-                          onClick={handleSendFeedback}
-                          className="mt-2 w-full p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-                        >
-                          Enviar Feedback
-                        </button>
-                      </div>
-                    )}
+                  <div
+                    key={turma.id}
+                    className="bg-blue-50 dark:bg-[#141414] p-4 rounded-lg shadow"
+                  >
+                    <h3 className="font-bold text-lg dark:text-white">
+                      {turma.nomeTurma}{" "}
+                      <span className="text-gray-500 text-sm dark:text-[#8A8A8A]">
+                        Nº{turma.id}
+                      </span>
+                    </h3>
+                    <p className="text-gray-700 dark:text-white">
+                      {turma.quantidadeAlunos} alunos ativos
+                    </p>
+                    <a href={`/teacher/students/${turma.id}`}>
+                      <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
+                        Visualizar turma
+                      </button>
+                    </a>
                   </div>
                 ))}
               </div>
