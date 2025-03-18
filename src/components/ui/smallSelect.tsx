@@ -1,4 +1,3 @@
-
 import {
   Select,
   SelectContent,
@@ -8,24 +7,24 @@ import {
 } from "./institution/select";
 
 interface SmallSelectProps {
-  selectedType: number; // O valor selecionado é um número
-  setSelectedType: (value: string) => void; // A função recebe uma string
+  selectedType: string; // Alterado para string
+  setSelectedType: (value: string) => void; // Mantido como string
   placeholder: string;
   items: string[];
 }
 
-const getBimestreName = (selectedType: number) => {
+const getBimestreName = (selectedType: string) => {
   switch (selectedType) {
-    case 1:
+    case "1":
       return "1º Bimestre";
-    case 2:
+    case "2":
       return "2º Bimestre";
-    case 3:
+    case "3":
       return "3º Bimestre";
-    case 4:
+    case "4":
       return "4º Bimestre";
     default:
-      return "Todas";
+      return "";
   }
 };
 
