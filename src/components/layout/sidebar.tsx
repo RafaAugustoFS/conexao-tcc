@@ -7,6 +7,7 @@ import { Epilogue } from "next/font/google"
 import Image from "next/image"
 import logo from "../../assets/images/logo.png"
 import Modal from "@/components/modals/modalSidebar"
+import { useRouter } from "next/navigation"
 
 const epilogue = Epilogue({ subsets: ["latin"], weight: ["400", "700"] })
 
@@ -14,6 +15,7 @@ const Sidebar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isOpen, setIsOpen] = useState(true)
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const router = useRouter()
 
   // Check if we're on mobile and auto-close sidebar
   useEffect(() => {
@@ -35,8 +37,9 @@ const Sidebar = () => {
   }, [])
 
   const handleLogout = () => {
+    localStorage.removeItem("token")
     setIsModalOpen(false)
-    console.log("Usuário deslogado") // Aqui você pode redirecionar para a página de login
+    router.push("/")
   }
 
   const toggleSidebar = () => {
