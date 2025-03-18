@@ -41,7 +41,6 @@ export default function Event() {
         const decoded: any = jwtDecode(token)
         const userId = decoded?.sub
         if (!userId) throw new Error("ID do usuário não encontrado no token")
-
         const response = await fetch(`http://localhost:3000/api/student/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
