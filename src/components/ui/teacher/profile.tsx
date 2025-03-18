@@ -8,7 +8,7 @@ interface ProfileInfoProps {
   birthDate: string;
   phone: string;
   registrationNumber: string;
-  classes: string[]; 
+  classes:  Array<{ nomeTurma: string }>; 
   password: string;
 }
 
@@ -22,6 +22,17 @@ export function ProfileInfo({
   password,
 }: ProfileInfoProps) {
   const [showPassword, setShowPassword] = useState(false);
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return "Data inválida"; // Caso a data seja inválida
+    }
+    const day = String(date.getDate()).padStart(2, "0"); // Dia com 2 dígitos
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Mês com 2 dígitos
+    const year = date.getFullYear(); // Ano com 4 dígitos
+    return `${day}/${month}/${year}`; // Formato DD/MM/YYYY
+  };
 
   return (
     <div className="bg-white dark:bg-black rounded-lg p-8">
@@ -62,7 +73,7 @@ export function ProfileInfo({
           </label>
           <input
             type="text"
-            value={birthDate}
+            value={formatDate(birthDate)}
             readOnly
               className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700 cursor-not-allowed"
           />
@@ -118,8 +129,8 @@ export function ProfileInfo({
           <select   className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700 cursor-not-allowed">
           <option value="">Turmas</option>
             {classes.map((turma, index) => (
-              <option key={index} value={turma}>
-                {turma}
+              <option key={index} value={turma.nomeTurma}>
+                {turma.nomeTurma}
               </option>
             ))}
           </select>
