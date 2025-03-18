@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { jwtDecode } from 'jwt-decode';
-import Select from 'react-select'; // Importando react-select para um select mais moderno
+import Select from 'react-select';
 
 const EngagementChart: React.FC = () => {
   const [data, setData] = useState<{ name: string; value: number }[]>([]);
@@ -82,10 +82,44 @@ const EngagementChart: React.FC = () => {
     setBimestre(selectedOption.value);
   };
 
+  const customStyles = {
+    control: (provided: any, state: any) => ({
+      ...provided,
+      backgroundColor: '#141414',
+      borderColor: '#333',
+      color: '#fff',
+      boxShadow: state.isFocused ? '0 0 0 1px #3182CE' : 'none',
+      '&:hover': {
+        borderColor: '#3182CE',
+      },
+    }),
+    singleValue: (provided: any) => ({
+      ...provided,
+      color: '#fff',
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+      backgroundColor: '#141414',
+      color: '#fff',
+    }),
+    option: (provided: any, state: any) => ({
+      ...provided,
+      backgroundColor: state.isFocused ? '#3182CE' : '#141414',
+      color: '#fff',
+      '&:hover': {
+        backgroundColor: '#3182CE',
+      },
+    }),
+    input: (provided: any) => ({
+      ...provided,
+      color: '#fff',
+    }),
+  };
+
   if (loading) return <div>Carregando...</div>;
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-lg">
+    <div className="p-6 bg-white shadow-md rounded-lg dark:bg-[#141414]">
       <h2 className="text-lg font-semibold mb-4">Engajamento</h2>
       <div className="mb-4 flex justify-end items-center">
         <label htmlFor="bimestre" className="mr-2 font-bold">Selecione o Bimestre:</label>
@@ -94,6 +128,7 @@ const EngagementChart: React.FC = () => {
           value={bimestreOptions.find(option => option.value === bimestre)}
           onChange={handleBimestreChange}
           options={bimestreOptions}
+          styles={customStyles}
           className="w-48"
         />
       </div>
