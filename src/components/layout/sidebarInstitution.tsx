@@ -15,16 +15,19 @@ import { Epilogue } from "next/font/google";
 import Image from "next/image";
 import logo from "../../assets/images/logo.png";
 import Modal from "@/components/modals/modalSidebar"; // Importando o modal
+import { useRouter } from "next/navigation"
 
 const epilogue = Epilogue({ subsets: ["latin"], weight: ["400", "700"] });
 
 const SidebarTeacher = () => {
+  const router = useRouter()
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleLogout = () => {
-    setIsModalOpen(false);
-    console.log("Usuário deslogado"); // Aqui você pode redirecionar para a página de login
-  };
+    localStorage.removeItem("token")
+    setIsModalOpen(false)
+    router.push("/")
+  }
   return (
     <div
       className={`w-64 h-screen bg-white dark:bg-black flex flex-col justify-between rounded-r-[20px] ${epilogue.className}`}
