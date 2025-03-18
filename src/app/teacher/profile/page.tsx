@@ -10,11 +10,14 @@ import { useTheme } from "@/components/ThemeProvider";
 
 
 interface TeacherProfile {
-  nomeDocente: string;
-  emailDocente: string;
-  dataNascimentoDocente: string;
-  telefoneDocente: string;
-  identifierCode: string;
+  nomeDocente: string; // Nome do professor
+  emailDocente: string; // E-mail do professor
+  dataNascimentoDocente: string; // Data de nascimento do professor
+  telefoneDocente: string; // Telefone do professor
+  identifierCode: string; // Código identificador do professor
+  classes: Array<{
+    nomeTurma: string; // Nome da turma
+  }>;
 }
 
 export default function User({
@@ -76,11 +79,13 @@ export default function User({
           </div>
           {docenteData && (
             <ProfileInfo
-              name={docenteData.nomeDocente}
-              email={docenteData.emailDocente}
-              birthDate={docenteData.dataNascimentoDocente}
-              phone={docenteData.telefoneDocente}
-              registrationNumber={docenteData.identifierCode}
+              name={docenteData.nomeDocente} // Nome do professor
+              email={docenteData.emailDocente} // E-mail do professor
+              birthDate={docenteData.dataNascimentoDocente} // Data de nascimento do professor
+              phone={docenteData.telefoneDocente} // Telefone do professor
+              registrationNumber={docenteData.identifierCode} // Código identificador do professor
+              classes={docenteData.classes} // Lista de turmas (vazia neste exemplo)
+              password={""} // Senha (vazia neste exemplo)
             />
           )}
         </div>
