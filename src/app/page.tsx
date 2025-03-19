@@ -7,6 +7,7 @@ import { Sun, Moon, Eye, EyeOff } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Illustration from "../assets/images/Illustration.png"
 import Image from "next/image"
+import Cookies from "js-cookie"
 
 export default function LoginPage() {
   const [isDark, setIsDark] = useState(false)
@@ -39,6 +40,7 @@ export default function LoginPage() {
           const token = data.token
           if (token) {
             localStorage.setItem("token", token) // Armazena o token no localStorage
+            Cookies.set("token", token, { path: "/" });
             console.log("Token gerado com sucesso!")
             router.push("/teacher")
           } else {
@@ -69,6 +71,7 @@ export default function LoginPage() {
           const token = data.token
           if (token) {
             localStorage.setItem("token", token) // Armazena o token no localStorage
+            Cookies.set("token", token, { path: "/" });
             console.log("Token gerado com sucesso!")
             router.push("/student")
           } else {
@@ -99,6 +102,7 @@ export default function LoginPage() {
           const token = data.token
           if (token) {
             localStorage.setItem("token", token) // Armazena o token no localStorage
+            Cookies.set("token", token, { path: "/" });
             console.log("Token gerado com sucesso!")
             router.push("/institution")
           } else {

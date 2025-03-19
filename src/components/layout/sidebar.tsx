@@ -8,6 +8,7 @@ import Image from "next/image"
 import logo from "../../assets/images/logo.png"
 import Modal from "@/components/modals/modalSidebar"
 import { useRouter } from "next/navigation"
+import Cookies from "js-cookie"
 
 const epilogue = Epilogue({ subsets: ["latin"], weight: ["400", "700"] })
 
@@ -38,6 +39,7 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token")
+    Cookies.remove("token")
     setIsModalOpen(false)
     router.push("/")
   }
