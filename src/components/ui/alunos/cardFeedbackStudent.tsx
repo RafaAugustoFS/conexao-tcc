@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode"; // Importe a função jwtDecode
+import { Search } from "lucide-react";
 
 // Defina a interface para o objeto Professor
 interface Professor {
@@ -97,14 +98,19 @@ export default function CardFeedback({ persons = [] }: CardFeedbackProps) {
 
   return (
     <div>
-      {/* Campo de busca */}
-      <input
-        type="text"
-        placeholder="Buscar professor..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full p-2 mb-4 border rounded-lg dark:bg-[#222] dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+      {/* Campo de busca com ícone */}
+      <div className="relative w-full mb-4">
+        <input
+          type="text"
+          placeholder="Buscar professor..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full p-2 pl-10 border border-blue-500 rounded-lg dark:bg-[#222] dark:text-white dark:bg-[#141414] focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <div className="absolute inset-y-0 left-3 flex items-center text-blue-500">
+          <Search size={20} />
+        </div>
+      </div>
 
       {/* Grid de cards */}
       <div className="grid grid-cols-3 gap-6">

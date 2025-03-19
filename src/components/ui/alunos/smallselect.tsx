@@ -38,8 +38,8 @@ export default function SearchInput({
   return (
     <div className="relative w-full max-w-md">
       <Select
-        value={getBimestreName(selectedType)} // Converte o número para o nome do bimestre
-        onChange={(value) => setSelectedType(value)} // Passa a string diretamente
+        value={getBimestreName(selectedType)} 
+        onChange={(value) => setSelectedType(value)}  
       >
         <SelectTrigger>
           <SelectValue placeholder={placeholder} />

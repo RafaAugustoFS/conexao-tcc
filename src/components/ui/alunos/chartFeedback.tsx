@@ -1,24 +1,56 @@
 import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { jwtDecode } from 'jwt-decode';
-import Select from 'react-select';
+import SmallSelect from "@/components/ui/alunos/smallselect";
+
+interface FeedbackData {
+  bimestre: number;
+  resposta1: number;
+  resposta2: number;
+  resposta3: number;
+  resposta4: number;
+  resposta5: number;
+}
+
+interface ChartData {
+  name: string;
+  value: number;
+}
 
 const EngagementChart: React.FC = () => {
-  const [data, setData] = useState<{ name: string; value: number }[]>([]);
+  const [data, setData] = useState<ChartData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [bimestre, setBimestre] = useState<number>(1);
-  const [allData, setAllData] = useState<any[]>([]);
+  const [allData, setAllData] = useState<FeedbackData[]>([]);
+  const [selectedType, setSelectedType] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
-  const bimestreOptions = [
-    { value: 1, label: '1º Bimestre' },
-    { value: 2, label: '2º Bimestre' },
-    { value: 3, label: '3º Bimestre' },
-    { value: 4, label: '4º Bimestre' },
-  ];
+  const valorVindoDoSelect = (value: string) => {
+    switch (value) {
+      case "1º Bimestre":
+        setSelectedType(1);
+        setBimestre(1);
+        break;
+      case "2º Bimestre":
+        setSelectedType(2);
+        setBimestre(2);
+        break;
+      case "3º Bimestre":
+        setSelectedType(3);
+        setBimestre(3);
+        break;
+      case "4º Bimestre":
+        setSelectedType(4);
+        setBimestre(4);
+        break;
+    }
+  };
+
+  const types = ["1º Bimestre", "2º Bimestre", "3º Bimestre", "4º Bimestre"];
 
   const normalizeData = (values: number[]) => {
     const maxValue = Math.max(...values);
+    if (maxValue === 0) return values;
     return values.map(value => (value / maxValue) * 5);
   };
 
@@ -32,18 +64,15 @@ const EngagementChart: React.FC = () => {
       if (!userId) throw new Error("ID do usuário não encontrado no token");
 
       const resposta = await fetch(`http://localhost:3000/api/student/feedback/${userId}`);
-      if (!resposta.ok) {
-        throw new Error("Falha ao buscar os dados");
-      }
+      if (!resposta.ok) throw new Error("Falha ao buscar os dados");
 
       const dados = await resposta.json();
       setAllData(dados);
 
-      const filteredData = dados.filter((item: any) => item.bimestre === bimestre);
+      const filteredData = bimestre === 0 ? dados : dados.filter((item: FeedbackData) => item.bimestre === bimestre);
 
       if (filteredData.length === 0) {
         setData([]);
-        setError("Nenhum dado encontrado para o bimestre selecionado.");
         return;
       }
 
@@ -58,11 +87,11 @@ const EngagementChart: React.FC = () => {
       const normalizedValues = normalizeData(values);
 
       const formattedData = [
-        { name: 'Resposta 1', value: normalizedValues[0] },
-        { name: 'Resposta 2', value: normalizedValues[1] },
-        { name: 'Resposta 3', value: normalizedValues[2] },
-        { name: 'Resposta 4', value: normalizedValues[3] },
-        { name: 'Resposta 5', value: normalizedValues[4] },
+        { name: 'Engajamento', value: normalizedValues[0] },
+        { name: 'Disposição', value: normalizedValues[1] },
+        { name: 'Entrega', value: normalizedValues[2] },
+        { name: 'Atenção', value: normalizedValues[3] },
+        { name: 'Comportamento', value: normalizedValues[4] },
       ];
 
       setData(formattedData);
@@ -78,60 +107,27 @@ const EngagementChart: React.FC = () => {
     fetchData();
   }, [bimestre]);
 
-  const handleBimestreChange = (selectedOption: any) => {
-    setBimestre(selectedOption.value);
-  };
-
-  const customStyles = {
-    control: (provided: any, state: any) => ({
-      ...provided,
-      backgroundColor: '#141414',
-      borderColor: '#333',
-      color: '#fff',
-      boxShadow: state.isFocused ? '0 0 0 1px #3182CE' : 'none',
-      '&:hover': {
-        borderColor: '#3182CE',
-      },
-    }),
-    singleValue: (provided: any) => ({
-      ...provided,
-      color: '#fff',
-    }),
-    menu: (provided: any) => ({
-      ...provided,
-      backgroundColor: '#141414',
-      color: '#fff',
-    }),
-    option: (provided: any, state: any) => ({
-      ...provided,
-      backgroundColor: state.isFocused ? '#3182CE' : '#141414',
-      color: '#fff',
-      '&:hover': {
-        backgroundColor: '#3182CE',
-      },
-    }),
-    input: (provided: any) => ({
-      ...provided,
-      color: '#fff',
-    }),
-  };
-
   if (loading) return <div>Carregando...</div>;
 
   return (
     <div className="p-6 bg-white shadow-md rounded-lg dark:bg-[#141414]">
-      <h2 className="text-lg font-semibold mb-4">Engajamento</h2>
-      <div className="mb-4 flex justify-end items-center">
-        <label htmlFor="bimestre" className="mr-2 font-bold">Selecione o Bimestre:</label>
-        <Select
-          id="bimestre"
-          value={bimestreOptions.find(option => option.value === bimestre)}
-          onChange={handleBimestreChange}
-          options={bimestreOptions}
-          styles={customStyles}
-          className="w-48"
-        />
-      </div>
+    <div className="mb-4 flex justify-end items-center gap-4">
+      <SmallSelect
+        aria-label="Selecione o Bimestre"
+        selectedType={selectedType}
+        setSelectedType={valorVindoDoSelect}
+        placeholder="Selecione o Bimestre"
+        items={types}
+      
+      />
+      <SmallSelect
+        aria-label="Selecione o Bimestre"
+        selectedType={selectedType}
+        setSelectedType={valorVindoDoSelect}
+        placeholder="Selecione o Bimestre"
+        items={types}
+      />
+  </div>
       {error ? (
         <div className="text-red-500 mb-4 flex items-center">
           <span className="material-icons mr-2">error</span>
@@ -148,6 +144,11 @@ const EngagementChart: React.FC = () => {
             <Bar dataKey="value" fill="#3182CE" />
           </BarChart>
         </ResponsiveContainer>
+      )}
+      {data.length === 0 && !loading && (
+        <div className="text-center text-gray-500 mt-4">
+          Nenhum feedback disponível para o bimestre selecionado.
+        </div>
       )}
     </div>
   );
