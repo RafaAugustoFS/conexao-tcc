@@ -14,6 +14,7 @@ import Image from "next/image";
 import logo from "../../assets/images/logo.png";
 import Modal from "@/components/modals/modalSidebar"; // Importando o modal
 import { useRouter } from "next/navigation"
+import Cookies from "js-cookie"
 
 const epilogue = Epilogue({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -23,6 +24,7 @@ const SidebarTeacher = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token")
+    Cookies.remove("token")
     setIsModalOpen(false)
     router.push("/")
   }
