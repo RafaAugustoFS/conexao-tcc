@@ -1,52 +1,62 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { Home, User, FileText, Calendar, AlertTriangle, Brain, LogOut, Menu, X } from "lucide-react"
-import { Epilogue } from "next/font/google"
-import Image from "next/image"
-import logo from "../../assets/images/logo.png"
-import Modal from "@/components/modals/modalSidebar"
-import { useRouter } from "next/navigation"
-import Cookies from "js-cookie"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import {
+  Home,
+  User,
+  FileText,
+  Calendar,
+  AlertTriangle,
+  Brain,
+  LogOut,
+  Menu,
+  X,
+} from "lucide-react";
+import { Epilogue } from "next/font/google";
+import Image from "next/image";
+import logo from "../../assets/images/logo.png";
+import Modal from "@/components/modals/modalSidebar";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
-const epilogue = Epilogue({ subsets: ["latin"], weight: ["400", "700"] })
+const epilogue = Epilogue({ subsets: ["latin"], weight: ["400", "700"] });
 
 const Sidebar = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isOpen, setIsOpen] = useState(true)
-  const [isCollapsed, setIsCollapsed] = useState(false)
-  const router = useRouter()
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const router = useRouter();
 
   // Check if we're on mobile and auto-close sidebar
   useEffect(() => {
     const checkScreenSize = () => {
-      const shouldCollapse = window.innerWidth < 1536
-      setIsCollapsed(shouldCollapse)
-      if (shouldCollapse) setIsOpen(false)
-      else setIsOpen(true)
-    }
+      const shouldCollapse = window.innerWidth < 1536;
+      setIsCollapsed(shouldCollapse);
+      if (shouldCollapse) setIsOpen(false);
+      else setIsOpen(true);
+    };
 
     // Initial check
-    checkScreenSize()
+    checkScreenSize();
 
     // Add event listener
-    window.addEventListener("resize", checkScreenSize)
+    window.addEventListener("resize", checkScreenSize);
 
     // Cleanup
-    return () => window.removeEventListener("resize", checkScreenSize)
-  }, [])
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token")
-    Cookies.remove("token")
-    setIsModalOpen(false)
-    router.push("/")
-  }
+    localStorage.removeItem("token");
+    Cookies.remove("token");
+    setIsModalOpen(false);
+    router.push("/");
+  };
 
   const toggleSidebar = () => {
-    setIsOpen(!isOpen)
-  }
+    setIsOpen(!isOpen);
+  };
 
   return (
     <>
@@ -56,23 +66,40 @@ const Sidebar = () => {
         className="fixed top-4 left-4 z-50 2xl:hidden bg-white dark:bg-gray-800 p-2 rounded-md shadow-md"
         aria-label={isOpen ? "Fechar menu" : "Abrir menu"}
       >
-        {isOpen ? <X className="w-6 h-6 text-blue-500" /> : <Menu className="w-6 h-6 text-blue-500" />}
+        {isOpen ? (
+          <X className="w-6 h-6 text-blue-500" />
+        ) : (
+          <Menu className="w-6 h-6 text-blue-500" />
+        )}
       </button>
 
       {/* Overlay when sidebar is open on mobile */}
       {isOpen && isCollapsed && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" onClick={toggleSidebar} />
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={toggleSidebar}
+        />
       )}
 
       {/* Sidebar */}
       <div
         className={`${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } fixed 2xl:static z-40 w-64 h-screen bg-white dark:bg-black flex flex-col justify-between rounded-r-[20px] transition-transform duration-300 ease-in-out ${epilogue.className}`}
+        } fixed 2xl:static z-40 w-64 h-screen bg-white dark:bg-black flex flex-col justify-between rounded-r-[20px] transition-transform duration-300 ease-in-out ${
+          epilogue.className
+        }`}
       >
         <div>
-          <Link href="/student" className="flex items-center space-x-4 pb-6 justify-center mt-8">
-            <Image src={logo || "/placeholder.svg"} alt="Logo ONA" width={38} height={38} />
+          <Link
+            href="/student"
+            className="flex items-center space-x-4 pb-6 justify-center mt-8"
+          >
+            <Image
+              src={logo || "/placeholder.svg"}
+              alt="Logo ONA"
+              width={38}
+              height={38}
+            />
             <span className="text-[#6A95F4] text-xl font-bold">ONA</span>
           </Link>
           <nav className="w-64 mt-24">
@@ -149,14 +176,19 @@ const Sidebar = () => {
             <span>Sair</span>
           </button>
         </div>
-        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={handleLogout}>
-          <h2 className="text-lg font-bold mb-4">Confirmar saída</h2>
-          <p>Tem certeza que deseja sair?</p>
-        </Modal>
       </div>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleLogout}
+        confirmButtonColor="bg-red-600" // Cor personalizada
+        confirmButtonText="Sair"
+      >
+        <h2 className="text-lg font-bold mb-4">Confirmar saída</h2>
+        <p>Tem certeza que deseja sair?</p>
+      </Modal>
     </>
-  )
-}
+  );
+};
 
-export default Sidebar
-
+export default Sidebar;
