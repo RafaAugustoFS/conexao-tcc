@@ -30,12 +30,35 @@ export default function Profile({
   const [dataNascimentoAluno, setBirthDate] = useState("");
   const [telefoneAluno, setPhone] = useState("");
   const [turma, setTurma] = useState("");
+  const [imageUrl, setImagemPerfil] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const { darkMode, toggleTheme } = useTheme(); 
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("Evento detectado!"); // Log para testar se a função está sendo chamada
 
+    if (!event.target.files || event.target.files.length === 0) {
+      console.log("Nenhum arquivo selecionado.");
+      return;
+    }
+
+    const file = event.target.files[0];
+    console.log("Arquivo selecionado:", file);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (typeof reader.result === "string") {
+        console.log("Imagem carregada:", reader.result);
+        setImagemPerfil(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     if (!nomeAluno || !emailAluno || !dataNascimentoAluno || !telefoneAluno) {
       alert("Preencha todos os campos obrigatórios.");
@@ -61,6 +84,7 @@ export default function Profile({
           dataNascimentoAluno,
           telefoneAluno,
           turmaId: id,
+          imageUrl
         }),
       });
 
@@ -72,8 +96,10 @@ export default function Profile({
       setBirthDate("");
       setPhone("");
     } catch (error) {
-        console.error("❌ Erro ao criar turma:", error);
+        console.error("❌ Erro ao criar perfil:", error);
       alert("Erro ao criar perfil.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -103,6 +129,16 @@ export default function Profile({
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
       <Sidebar />
       <main className="flex-1 p-8">
+      <div className="space-y-2">
+            <label className="text-sm text-muted-foreground">Foto de Perfil</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="bg-blue-50 dark:bg-gray-800 p-2 border rounded"
+            />
+          </div>
+
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold dark:text-white">{turma.nomeTurma}</h1>
           <p className="text-gray-500">{getCurrentDate()}</p>
