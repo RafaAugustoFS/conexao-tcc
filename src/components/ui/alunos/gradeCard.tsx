@@ -155,7 +155,7 @@ const GradeCard: React.FC = () => {
   }
 
   return (
-    <div className="w-80 p-4 rounded-lg bg-white dark:bg-gray-800 shadow-sm">
+    <div className="w-80 p-4 rounded-lg bg-white dark:bg-[#141414] shadow-sm">
       <div className="flex flex-row justify-between items-center mb-4">
         <h2 className="text-lg font-bold">Notas</h2>
         <div className="flex flex-row items-center justify-center">
@@ -168,7 +168,7 @@ const GradeCard: React.FC = () => {
         </div>
       </div>
 
-      <div className="space-y-6 max-h-[60px] overflow-y-auto pr scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
+      <div className="space-y-6 max-h-[60px] overflow-y-auto pr scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 dark:scrollbar-track-black">
         {currentSubjects.length > 0 ? (
           currentSubjects.map((subject, index) => (
             <div key={index} className="flex justify-between items-center">
@@ -207,7 +207,7 @@ const GradeCard: React.FC = () => {
               grades.length > 0 ? Math.round(grades.reduce((sum, subj) => sum + subj.grade, 0) / grades.length) : 0
 
             return (
-              <div key={type} className="bg-gray-100 dark:bg-gray-700 p-2 rounded-md">
+              <div key={type} className="bg-[#F0F7FF] dark:bg-black p-2 rounded-md">
                 <p className="text-xs font-medium">{type}</p>
                 <div className="flex items-center justify-between">
                   <span className="text-sm">{grades.length} disciplina(s)</span>

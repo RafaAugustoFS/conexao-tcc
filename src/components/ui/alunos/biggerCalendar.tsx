@@ -83,7 +83,6 @@ export default function ResponsiveCalendar() {
   return (
     <>
       <nav className="flex justify-between mb-4 md:mb-2 border-violet-100 p-2 md:p-4">
-        <h1 className="font-bold text-xl md:text-2xl text-gray-700 dark:text-[#ffffff]">Calendário</h1>
       </nav>
       <main className="flex flex-col items-center justify-between p-2 md:p-6 lg:p-16">
         <div className="w-full max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">

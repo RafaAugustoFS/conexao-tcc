@@ -92,7 +92,7 @@ export default function Notes({ value, className }: { value: number; className?:
         <div className="p-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-            <h1 className="text-2xl font-bold text-[#0D0D0D] dark:text-[#ffffff]">Bem-Vindo, {studentData?.nome}!</h1>
+            <h1 className="text-2xl font-bold text-[#0D0D0D] dark:text-[#ffffff]">{studentData?.nome}</h1>
             <p className="text-gray-500">{getCurrentDate()}</p>
             </div>
             <Button onClick={toggleTheme}>
