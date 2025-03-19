@@ -89,7 +89,7 @@ export default function Home() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F0F7FF] dark:bg-[#141414] flex flex-row">
+    <div className="min-h-screen bg-[#F0F7FF] dark:bg-[#141414] flex flex-row border dark:border-black">
       <Sidebar />
 
       <div className="container mx-auto p-4">
@@ -99,7 +99,7 @@ export default function Home() {
           </Button>
         </div>
         <div className="flex justify-end pb-4"></div>
-        <div className="space-y-6 bg-[#FFFFFF] dark:bg-black dark:text-[#ffffffd8] p-8 rounded-2xl max-h-[800px] overflow-y-auto pr scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
+        <div className="space-y-6 bg-[#FFFFFF] dark:bg-black dark:text-[#ffffffd8] p-8 rounded-2xl max-h-[800px] overflow-y-auto pr scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 dark:scrollbar-track-black">
           <ProfileCard studentData={studentData} loading={loading} error={error} />
           <EngagementChart />
           <h1 className="text-[#0077FF] font-bold text-[20px] lg:text-[24px] pt-[20px]">
