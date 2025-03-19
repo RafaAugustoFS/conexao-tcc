@@ -45,3 +45,4 @@ npm install recharts react-select --force
 npm install @fullcalendar/react @fullcalendar/daygrid @fullcalendar/interaction @fullcalendar/timegrid @headlessui/react @heroicons/react --force
 npm install jsonwebtoken --force
 npm install js-cookie --force
+npm i --save-dev @types/js-cookie --force
