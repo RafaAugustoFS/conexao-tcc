@@ -124,7 +124,7 @@ export function EventSidebar() {
       <div
         className={`${
           isOpen ? "translate-x-0" : "translate-x-full"
-        } fixed 2xl:static right-0 z-40 w-[400px] max-md:w-[340px] h-screen bg-gray-50 dark:bg-gray-900 transition-transform duration-300 ease-in-out overflow-y-auto`}
+        } fixed 2xl:static right-0 z-40 w-[400px] max-md:w-[340px] h-screen dark:bg-black transition-transform duration-300 ease-in-out overflow-y-auto`}
       >
         <div className="p-4 space-y-6">
           {isLoading ? (
@@ -143,7 +143,7 @@ export function EventSidebar() {
             </div>
           ) : (
             <>
-              <div className="bg-[#FFFFFF] dark:bg-black pt-8 pl-16 pr-16 pb-8 rounded-[20px]">
+              <div className="bg-[#FFFFFF] dark:bg-[#141414] pt-8 pl-16 pr-16 pb-8 rounded-[20px]">
                 <div>
                   <h3 className="dark:text-white text-lg font-semibold mb-2">
                     {selectedEvent?.tituloEvento || "Sobre o Evento"}
@@ -178,7 +178,7 @@ export function EventSidebar() {
                 </div>
               </div>
 
-              <div className="bg-[#FFFFFF] dark:bg-black pt-8 pl-16 pr-16 pb-5 rounded-[20px]">
+              <div className="bg-[#FFFFFF] dark:bg-[#141414] pt-8 pl-16 pr-16 pb-5 rounded-[20px]">
                 <h3 className="text-lg font-semibold mb-4 dark:text-[#D0CECE]">
                   Proximos Eventos
                 </h3>

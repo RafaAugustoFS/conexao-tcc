@@ -69,7 +69,7 @@ export default function Event() {
         <div className="p-8 max-2xl:p-12">
           <div className="flex items-center justify-between mb-8 max-2xl:mb-2">
             <div>
-              <h1 className="text-2xl font-bold text-[#0D0D0D] dark:text-[#ffffff]">Bem-Vindo(a), {nome}</h1>
+              <h1 className="text-2xl font-bold text-[#0D0D0D] dark:text-[#ffffff]">{nome}</h1>
               <p className="text-gray-500">{currentDate}</p>
             </div>
             <Button onClick={toggleTheme}>

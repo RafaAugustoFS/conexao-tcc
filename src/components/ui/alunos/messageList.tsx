@@ -64,7 +64,7 @@ function MessageList({ className }: { className?: string }) {
       ) : messages.length === 0 ? (
         <p className="text-center text-gray-500">Nenhum aviso disponível.</p>
       ) : (
-        <div className="max-h-40 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
+        <div className="max-h-40 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 dark:scrollbar-track-[#141414]">
           {messages.map((message, index) => (
             <div key={message.id}>
               {index > 0 && <hr className="border-gray-200 my-4" />}

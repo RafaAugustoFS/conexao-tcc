@@ -29,7 +29,18 @@ export default function User({
   const { darkMode, toggleTheme } = useTheme(); // Use o hook useTheme
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
- 
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return "Data inválida"; // Caso a data seja inválida
+    }
+    const day = String(date.getDate()).padStart(2, "0"); // Dia com 2 dígitos
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Mês com 2 dígitos
+    const year = date.getFullYear(); // Ano com 4 dígitos
+    return `${day}/${month}/${year}`; // Formato DD/MM/YYYY
+  };
+
+
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
@@ -68,7 +79,7 @@ export default function User({
       <main className="flex-1">
         <div className="p-8">
           <div className="flex items-center justify-between mb-8">
-            <WelcomeUser name={studentData?.nome || "Nao achou"} />
+            <WelcomeUser name={studentData?.nome || ""} />
             <div className="flex justify-end">
           <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
@@ -77,12 +88,12 @@ export default function User({
           </div>
           {studentData && (
             <ProfileInfo
-              name={studentData.nome}
-              email={studentData.emailAluno}
-              birthDate={studentData.dataNascimentoAluno}
-              phone={studentData.telefoneAluno}
-              registrationNumber={studentData.matriculaAluno} 
-            />
+            name={studentData.nome}
+            email={studentData.emailAluno}
+            birthDate={formatDate(studentData.dataNascimentoAluno)}
+            phone={studentData.telefoneAluno} 
+            registrationNumber={studentData.matriculaAluno}
+          />
           )}
         </div>
       </main>
