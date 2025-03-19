@@ -1,42 +1,47 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { User } from "../../components/ui/alunos/user"
-import { Calendar } from "../../components/ui/alunos/calendar"
-import { EventList } from "../../components/ui/alunos/event-list"
-import type { Event } from "../../types/event"
+import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar } from "../../components/ui/alunos/calendar";
+import { EventList } from "../../components/ui/alunos/event-list";
+import Image from "next/image";
+import Modal from "@/components/modals/modalSidebar";
+
+import Notification from "../../assets/images/Notification.png";
 
 export default function LateralCalendar() {
-  const [isOpen, setIsOpen] = useState(true)
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isOpen, setIsOpen] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Check screen size and set collapsed state
+  // Função para lidar com notificações
+  const handleNotify = () => {
+    console.log("Notificações ativadas!");
+    alert("Notificações ativadas com sucesso!");
+    setIsModalOpen(false); // Fecha o modal após confirmação
+  };
+
+  // Verifica o tamanho da tela para ajustar o estado colapsado
   useEffect(() => {
     const checkScreenSize = () => {
-      const shouldCollapse = window.innerWidth < 1536
-      setIsCollapsed(shouldCollapse)
-      if (shouldCollapse) setIsOpen(false)
-      else setIsOpen(true)
-    }
+      const shouldCollapse = window.innerWidth < 1536;
+      setIsCollapsed(shouldCollapse);
+      setIsOpen(!shouldCollapse);
+    };
 
-    // Initial check
-    checkScreenSize()
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
 
-    // Add event listener
-    window.addEventListener("resize", checkScreenSize)
-
-    // Cleanup
-    return () => window.removeEventListener("resize", checkScreenSize)
-  }, [])
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   const toggleCalendar = () => {
-    setIsOpen(!isOpen)
-  }
+    setIsOpen(!isOpen);
+  };
 
   return (
     <>
-      {/* Toggle button for collapsed view - always visible when collapsed */}
+      {/* Botão para abrir/fechar o calendário */}
       <button
         onClick={toggleCalendar}
         className="fixed top-4 right-4 z-50 2xl:hidden bg-white dark:bg-gray-800 p-2 rounded-md shadow-md"
@@ -49,24 +54,56 @@ export default function LateralCalendar() {
         )}
       </button>
 
-      {/* Overlay when calendar is open in collapsed mode */}
+      {/* Overlay quando o calendário está aberto no modo colapsado */}
       {isOpen && isCollapsed && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 2xl:hidden" onClick={toggleCalendar} />
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 2xl:hidden"
+          onClick={toggleCalendar}
+        />
       )}
 
-      {/* Calendar panel */}
+      {/* Painel do calendário */}
       <div
         className={`${
           isOpen ? "translate-x-0" : "translate-x-full"
         } fixed 2xl:static right-0 z-40 w-80 h-screen bg-white dark:bg-black rounded-l-[20px] transition-transform duration-300 ease-in-out overflow-y-auto`}
       >
         <div className="max-w-md mx-auto p-4">
-          <User />
-          <Calendar/>
-          <EventList/>
+          {/* Botão de Notificação */}
+          <div className="flex items-center justify-between mb-6">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center space-x-2"
+            >
+              <div className="w-8 h-8">
+                <Image
+                  src={Notification}
+                  alt="Notification bell"
+                  width={32}
+                  height={32}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            </button>
+          </div>
+          <Calendar />
+          <EventList />
         </div>
       </div>
-    </>
-  )
-}
 
+      {/* Modal de Confirmação */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleNotify}
+        confirmButtonColor="bg-blue-600" // Cor personalizada
+        confirmButtonText="Ativar"
+      >
+        <h2 className="text-lg font-bold mb-4">
+          Confirmar ativação de notificações
+        </h2>
+        <p>Tem certeza que deseja ativar?</p>
+      </Modal>
+    </>
+  );
+}

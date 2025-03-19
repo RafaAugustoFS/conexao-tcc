@@ -43,3 +43,5 @@ npm install @headlessui/react --force
 npm i react-icons --force
 npm install recharts react-select --force
 npm install @fullcalendar/react @fullcalendar/daygrid @fullcalendar/interaction @fullcalendar/timegrid @headlessui/react @heroicons/react --force
+npm install jsonwebtoken --force
+npm install js-cookie --force
