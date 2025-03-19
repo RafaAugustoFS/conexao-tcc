@@ -14,9 +14,9 @@ import {
   TableCell,
 } from "@/components/ui/alunos/table";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation"; // Adicionado useRouter
 import { useTheme } from "@/components/ThemeProvider";
-
+import Modal from "@/components/modals/modelDelete";
 
 interface TeacherProfile {
   id: number;
@@ -39,22 +39,17 @@ interface Feedback {
   recipientTeacher: { id: number };
 }
 
-export default function User({
-  value,
-  className,
-}: {
-  value: number;
-  className?: string;
-}) {
+export default function User() {
   const [docenteData, setDocenteData] = useState<TeacherProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { darkMode, toggleTheme } = useTheme(); 
+  const { darkMode, toggleTheme } = useTheme();
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
   const params = useParams(); // Obtém os parâmetros da URL
   const id = params.id as string; // Extrai o ID da turma da URL
-
+  const router = useRouter(); // Adicionado useRouter para redirecionamento
 
   // Função para buscar os dados do docente
   const fetchDocenteData = async () => {
@@ -78,6 +73,54 @@ export default function User({
       setError(err.message); // Define a mensagem de erro
     } finally {
       setLoading(false); // Finaliza o carregamento
+    }
+  };
+
+  // Função para deletar Docente
+  const deleteTeacher = async (id: number) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Token não encontrado");
+  
+      // Desvincula o docente das turmas
+      await fetch(`http://localhost:3000/api/class-teacher?teacherId=${id}`, {
+        method: "PUT", // Ou PATCH, dependendo da sua API
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ teacherId: null }), // Define teacher_id como NULL
+      });
+  
+      // Exclui o docente
+      const response = await fetch(`http://localhost:3000/api/teacher/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (!response.ok) throw new Error("Erro ao excluir Docente");
+  
+      // Redireciona para a lista de docentes após a exclusão
+      router.push("/institution/teacher");
+    } catch (error: any) {
+      setError(error); // Armazena o objeto de erro completo
+      console.error(error); // Log do erro no console para depuração
+    } finally {
+      setIsModalOpen(false); // Fecha o modal após a exclusão
+      setSelectedClassId(null); // Reseta o ID selecionado
+    }
+  };
+  // Função para abrir o modal e armazenar o ID do docente
+  const handleDeleteClick = (teacherId: number) => {
+    setSelectedClassId(teacherId);
+    setIsModalOpen(true);
+  };
+
+  // Função para confirmar a exclusão no modal
+  const confirmDelete = () => {
+    if (selectedClassId !== null) {
+      deleteTeacher(selectedClassId);
     }
   };
 
@@ -116,18 +159,6 @@ export default function User({
     fetchFeedbacks();
   }, [id]); // Adicionado `id` como dependência
 
-  // Inicializa o modo escuro a partir do localStorage
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-  }, []);
-
-  // Aplica o modo escuro e salva no localStorage
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-    localStorage.setItem("darkMode", darkMode.toString());
-  }, [darkMode]);
-
   // Exibe mensagem de carregamento ou erro
   if (loading) {
     return <div>Carregando...</div>;
@@ -144,9 +175,9 @@ export default function User({
         <div className="p-8">
           <div className="space-y-6 bg-[#FFFFFF] dark:bg-black dark:text-[#ffffffd8] p-8 rounded-2xl">
             <div className="flex items-center justify-end mb-8 w-full">
-            <Button onClick={toggleTheme}>
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </Button>
+              <Button onClick={toggleTheme}>
+                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+              </Button>
             </div>
             {docenteData && (
               <>
@@ -166,7 +197,7 @@ export default function User({
                   </Link>
                   <button
                     className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600"
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => handleDeleteClick(docenteData.id)}
                   >
                     <Ban size={20} />
                   </button>
@@ -216,6 +247,13 @@ export default function User({
             </div>
           </div>
         </div>
+
+        {/* Modal de Confirmação de Exclusão */}
+        <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={confirmDelete} // Só exclui quando confirmar
+      />
       </main>
     </div>
   );
