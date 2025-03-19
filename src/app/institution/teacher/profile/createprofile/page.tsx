@@ -21,17 +21,14 @@ export default function Profile() {
   const [disciplinas, setDisciplinas] = useState<Disciplina[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
-    nomeDocente: "",
-    emailDocente: "",
-    dataNascimentoDocente: "",
-    telefoneDocente: "",
-  });
+  const [nomeDocente, setName] = useState("");
+  const [emailDocente, setEmail] = useState("");
+  const [dataNascimentoDocente, setBirthDate] = useState("");
+  const [telefoneDocente, setPhone] = useState("");
+  const [imageUrl, setImagemPerfil] = useState<string | null>(null);
   const [disciplineId, setDisciplineId] = useState<number[]>([]);
   const { darkMode, toggleTheme } = useTheme(); 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
+  const [isSubmitting, setIsSubmitting] = useState(false);  useEffect(() => {
     setLoading(true);
     fetch("http://localhost:3000/api/discipline")
       .then((response) => response.json())
@@ -56,102 +53,86 @@ export default function Profile() {
     return regex.test(phone);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const handleDisciplineSelection = (id: number) => {
     setDisciplineId((prev) =>
       prev.includes(id) ? prev.filter((did) => did !== id) : [...prev, id]
     );
   };
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("Evento detectado!"); // Log para testar se a função está sendo chamada
+
+    if (!event.target.files || event.target.files.length === 0) {
+      console.log("Nenhum arquivo selecionado.");
+      return;
+    }
+
+    const file = event.target.files[0];
+    console.log("Arquivo selecionado:", file);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (typeof reader.result === "string") {
+        console.log("Imagem carregada:", reader.result);
+        setImagemPerfil(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-  
-    // Validação dos campos
-    if (
-      !formData.nomeDocente ||
-      !formData.emailDocente ||
-      !formData.dataNascimentoDocente ||
-      !formData.telefoneDocente ||
-      disciplineId.length === 0
-    ) {
-      alert("Por favor, preencha todos os campos obrigatórios.");
-      setIsSubmitting(false);
+
+    if (!nomeDocente || !emailDocente || !dataNascimentoDocente || !telefoneDocente) {
+      alert("Preencha todos os campos obrigatórios.");
       return;
     }
-  
-    if (!validateEmail(formData.emailDocente)) {
+
+    if (!validateEmail(emailDocente)) {
       alert("Por favor, insira um email válido.");
       setIsSubmitting(false);
-      return;
     }
-  
-    if (!validatePhone(formData.telefoneDocente)) {
+
+    if (!validatePhone(telefoneDocente)) {
       alert("Por favor, insira um telefone válido.");
       setIsSubmitting(false);
       return;
     }
-  
+
     const token = localStorage.getItem("token");
     if (!token) {
       alert("Usuário não autenticado. Faça login novamente.");
-      setIsSubmitting(false);
       return;
     }
-  
+
     try {
-      const payload = {
-        nomeDocente: formData.nomeDocente,
-        emailDocente: formData.emailDocente,
-        dataNascimentoDocente: formData.dataNascimentoDocente,
-        telefoneDocente: formData.telefoneDocente,
-        disciplineId: disciplineId,
-      };
-  
-      console.log("Dados enviados:", payload); // Log para depuração
-  
       const response = await fetch("http://localhost:3000/api/teacher", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          nomeDocente,
+          emailDocente,
+          dataNascimentoDocente,
+          telefoneDocente,
+          imageUrl,
+          disciplineId
+        }),
       });
-  
-      const responseData = await response.json();
-  
-      if (!response.ok) {
-        throw new Error(responseData.message || "Erro ao criar o perfil.");
-      }
-  
+
+      if (!response.ok) throw new Error("Erro ao criar o perfil.");
+
       alert("✅ Perfil criado com sucesso!");
-  
-      // Limpar campos após o envio
-      setFormData({
-        nomeDocente: "",
-        emailDocente: "",
-        dataNascimentoDocente: "",
-        telefoneDocente: ""
-        
-      });
-      setDisciplineId([]);
+      setName("");
+      setEmail("");
+      setBirthDate("");
+      setPhone("");
     } catch (error) {
-      console.error("❌ Erro ao criar perfil:", error);
-      if (error instanceof Error) {
-        alert(`Erro: ${error.message}`);
-      } else if (typeof error === "string") {
-        alert(`Erro: ${error}`);
-      } else {
-        alert("Erro ao criar perfil. Tente novamente.");
-      }
+        console.error("❌ Erro ao criar perfil:", error);
+      alert("Erro ao criar perfil.");
     } finally {
       setIsSubmitting(false);
     }
@@ -198,26 +179,29 @@ export default function Profile() {
               />
             </div>
 
+            <div className="space-y-2">
+            <label className="text-sm text-muted-foreground">Foto de Perfil</label>
+            <input type="file" accept="image/*" onChange={handleImageChange}/>
+
+          </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[
-                { label: "Nome Completo", type: "text", name: "nomeDocente" },
+                { label: "Nome Completo", state: nomeDocente, setState: setName },
                 {
                   label: "Data de Nascimento",
-                  type: "date",
-                  name: "dataNascimentoDocente",
+                  state: dataNascimentoDocente,
+                  setState: setBirthDate,
                 },
-                { label: "Email", type: "email", name: "emailDocente" },
-                { label: "Telefone", type: "tel", name: "telefoneDocente" },
-              ].map(({ label, type, name }) => (
-                <div key={name} className="space-y-2">
-                  <label className="text-sm text-muted-foreground">
-                    {label}
-                  </label>
+                { label: "Email", state: emailDocente, setState: setEmail },
+                { label: "Telefone", state: telefoneDocente, setState: setPhone },
+              ].map(({ label, state, setState }) => (
+                <div key={label} className="space-y-2">
+                  <label className="text-sm text-muted-foreground">{label}</label>
                   <Input
-                    type={type}
-                    name={name}
-                    value={formData[name as keyof typeof formData]}
-                    onChange={handleChange}
+                    type={label === "Data de Nascimento" ? "date" : "text"}
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
                     className="bg-blue-50 dark:bg-gray-800"
                   />
                 </div>

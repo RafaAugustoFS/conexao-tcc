@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
 interface ProfileInfoProps {
+  imageUrl: string;
   name: string;
   email: string;
   birthDate: string;
@@ -13,6 +14,7 @@ interface ProfileInfoProps {
 }
 
 export function ProfileInfo({
+  imageUrl,
   name,
   email,
   birthDate,
@@ -38,11 +40,11 @@ export function ProfileInfo({
     <div className="bg-white dark:bg-black rounded-lg p-8">
       <div className="flex items-start gap-6">
         <Image
-          src="https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg?t=st=1738800543~exp=1738804143~hmac=5400a6f0c02663ed6f91ff172c490ed49dbd456d03bed9e4c98b2aed06b0dfdb&w=826"
-          alt="Profile picture"
+          src={imageUrl}
           width={80}
           height={80}
           className="rounded-full"
+          alt="Foto de perfil"
         />
         <div>
           <h2 className="text-2xl font-semibold text-black dark:text-white">
