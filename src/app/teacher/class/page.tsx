@@ -62,8 +62,8 @@ export default function CheckInEmocional({ classes = [] }: Classes) {
   };
 
   // Filtra as turmas com base na busca
-  const filteredClasses = docenteData?.classes.filter((turma) =>
-    turma.nomeTurma.toLowerCase().includes(search.toLowerCase())
+  const filteredClasses = docenteData?.classes.filter((classe) =>
+    classe.nomeTurma.toLowerCase().includes(search.toLowerCase())
   );
 
   // Lógica de paginação
