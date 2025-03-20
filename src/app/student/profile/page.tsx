@@ -9,6 +9,7 @@ import { jwtDecode } from "jwt-decode";
 import { useTheme } from "@/components/ThemeProvider"; // Importe o hook useTheme
 
 interface StudentProfile {
+  imageUrl: string;
   nome: string;
   emailAluno: string;
   dataNascimentoAluno: string;
@@ -88,6 +89,7 @@ export default function User({
           </div>
           {studentData && (
             <ProfileInfo
+            imageUrl={studentData.imageUrl || "https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg?t=st=1738800543~exp=1738804143~hmac=5400a6f0c02663ed6f91ff172c490ed49dbd456d03bed9e4c98b2aed06b0dfdb&w=826"}
             name={studentData.nome}
             email={studentData.emailAluno}
             birthDate={formatDate(studentData.dataNascimentoAluno)}
