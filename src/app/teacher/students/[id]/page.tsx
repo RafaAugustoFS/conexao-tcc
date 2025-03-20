@@ -83,7 +83,7 @@ export default function StudentsPage({
                     <tr className="bg-[#1A85FF] text-white">
                       <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414]">Nome do aluno</th>
                       <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414]">Nº da Matrícula</th>
-                      <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414]">Média(%)</th>
+                      <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414]">Perfil</th>
                       <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414]">Notas</th>
                     </tr>
                   </thead>
@@ -92,7 +92,9 @@ export default function StudentsPage({
                       <tr key={student.id} className="border border-blue-500">
                         <td className="p-2 border border-blue-500 dark:text-white">{student.nomeAluno}</td>
                         <td className="p-2 border border-blue-500 dark:text-[#8A8A8A]">{student.identifierCode}</td>
-                        <td className="p-2 border border-blue-500 dark:text-white"></td>
+                        <td className="p-2 border border-blue-500 dark:text-white">
+                          <a href={`/teacher/students/profile/${student.id}`} className="text-blue-500">Ver perfil</a>
+                        </td>
                         <td className="p-2 border border-blue-500 cursor-pointer">
                           <a href={`/teacher/students/notes/${student.id}`} className="text-blue-500">Ver Notas</a>
                         </td>
