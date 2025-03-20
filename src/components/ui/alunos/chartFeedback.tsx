@@ -120,13 +120,6 @@ const EngagementChart: React.FC = () => {
         items={types}
       
       />
-      <SmallSelect
-        aria-label="Selecione o Bimestre"
-        selectedType={selectedType}
-        setSelectedType={valorVindoDoSelect}
-        placeholder="Selecione o Bimestre"
-        items={types}
-      />
   </div>
       {error ? (
         <div className="text-red-500 mb-4 flex items-center">
