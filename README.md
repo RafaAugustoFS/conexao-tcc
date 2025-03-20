@@ -46,6 +46,6 @@ npm install @fullcalendar/react @fullcalendar/daygrid @fullcalendar/interaction 
 npm install jsonwebtoken --force
 npm install js-cookie --force
 npm i --save-dev @types/js-cookie --force
-npm install @radix-ui/react-toast
-npm install @radix-ui/react-label
-npm install @radix-ui/react-dialog
+npm install @radix-ui/react-toast --force
+npm install @radix-ui/react-label --force
+npm install @radix-ui/react-dialog --force
