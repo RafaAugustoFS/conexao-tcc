@@ -1,7 +1,7 @@
 "use client";
 
 import { Card } from "@/components/ui/alunos/card";
-import MessageList from "@/components/ui/alunos/messageList";
+import MessageList from "@/components/ui/institution/messageList";
 import SidebarInstitution from "@/components/layout/sidebarInstitution";
 import { Button } from "@/components/ui/alunos/button";
 import { Sun, Moon } from "lucide-react";
@@ -43,7 +43,7 @@ export default function DashboardTeacher() {
 
         <div className="mt-6 w-full">
           <div className="rounded-xl">
-            <MessageList value={0} />
+            <MessageList/>
           </div>
         </div>
       </main>

@@ -12,18 +12,18 @@ interface Message {
   color: string;
 }
 
+// Lista de cores para os avatares
+const avatarColors = [
+  "bg-red-500",
+  "bg-blue-500",
+  "bg-green-500",
+  "bg-yellow-500",
+];
+
 function MessageList({ className }: { className?: string }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Lista de cores para os avatares
-  const avatarColors = [
-    "bg-red-500",
-    "bg-blue-500",
-    "bg-green-500",
-    "bg-yellow-500",
-  ];
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -36,18 +36,27 @@ function MessageList({ className }: { className?: string }) {
         if (!userId) throw new Error("ID do usuário não encontrado no token");
 
         // 2️⃣ Buscar os avisos da turma
-        const reminderResponse = await fetch(`http://localhost:3000/api/reminder/teacher/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const reminderResponse = await fetch(
+          `http://localhost:3000/api/reminder/teacher/${userId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-        if (!reminderResponse.ok) throw new Error("Erro ao buscar avisos do professor");
+        if (!reminderResponse.ok)
+          throw new Error("Erro ao buscar avisos do professor");
 
         const reminders: Message[] = await reminderResponse.json();
 
-        // Adicionando a cor para cada mensagem
+        reminders.sort(
+          (a, b) =>
+            new Date(b.horarioSistema).getTime() -
+            new Date(a.horarioSistema).getTime()
+        );
+
         const updatedMessages = reminders.map((message, index) => ({
           ...message,
-          color: avatarColors[index % avatarColors.length], // Cor alternada com base no índice
+          color: avatarColors[index % avatarColors.length],
         }));
 
         setMessages(updatedMessages);
@@ -62,7 +71,9 @@ function MessageList({ className }: { className?: string }) {
   }, []);
 
   return (
-    <div className={`bg-white dark:bg-black rounded-xl shadow-md p-4 overflow-hidden ${className}`}>
+    <div
+      className={`bg-white dark:bg-black rounded-xl shadow-md p-4 overflow-hidden ${className}`}
+    >
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold">Avisos</h2>
       </div>
@@ -80,21 +91,35 @@ function MessageList({ className }: { className?: string }) {
               {index > 0 && <hr className="border-gray-200 my-4" />}
               <div className="flex gap-4">
                 {/* Avatar */}
-                <div className={`w-12 h-12 flex items-center justify-center text-white font-semibold rounded-full ${message.color}`}>
+                <div
+                  className={`w-12 h-12 flex items-center justify-center text-white font-semibold rounded-full ${message.color}`}
+                >
                   {message.initials}
                 </div>
                 {/* Conteúdo da Mensagem */}
                 <div className="flex-1">
                   <div className="flex justify-between items-center">
-                    <h3 className="font-bold">{message.nomeDocente || message.criadoPorNome || "Não encontrado."}</h3>
+                    <h3 className="font-bold">
+                      {message.nomeDocente ||
+                        message.criadoPorNome ||
+                        "Não encontrado."}
+                    </h3>
                     <span className="text-gray-500 text-sm">
-                      {new Date(message.horarioSistema).toLocaleTimeString("pt-BR", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      {new Date(message.horarioSistema).toLocaleString(
+                        "pt-BR",
+                        {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }
+                      )}
                     </span>
                   </div>
-                  <p className="text-gray-600 dark:text-[#8A8A8A] text-sm mt-1">{message.conteudo}</p>
+                  <p className="text-gray-600 dark:text-[#8A8A8A] text-sm mt-1">
+                    {message.conteudo}
+                  </p>
                 </div>
               </div>
             </div>

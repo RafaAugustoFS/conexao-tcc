@@ -1,4 +1,3 @@
-import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 
 interface Message {
@@ -22,67 +21,31 @@ function MessageList({ className }: { className?: string }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [turma, setStudentTurma] = useState<number>(0);
 
   useEffect(() => {
-    const fetchStudent = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) throw new Error("Token não encontrado");
-        console.log(token);
-        
-  
-        const decoded: any = jwtDecode(token);
-        const userId = decoded?.sub;
-        if (!userId) throw new Error("ID do usuário não encontrado no token");
-  
-        const response = await fetch(
-          `http://localhost:3000/api/student/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-  
-        if (!response.ok) throw new Error("Erro ao buscar dados do aluno");
-  
-        const data = await response.json();
-        setStudentTurma(data.turma.idTurma);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-  
-    fetchStudent();
-  }, []); // Agora roda apenas uma vez
-  
-
-  useEffect(() => {
-    if (!turma) return; // Só busca mensagens se turma estiver definido
-  
     const fetchMessages = async () => {
       try {
         const reminderResponse = await fetch(
-          `http://localhost:3000/api/reminder/${turma}`
+          `http://localhost:3000/api/reminder`
         );
-  
+
         if (!reminderResponse.ok)
           throw new Error("Erro ao buscar avisos da turma");
-  
+
         const reminders: Message[] = await reminderResponse.json();
-  
+
+        // Ordenando do mais recente para o mais antigo
         reminders.sort(
           (a, b) =>
             new Date(b.horarioSistema).getTime() -
             new Date(a.horarioSistema).getTime()
         );
-  
+
         const updatedMessages = reminders.map((message, index) => ({
           ...message,
-          color: avatarColors[index % avatarColors.length],
+          color: avatarColors[index % avatarColors.length], // Alternando cores
         }));
-  
+
         setMessages(updatedMessages);
       } catch (err: any) {
         setError(err.message || "Erro ao carregar avisos");
@@ -90,9 +53,9 @@ function MessageList({ className }: { className?: string }) {
         setLoading(false);
       }
     };
-  
+
     fetchMessages();
-  }, [turma]); // Agora roda sempre que turma mudar
+  }, []);
 
   return (
     <div
