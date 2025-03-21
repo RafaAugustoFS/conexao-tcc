@@ -121,7 +121,7 @@ export default function User({
               </button>
             </div>
             <div className="flex justify-center w-full">
-              <Link className="text-[#4184ff] hover:underline" href="./feedback">Ver Mais</Link>
+            <Link className="text-[#4184ff] hover:underline" href={`./feedback/${id}`}>Ver Mais</Link>
             </div>
           </div>
         </div>
