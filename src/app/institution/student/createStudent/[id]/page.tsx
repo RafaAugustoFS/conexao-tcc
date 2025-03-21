@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Input } from "@/components/ui/institution/input";
 import { useParams } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
+import ModalCreate from "@/components/modals/modalCreate";
 
 
 interface Turma {
@@ -31,6 +32,7 @@ export default function Profile({
   const [telefoneAluno, setPhone] = useState("");
   const [turma, setTurma] = useState("");
   const [imageUrl, setImagemPerfil] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { darkMode, toggleTheme } = useTheme(); 
@@ -72,6 +74,7 @@ export default function Profile({
     }
 
     try {
+      setIsModalOpen(true)
       const response = await fetch("http://localhost:3000/api/student", {
         method: "POST",
         headers: {
@@ -100,6 +103,7 @@ export default function Profile({
       alert("Erro ao criar perfil.");
     } finally {
       setIsSubmitting(false);
+      setIsModalOpen(false);
     }
   };
 
@@ -188,6 +192,7 @@ export default function Profile({
             </Button>
           </div>
         </div>
+        <ModalCreate isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} message="Criando aluno..." />
       </main>
     </div>
   );

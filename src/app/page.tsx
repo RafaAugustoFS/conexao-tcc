@@ -1,137 +1,161 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Sun, Moon, Eye, EyeOff } from "lucide-react"
-import { useRouter } from "next/navigation"
-import Illustration from "../assets/images/Illustration.png"
-import Image from "next/image"
-import Cookies from "js-cookie"
+import { useState } from "react";
+import { Sun, Moon, Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Illustration from "../assets/images/Illustration.png";
+import Image from "next/image";
+import Cookies from "js-cookie";
 
 export default function LoginPage() {
-  const [isDark, setIsDark] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const [identifierCode, setIdentifierCode] = useState("")
-  const [password, setPassword] = useState("")
-  const router = useRouter()
+  const [isDark, setIsDark] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [identifierCode, setIdentifierCode] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+    event.preventDefault();
+    setIsLoading(true);
 
     const user = {
       identifierCode,
       password,
-    }
+    };
     if (identifierCode.startsWith("p")) {
       try {
-        const response = await fetch("http://localhost:3000/api/teacher/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(user),
-        })
+        const response = await fetch(
+          "http://localhost:3000/api/teacher/login",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user),
+          }
+        );
 
         if (response.ok) {
-          console.log("Login realizado como professor!")
-          const data = await response.json()
-          console.log(data)
-          const token = data.token
+          console.log("Login realizado como professor!");
+          const data = await response.json();
+          console.log(data);
+          const token = data.token;
           if (token) {
-            localStorage.setItem("token", token) // Armazena o token no localStorage
+            localStorage.setItem("token", token); // Armazena o token no localStorage
             Cookies.set("token", token, { path: "/" });
-            console.log("Token gerado com sucesso!")
-            router.push("/teacher")
+            console.log("Token gerado com sucesso!");
+            router.push("/teacher");
           } else {
-            console.log("Erro: Token não recebido.")
+            console.log("Erro: Token não recebido.");
           }
-          setIdentifierCode("")
-          setPassword("")
+          setIdentifierCode("");
+          setPassword("");
         } else {
-          console.log("Erro no professor!")
+          console.log("Erro no professor!");
         }
       } catch (error) {
-        console.error("Erro ao enviar os dados:", error)
+        console.error("Erro ao enviar os dados:", error);
       }
     } else if (identifierCode.startsWith("a")) {
       try {
-        const response = await fetch("http://localhost:3000/api/student/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(user),
-        })
+        const response = await fetch(
+          "http://localhost:3000/api/student/login",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user),
+          }
+        );
 
         if (response.ok) {
-          console.log("Login realizado como aluno!")
-          const data = await response.json()
-          console.log(data)
-          const token = data.token
+          console.log("Login realizado como aluno!");
+          const data = await response.json();
+          console.log(data);
+          const token = data.token;
           if (token) {
-            localStorage.setItem("token", token) // Armazena o token no localStorage
+            localStorage.setItem("token", token); // Armazena o token no localStorage
             Cookies.set("token", token, { path: "/" });
-            console.log("Token gerado com sucesso!")
-            router.push("/student")
+            console.log("Token gerado com sucesso!");
+            router.push("/student");
           } else {
-            console.log("Erro: Token não recebido.")
+            console.log("Erro: Token não recebido.");
           }
-          setIdentifierCode("")
-          setPassword("")
+          setIdentifierCode("");
+          setPassword("");
         } else {
-          console.log("Erro no aluno!")
+          console.log("Erro no aluno!");
         }
       } catch (error) {
-        console.error("Erro ao enviar os dados:", error)
+        console.error("Erro ao enviar os dados:", error);
       }
     } else {
       try {
-        const response = await fetch("http://localhost:3000/api/institution/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(user),
-        })
+        const response = await fetch(
+          "http://localhost:3000/api/institution/login",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user),
+          }
+        );
 
         if (response.ok) {
-          console.log("Login realizado como instituição!")
-          const data = await response.json()
-          console.log(data)
-          const token = data.token
+          console.log("Login realizado como instituição!");
+          const data = await response.json();
+          console.log(data);
+          const token = data.token;
           if (token) {
-            localStorage.setItem("token", token) // Armazena o token no localStorage
+            localStorage.setItem("token", token); // Armazena o token no localStorage
             Cookies.set("token", token, { path: "/" });
-            console.log("Token gerado com sucesso!")
-            router.push("/institution")
+            console.log("Token gerado com sucesso!");
+            router.push("/institution");
           } else {
-            console.log("Erro: Token não recebido.")
+            console.log("Erro: Token não recebido.");
           }
-          setIdentifierCode("")
-          setPassword("")
+          setIdentifierCode("");
+          setPassword("");
         } else {
-          console.log("Erro!")
+          console.log("Erro!");
         }
       } catch (error) {
-        console.error("Erro ao enviar os dados:", error)
+        console.error("Erro ao enviar os dados:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
-  }
+  };
 
   return (
-    <main className={`min-h-screen w-full ${isDark ? "dark bg-gray-900" : "bg-gray-50"}`}>
+    <main
+      className={`min-h-screen w-full ${
+        isDark ? "dark bg-gray-900" : "bg-gray-50"
+      }`}
+    >
       <div className="container mx-auto px-4 py-8 flex min-h-screen relative">
         <div className="flex flex-col lg:flex-row items-center justify-between w-full gap-4 md:gap-8 z-10">
           <div className="w-full lg:w-1/2 space-y-4 md:space-y-6 text-center lg:text-left mb-8 lg:mb-0">
-            <h1 className={`text-3xl sm:text-4xl md:text-5xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>
+            <h1
+              className={`text-3xl sm:text-4xl md:text-5xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              }`}
+            >
               Bem-vindo à <br />
               (plataforma)
             </h1>
             <p
-              className={`text-base sm:text-lg ${isDark ? "text-gray-300" : "text-gray-600"} max-w-md mx-auto lg:mx-0`}
+              className={`text-base sm:text-lg ${
+                isDark ? "text-gray-300" : "text-gray-600"
+              } max-w-md mx-auto lg:mx-0`}
             >
-              Acompanhe seu desempenho, receba notificações e explore recursos personalizados. Faça login para começar!
+              Acompanhe seu desempenho, receba notificações e explore recursos
+              personalizados. Faça login para começar!
             </p>
           </div>
 
@@ -139,13 +163,19 @@ export default function LoginPage() {
             <div className="w-full flex justify-end mb-8">
               <button
                 onClick={() => setIsDark(!isDark)}
-                className={`p-2 rounded-full ${isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"} shadow-lg`}
+                className={`p-2 rounded-full ${
+                  isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
+                } shadow-lg`}
               >
                 {isDark ? <Moon size={24} /> : <Sun size={24} />}
               </button>
             </div>
 
-            <div className={`w-full max-w-md p-6 sm:p-8 rounded-2xl shadow-xl ${isDark ? "bg-gray-800" : "bg-white"}`}>
+            <div
+              className={`w-full max-w-md p-6 sm:p-8 rounded-2xl shadow-xl ${
+                isDark ? "bg-gray-800" : "bg-white"
+              }`}
+            >
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <input
@@ -182,7 +212,9 @@ export default function LoginPage() {
                   <a
                     href="#"
                     className={`text-sm ${
-                      isDark ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-gray-900"
+                      isDark
+                        ? "text-gray-300 hover:text-white"
+                        : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
                     Recover Password?
@@ -190,9 +222,14 @@ export default function LoginPage() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+                  className="w-full py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors flex justify-center items-center"
+                  disabled={isLoading}
                 >
-                  Sign In
+                  {isLoading ? (
+                    <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5"></span>
+                  ) : (
+                    "Login"
+                  )}
                 </button>
               </form>
             </div>
@@ -211,6 +248,5 @@ export default function LoginPage() {
         />
       </div>
     </main>
-  )
+  );
 }
-

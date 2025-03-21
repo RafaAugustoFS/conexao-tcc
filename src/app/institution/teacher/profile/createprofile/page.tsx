@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/institution/input";
 import { Checkbox } from "@/components/ui/institution/checkbox";
 import { useParams } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
+import ModalCreate from "@/components/modals/modalCreate";
 
 
 interface Disciplina {
@@ -27,7 +28,8 @@ export default function Profile() {
   const [telefoneDocente, setPhone] = useState("");
   const [imageUrl, setImagemPerfil] = useState<string | null>(null);
   const [disciplineId, setDisciplineId] = useState<number[]>([]);
-  const { darkMode, toggleTheme } = useTheme(); 
+  const { darkMode, toggleTheme } = useTheme();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);  useEffect(() => {
     setLoading(true);
     fetch("http://localhost:3000/api/discipline")
@@ -107,6 +109,7 @@ export default function Profile() {
     }
 
     try {
+      setIsModalOpen(true);
       const response = await fetch("http://localhost:3000/api/teacher", {
         method: "POST",
         headers: {
@@ -135,6 +138,7 @@ export default function Profile() {
       alert("Erro ao criar perfil.");
     } finally {
       setIsSubmitting(false);
+      setIsModalOpen(false);
     }
   };
 
@@ -142,6 +146,16 @@ export default function Profile() {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
+
+  const getCurrentDate = () => {
+    const today = new Date();
+    return today.toLocaleDateString('pt-BR', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
 
   useEffect(() => {
     localStorage.setItem("darkMode", darkMode.toString());
@@ -160,9 +174,9 @@ export default function Profile() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-2xl font-bold text-[#0D0D0D] dark:text-[#ffffff]">
-                Renato
+                Instituição
               </h1>
-              <p className="text-gray-500">Tue, 07 June 2022</p>
+              <p className="text-gray-500">{getCurrentDate()}</p>
             </div>
             <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
@@ -251,6 +265,7 @@ export default function Profile() {
             </div>
           </div>
         </div>
+        <ModalCreate isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} message="Criando docente..." />
       </main>
     </div>
   );
