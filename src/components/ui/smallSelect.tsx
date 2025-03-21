@@ -1,56 +1,39 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./institution/select";
+"use client"
+
+import type React from "react"
 
 interface SmallSelectProps {
-  selectedType: string; // Alterado para string
-  setSelectedType: (value: string) => void; // Mantido como string
-  placeholder: string;
-  items: string[];
+  ariaLabel: string
+  selectedType: string | number | null
+  setSelectedType: (value: string) => void
+  placeholder: string
+  items: string[]
 }
 
-const getBimestreName = (selectedType: string) => {
-  switch (selectedType) {
-    case "1":
-      return "1º Bimestre";
-    case "2":
-      return "2º Bimestre";
-    case "3":
-      return "3º Bimestre";
-    case "4":
-      return "4º Bimestre";
-    default:
-      return "";
-  }
-};
-
-export default function SearchInput({
-  selectedType,
-  setSelectedType,
-  placeholder,
-  items,
-}: SmallSelectProps) {
+const SmallSelect: React.FC<SmallSelectProps> = ({ ariaLabel, selectedType, setSelectedType, placeholder, items }) => {
   return (
-    <div className="relative w-full max-w-md">
-      <Select
-        value={getBimestreName(selectedType)} // Converte o número para o nome do bimestre
-        onChange={(value) => setSelectedType(value)} // Passa a string diretamente
-      >
-        <SelectTrigger>
-          <SelectValue placeholder={placeholder} />
-        </SelectTrigger>
-        <SelectContent>
+    <div className="relative inline-block text-left">
+      <div>
+        <label htmlFor="select" className="sr-only">
+          {ariaLabel}
+        </label>
+        <select
+          id="select"
+          className="block w-full py-2 pl-3 pr-5 mt-1 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-[#242424] dark:border-gray-700 dark:text-white"
+          value={selectedType || ""}
+          onChange={(e) => setSelectedType(e.target.value)}
+        >
+          <option value="">{placeholder}</option>
           {items.map((item) => (
-            <SelectItem key={item} value={item}> {/* Usa o item como value */}
+            <option key={item} value={item}>
               {item}
-            </SelectItem>
+            </option>
           ))}
-        </SelectContent>
-      </Select>
+        </select>
+      </div>
     </div>
-  );
+  )
 }
+
+export default SmallSelect
+

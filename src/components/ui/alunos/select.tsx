@@ -15,9 +15,10 @@ const SelectContext = React.createContext<SelectContextType | null>(null);
 interface SelectProps {
   children: React.ReactNode;
   onChange?: (value: string) => void;
+  onValueChange?: (value: string) => void; // Adicionado onValueChange
 }
 
-export function Select({ children, onChange }: SelectProps) {
+export function Select({ children, onChange, onValueChange }: SelectProps) {
   const [selectedValue, setSelectedValue] = React.useState<string | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -25,6 +26,7 @@ export function Select({ children, onChange }: SelectProps) {
     setSelectedValue(value);
     setIsOpen(false);
     if (onChange) onChange(value);
+    if (onValueChange) onValueChange(value); // Chama onValueChange se existir
   };
 
   return (
@@ -76,16 +78,21 @@ export function SelectContent({ children }: { children: React.ReactNode }) {
 interface SelectItemProps {
   children: React.ReactNode;
   value: string;
+  disabled?: boolean; // Adicionado disabled
 }
 
-export function SelectItem({ children, value }: SelectItemProps) {
+export function SelectItem({ children, value, disabled = false }: SelectItemProps) {
   const context = React.useContext(SelectContext);
   if (!context) throw new Error("Error");
 
   return (
     <div
-      className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#141414] cursor-pointer"
-      onClick={() => context.setSelectedValue(value)}
+      className={`px-4 py-2 ${
+        disabled
+          ? "opacity-50 cursor-not-allowed" // Estilo para itens desabilitados
+          : "hover:bg-gray-100 dark:hover:bg-[#141414] cursor-pointer"
+      }`}
+      onClick={() => !disabled && context.setSelectedValue(value)} // Só permite clicar se não estiver desabilitado
     >
       {children}
     </div>
