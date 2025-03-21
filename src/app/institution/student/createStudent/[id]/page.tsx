@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/institution/input";
 import { useParams } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
 import ModalCreate from "@/components/modals/modalCreate";
-
+import InputImage from "@/components/ui/institution/InputImage";
 
 interface Turma {
   id: number;
@@ -35,7 +35,7 @@ export default function Profile({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { darkMode, toggleTheme } = useTheme(); 
+  const { darkMode, toggleTheme } = useTheme();
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("Evento detectado!"); // Log para testar se a função está sendo chamada
@@ -74,7 +74,7 @@ export default function Profile({
     }
 
     try {
-      setIsModalOpen(true)
+      setIsModalOpen(true);
       const response = await fetch("http://localhost:3000/api/student", {
         method: "POST",
         headers: {
@@ -87,7 +87,7 @@ export default function Profile({
           dataNascimentoAluno,
           telefoneAluno,
           turmaId: id,
-          imageUrl
+          imageUrl,
         }),
       });
 
@@ -99,7 +99,7 @@ export default function Profile({
       setBirthDate("");
       setPhone("");
     } catch (error) {
-        console.error("❌ Erro ao criar perfil:", error);
+      console.error("❌ Erro ao criar perfil:", error);
       alert("Erro ao criar perfil.");
     } finally {
       setIsSubmitting(false);
@@ -109,11 +109,11 @@ export default function Profile({
 
   const getCurrentDate = () => {
     const today = new Date();
-    return today.toLocaleDateString('pt-BR', {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    return today.toLocaleDateString("pt-BR", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -133,66 +133,75 @@ export default function Profile({
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
       <Sidebar />
       <main className="flex-1 p-8">
-      <div className="space-y-2">
-            <label className="text-sm text-muted-foreground">Foto de Perfil</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="bg-blue-50 dark:bg-gray-800 p-2 border rounded"
-            />
-          </div>
-
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold dark:text-white">{turma.nomeTurma}</h1>
-          <p className="text-gray-500">{getCurrentDate()}</p>
-          <Button onClick={toggleTheme}>
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </Button>
-        </div>
-
-        <div className="container mx-auto p-6 space-y-6 max-w-5xl bg-white dark:bg-gray-800 rounded-3xl">
-          <Image
-            src="https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg"
-            alt="Profile"
-            width={80}
-            height={80}
-            className="rounded-full"
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              { label: "Nome Completo", state: nomeAluno, setState: setName },
-              {
-                label: "Data de Nascimento",
-                state: dataNascimentoAluno,
-                setState: setBirthDate,
-              },
-              { label: "Email", state: emailAluno, setState: setEmail },
-              { label: "Telefone", state: telefoneAluno, setState: setPhone },
-            ].map(({ label, state, setState }) => (
-              <div key={label} className="space-y-2">
-                <label className="text-sm text-muted-foreground">{label}</label>
-                <Input
-                  type={label === "Data de Nascimento" ? "date" : "text"}
-                  value={state}
-                  onChange={(e) => setState(e.target.value)}
-                  className="bg-blue-50 dark:bg-gray-800"
-                />
-              </div>
-            ))}
-          </div>
-
-          <div className="flex justify-center">
-            <Button
-              className="bg-blue-500 hover:bg-blue-600 text-white px-8"
-              onClick={handleSubmit}
-            >
-              Criar estudante
+        <div className="p-8">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-2xl font-bold text-[#0D0D0D] dark:text-[#ffffff]">
+                {turma.nomeTurma}
+              </h1>
+              <p className="text-gray-500">{getCurrentDate()}</p>
+            </div>
+            <Button onClick={toggleTheme}>
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </Button>
           </div>
+
+          <div className="container mx-auto p-6 space-y-6 max-w-5xl bg-white dark:bg-gray-800 rounded-3xl">
+            <div className="flex flex-col items-center gap-4">
+              <Image
+                src={
+                  imageUrl ||
+                  "https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg"
+                }
+                alt="Profile picture"
+                width={100}
+                height={100}
+                className="rounded-full border border-gray-300 shadow-md"
+              />
+
+              <InputImage onChange={handleImageChange} />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                { label: "Nome Completo", state: nomeAluno, setState: setName },
+                {
+                  label: "Data de Nascimento",
+                  state: dataNascimentoAluno,
+                  setState: setBirthDate,
+                },
+                { label: "Email", state: emailAluno, setState: setEmail },
+                { label: "Telefone", state: telefoneAluno, setState: setPhone },
+              ].map(({ label, state, setState }) => (
+                <div key={label} className="space-y-2">
+                  <label className="text-sm text-muted-foreground">
+                    {label}
+                  </label>
+                  <Input
+                    type={label === "Data de Nascimento" ? "date" : "text"}
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    className="bg-blue-50 dark:bg-gray-800"
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-center">
+              <Button
+                className="bg-blue-500 hover:bg-blue-600 text-white px-8"
+                onClick={handleSubmit}
+              >
+                Criar estudante
+              </Button>
+            </div>
+          </div>
         </div>
-        <ModalCreate isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} message="Criando aluno..." />
+        <ModalCreate
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          message="Criando aluno..."
+        />
       </main>
     </div>
   );
