@@ -8,7 +8,8 @@ import Sidebar from "@/components/layout/sidebarInstitution";
 import { Button } from "@/components/ui/alunos/button";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
-
+import { useParams } from "next/navigation";
+import TablePerformance from "@/components/ui/tablePerfomance";
 
 const dataByBimester = {
   "1º Bimestre": [
@@ -43,8 +44,10 @@ const dataByBimester = {
 
 type Bimester = "1º Bimestre" | "2º Bimestre" | "3º Bimestre" | "4º Bimestre";
 
-export default function Home() {
-  const { darkMode, toggleTheme } = useTheme(); 
+export default function Feedback() {
+  const { darkMode, toggleTheme } = useTheme();
+  const params = useParams();
+  const id = params.id as string; // Extrai o ID da URL
 
   const [selectedBimester, setSelectedBimester] = useState<Bimester>("1º Bimestre");
 
@@ -65,32 +68,16 @@ export default function Home() {
       <Sidebar />
       <div className="container mx-auto p-4">
         <div className="w-full flex flex-row justify-end">
-        <Button onClick={toggleTheme}>
+          <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>
         <div className="space-y-6 bg-[#FFFFFF] dark:bg-black dark:text-[#ffffffd8] p-8 rounded-2xl max-h-[800px] overflow-y-auto pr scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
           <OccurrencesTable />
           <div className="w-full flex justify-center items-center">
-          <div className="bg-white dark:bg-black p-6 rounded-2xl shadow-md w-[800px]">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold dark:text-white">Desempenho</h2>
-              <Select
-                options={options}
-                defaultValue={options[0]}
-                onChange={(option) => setSelectedBimester(option?.value as Bimester)}
-                className="w-48"
-              />
+            <div className="bg-white dark:bg-black p-6 w-[800px]">
+            <TablePerformance />
             </div>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={chartData}>
-                <XAxis dataKey="name" />
-                <YAxis domain={[0, 100]} />
-                <Tooltip />
-                <Bar dataKey="value" fill="#007bff" radius={[10, 10, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
           </div>
         </div>
       </div>
