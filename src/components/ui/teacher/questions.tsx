@@ -242,7 +242,7 @@ export default function FeedbackForm() {
             id="bimestre"
             value={responses.bimestre}
             onChange={handleBimestreChange}
-            className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            className="block w-full px-3 py-2 bg-white dark:bg-[#141414] dark:text-blue-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           >
             <option value={1}>1º Bimestre</option>
             <option value={2}>2º Bimestre</option>
@@ -261,11 +261,11 @@ export default function FeedbackForm() {
 
       <div className="p-6 rounded-3xl">
         <div className="min-h-[150px] text-center">
-          <h3 className="text-blue-600 font-bold mb-6">
+          <h3 className="text-blue-600 font-bold mb-6 ">
             {currentQuestion + 1}: {questions[currentQuestion].text}
           </h3>
 
-          <div className="flex justify-center gap-4 my-8">
+          <div className="flex justify-center gap-4 my-8 ">
             {[1, 2, 3, 4, 5].map((rating) => (
               <button
                 key={rating}
@@ -277,7 +277,7 @@ export default function FeedbackForm() {
                         .responseKey as keyof typeof responses
                     ] === rating
                       ? "bg-blue-500 text-white"
-                      : "bg-white text-blue-500 hover:bg-blue-100"
+                      : "bg-white text-blue-500 hover:bg-blue-100 dark:bg-[#141414]"
                   }
                 `}
               >

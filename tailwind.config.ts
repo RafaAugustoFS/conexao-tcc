@@ -1,7 +1,8 @@
 import type { Config } from "tailwindcss";
+const { fontFamily } = require("tailwindcss/defaultTheme");
 
 export default {
-  darkMode: "class", // <-- Adicionado para permitir modo escuro manual
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,10 +11,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
+        background: "var(--background)", 
         foreground: "var(--foreground)",
+      },
+      fontFamily: {
+        epilogue: ["var(--font-epilogue)", ...fontFamily.sans], 
       },
     },
   },
-  plugins: [require("tailwind-scrollbar")],
+  plugins: [require("tailwind-scrollbar")], 
 } satisfies Config;

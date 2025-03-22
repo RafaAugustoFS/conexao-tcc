@@ -4,21 +4,14 @@ import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/alunos/button";
 import Sidebar from "@/components/layout/sidebarTeacher";
 import SearchInput from "@/components/ui/search";
-import CardPerson from "@/components/ui/teacher/cardFeedbackTeacher";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useTheme } from "@/components/ThemeProvider";
 
-
 interface Student {
   id: number;
-  nomeTurma: string;
-  periodoTurma: string;
-  students: Array<{
-    nomeAluno: string;
-    id: number;
-    identifierCode: number;
-  }>;
+  nomeAluno: string;
+  identifierCode: number;
 }
 
 export default function TeacherList({
@@ -36,17 +29,20 @@ export default function TeacherList({
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const studentsPerPage = 6;
-  const { darkMode, toggleTheme } = useTheme(); 
+  const { darkMode, toggleTheme } = useTheme();
 
+  // Aplica o tema ao carregar a página
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("darkMode", darkMode.toString());
   }, [darkMode]);
 
+  // Reseta a página ao realizar uma busca
   useEffect(() => {
     setCurrentPage(1);
   }, [search]);
 
+  // Busca os alunos da turma
   useEffect(() => {
     if (!id) return;
 
@@ -66,11 +62,15 @@ export default function TeacherList({
     fetchStudents();
   }, [id]);
 
+  // Filtra os alunos com base na busca
   const filteredStudents = estudante.filter((student) =>
     student.nomeAluno.toLowerCase().includes(search.toLowerCase())
   );
 
+  // Calcula o número total de páginas
   const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
+
+  // Obtém os alunos da página atual
   const displayedStudents = filteredStudents.slice(
     (currentPage - 1) * studentsPerPage,
     currentPage * studentsPerPage
@@ -83,7 +83,7 @@ export default function TeacherList({
       <Sidebar />
       <div className="w-full flex flex-col items-center mt-8">
         <div className="w-full flex justify-end mb-8 mr-28">
-        <Button onClick={toggleTheme}>
+          <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>
@@ -98,10 +98,10 @@ export default function TeacherList({
           </div>
 
           <div className="p-8 flex flex-col">
-            <div className="grid grid-cols-3 gap-6">
-              {displayedStudents.map((student, index) => (
-                <Link key={index} href={`/aluno/${student.id}`}>
-                  <div className="flex flex-col items-center p-4 rounded-lg shadow-md bg-[#F0F7FF] dark:bg-[#141414] dark:text-white border-[#F0F7FF] dark:border-[#141414] cursor-pointer">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {displayedStudents.map((student) => (
+                <Link key={student.id} href={`/aluno/${student.id}`}>
+                  <div className="flex flex-col items-center p-4 rounded-lg shadow-md bg-[#F0F7FF] dark:bg-[#141414] dark:text-white border-[#F0F7FF] dark:border-[#141414] cursor-pointer hover:shadow-lg transition-shadow">
                     <div className="w-16 h-16 bg-gray-200 rounded-full mb-2 flex items-center justify-center">
                       🎓
                     </div>

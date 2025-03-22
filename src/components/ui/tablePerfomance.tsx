@@ -189,7 +189,7 @@ const EngagementChart: React.FC = () => {
           setSelectedCreatorName(selectedCreator ? selectedCreator.nomeDocente : null);
         }}>
           <SelectTrigger>
-            <SelectValue placeholder="Selecione o Criador">
+            <SelectValue placeholder=" Docente">
               {selectedCreatorName || "Selecione o Criador"} {/* Exibe o nome do docente selecionado */}
             </SelectValue>
           </SelectTrigger>
