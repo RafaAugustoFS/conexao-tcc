@@ -63,7 +63,7 @@ export function ProfileInfo({
             type="text"
             value={name}
             readOnly
-            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50  dark:bg-[#141414] dark:text-white dark:bg-[#141414] dark:border-[#141414] cursor-not-allowed focus:outline-none"
+             className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]  cursor-not-allowed"
           />
         </div>
 
@@ -76,7 +76,7 @@ export function ProfileInfo({
             type="text"
             value={formatDate(birthDate)}
             readOnly
-            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50  dark:bg-[#141414] dark:text-white dark:bg-[#141414] dark:border-[#141414] cursor-not-allowed focus:outline-none"
+              className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]  cursor-not-allowed"
           />
         </div>
 
@@ -89,7 +89,7 @@ export function ProfileInfo({
             type="email"
             value={email}
             readOnly
-            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50  dark:bg-[#141414] dark:text-white dark:bg-[#141414] dark:border-[#141414] cursor-not-allowed focus:outline-none"
+              className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]  cursor-not-allowed"
           />
         </div>
 
@@ -102,7 +102,7 @@ export function ProfileInfo({
             type="tel"
             value={phone}
             readOnly
-            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50  dark:bg-[#141414] dark:text-white dark:bg-[#141414] dark:border-[#141414] cursor-not-allowed focus:outline-none"
+             className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]  cursor-not-allowed"
           />
         </div>
 
@@ -115,7 +115,7 @@ export function ProfileInfo({
             type="text"
             value={registrationNumber}
             readOnly
-            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50  dark:bg-[#141414] dark:text-white dark:bg-[#141414] dark:border-[#141414] cursor-not-allowed focus:outline-none"
+            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]  cursor-not-allowed"
           />
         </div>
 
@@ -124,8 +124,8 @@ export function ProfileInfo({
           <label className="block text-sm text-gray-600 dark:text-[#ffffffd8]">
             Turmas
           </label>
-          <select className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] focus:outline-none">
-            <option value="">Turmas</option>
+          <select   className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]  cursor-not-allowed">
+          <option value="">Turmas</option>
             {classes.map((turma, index) => (
               <option key={index} value={turma.nomeTurma}>
                 {turma.nomeTurma}
