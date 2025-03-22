@@ -13,11 +13,11 @@ interface Student {
   id: number;
   nomeTurma: string;
   periodoTurma: string;
-  students:Array<{
+  students: Array<{
     nomeAluno: string;
     id: number;
     identifierCode: number;
-  }>
+  }>;
 }
 
 export default function StudentsPage({
@@ -32,13 +32,16 @@ export default function StudentsPage({
   const [estudante, setEstudante] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { darkMode, toggleTheme } = useTheme(); 
+  const { darkMode, toggleTheme } = useTheme();
+  const [search, setSearch] = useState(""); // Estado para o valor da busca
 
+  // Aplica o tema ao carregar a página
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
+  // Busca os alunos da turma
   useEffect(() => {
     if (!id) return;
 
@@ -58,18 +61,27 @@ export default function StudentsPage({
     fetchStudents();
   }, [id]);
 
+  // Filtra os alunos com base na busca
+  const filteredStudents = estudante.filter((student) =>
+    student.nomeAluno.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className={`min-h-screen bg-[#F0F7FF] flex flex-row dark:bg-[#141414]`}>
       <Sidebar />
       <div className="w-full flex flex-col items-center mt-8">
         <div className="w-full flex justify-end mb-8 mr-28">
-        <Button onClick={toggleTheme}>
+          <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>
         <div className="container mx-auto p-4 border dark:border-black rounded-lg bg-[#FFFFFF] w-[85%] p-8 pr-15 pt-20 pb-20 space-y-2 rounded-3xl dark:bg-black">
           <div className="relative w-full max-w-md mx-auto flex justify-center items-center mb-6">
-            <SearchInput placeholder="Buscar aluno..." />
+            <SearchInput
+              placeholder="Buscar aluno..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
           <div className="overflow-x-auto overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
             {loading ? (
@@ -88,9 +100,9 @@ export default function StudentsPage({
                     </tr>
                   </thead>
                   <tbody>
-                    {estudante.map((student) => (
+                    {filteredStudents.map((student) => (
                       <tr key={student.id} className="border border-blue-500">
-                        <td className="p-2 border border-blue-500 dark:text-white">{student.nomeAluno}</td>
+                        <td className="p-2 border border-blue-500 dark:text-[#8A8A8A]">{student.nomeAluno}</td>
                         <td className="p-2 border border-blue-500 dark:text-[#8A8A8A]">{student.identifierCode}</td>
                         <td className="p-2 border border-blue-500 dark:text-white">
                           <a href={`/institution/student/profile/${student.id}`} className="text-blue-500">Ver perfil</a>
