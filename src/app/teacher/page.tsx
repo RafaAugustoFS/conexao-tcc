@@ -19,6 +19,11 @@ export default function DashboardTeacher() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [media, setMedia] = useState<number>(0); // Estado para armazenar a média
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleRefresh = () => {
+    setRefreshKey(prevKey => prevKey + 1);
+  };
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
@@ -73,11 +78,11 @@ export default function DashboardTeacher() {
           <WelcomeMessage name={docenteName} />
         </div>
 
-        <NoticeCard />
-        {/* Card avisos */}
+        <NoticeCard onRefresh={handleRefresh}/>
+
         <div className="mt-6 w-full">
           <div className="rounded-xl">
-            <MessageList />
+            <MessageList key={refreshKey}/>
           </div>
         </div>
       </main>

@@ -7,8 +7,11 @@ interface ClassProfile {
   nomeTurma: string;
   id: number;
 }
+interface NoticeCardProps {
+  onRefresh: () => void;
+}
 
-export function NoticeCard() {
+export function NoticeCard({ onRefresh }: NoticeCardProps) {
   const [aviso, setAviso] = useState("");
   const [darkMode, setDarkMode] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -66,6 +69,9 @@ export function NoticeCard() {
 
       alert("Aviso enviado com sucesso!");
       setAviso("");
+
+      fetchClasses();
+      onRefresh();
     } catch (error) {
       console.error("Erro ao enviar aviso:", error);
       alert("Erro ao enviar aviso.");
