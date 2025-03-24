@@ -23,8 +23,8 @@ export default function CreateClass() {
   const [periodoTurma, setPeriodoTurma] = useState("");
   const [capacidadeTurma, setCapacidadeTurma] = useState("");
   const [salaTurma, setSalaTurma] = useState("");
-  const [disciplineIds, setDisciplineIds] = useState([]);
-  const [idTeachers, setIdTeachers] = useState([]);
+  const [disciplineId, setDisciplineIds] = useState([]);
+  const [idTeacher, setIdTeachers] = useState([]);
   const { darkMode, toggleTheme } = useTheme();
 
   // Buscar docentes
@@ -84,8 +84,8 @@ export default function CreateClass() {
       periodoTurma,
       capacidadeMaximaTurma: capacidadeTurma,
       salaTurma,
-      idTeachers,
-      disciplineIds,
+      idTeacher,
+      disciplineId,
     };
 
     try {
@@ -105,6 +105,8 @@ export default function CreateClass() {
       alert("✅ Turma criada com sucesso!");
     } catch (error) {
       console.error("❌ Erro ao criar turma:", error);
+      console.log(payload);
+      
       alert("Erro ao criar turma.");
     }
   };
@@ -289,7 +291,7 @@ export default function CreateClass() {
                     >
                       <Checkbox
                         id={`docente-${docente.id}`}
-                        checked={idTeachers.includes(docente.id)}
+                        checked={idTeacher.includes(docente.id)}
                         onCheckedChange={() =>
                           handleTeacherSelection(docente.id)
                         }
@@ -322,7 +324,7 @@ export default function CreateClass() {
                     >
                       <Checkbox
                         id={`disciplina-${disciplina.id}`}
-                        checked={disciplineIds.includes(disciplina.id)}
+                        checked={disciplineId.includes(disciplina.id)}
                         onCheckedChange={() =>
                           handleDisciplineSelection(disciplina.id)
                         }
