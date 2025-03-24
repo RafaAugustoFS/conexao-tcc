@@ -14,7 +14,13 @@ import { useTheme } from "@/components/ThemeProvider";
 
 
 export default function DashboardTeacher() {
-  const { darkMode, toggleTheme } = useTheme(); 
+  const { darkMode, toggleTheme } = useTheme();
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleRefresh = () => {
+    setRefreshKey(prevKey => prevKey + 1);
+  };
+
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
@@ -39,11 +45,11 @@ export default function DashboardTeacher() {
           <WelcomeMessage name="Instituição" />
         </div>
 
-        <NoticeCard />
+        <NoticeCard onRefresh={handleRefresh}/>
 
         <div className="mt-6 w-full">
           <div className="rounded-xl">
-            <MessageList/>
+            <MessageList key={refreshKey}/>
           </div>
         </div>
       </main>

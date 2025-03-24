@@ -10,7 +10,12 @@ interface TeacherProfile {
   dataNascimentoDocente: string;
   classes: { nomeTurma: string; id: number }[]; // Lista de turmas
 }
-export function NoticeCard() {
+
+interface NoticeCardProps {
+  onRefresh: () => void;
+}
+
+export function NoticeCard({ onRefresh }: NoticeCardProps) {
   const [aviso, setAviso] = useState("");
   const [darkMode, setDarkMode] = useState(false);
   const [teacherData, setTeacherData] = useState<TeacherProfile | null>(null);
@@ -90,6 +95,9 @@ export function NoticeCard() {
       alert("Aviso enviado com sucesso!");
       console.log(aviso);
       setAviso(""); // Limpa o campo de aviso após o envio
+
+      fetchTeacherData();
+      onRefresh();
     } catch (error) {
       console.error("Erro ao enviar aviso:", error);
       console.log();
