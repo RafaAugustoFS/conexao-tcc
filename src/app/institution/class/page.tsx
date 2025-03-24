@@ -85,10 +85,10 @@ export default function CheckInEmocional({
     fetchClassesData();
   }, []);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-  }, [darkMode]);
+  // useEffect(() => {
+  //   document.documentElement.classList.toggle("dark", darkMode);
+  //   localStorage.setItem("theme", darkMode ? "dark" : "light");
+  // }, [darkMode]);
 
   useEffect(() => {
     setCurrentPage(1);
