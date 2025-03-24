@@ -209,7 +209,7 @@ const GradeCard: React.FC = () => {
             return (
               <div key={type} className="bg-[#F0F7FF] dark:bg-black p-2 rounded-md">
                 <p className="text-xs font-medium">{type}</p>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between max-md:flex-col">
                   <span className="text-sm">{grades.length} disciplina(s)</span>
                   <span
                     className={`text-sm font-bold ${avgGrade >= 70 ? "text-emerald-500" : avgGrade >= 50 ? "text-[#3340ff]" : "text-red-500"}`}
