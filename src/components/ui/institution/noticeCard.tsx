@@ -2,6 +2,9 @@
 import { Card } from "@/components/ui/alunos/card";
 import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 interface ClassProfile {
   nomeTurma: string;
@@ -38,7 +41,7 @@ export function NoticeCard({ onRefresh }: NoticeCardProps) {
 
   const enviarAviso = async () => {
     if (!turmaSelecionada) {
-      alert("Selecione uma turma antes de enviar o aviso.");
+      toast.warn("Selecione uma turma antes de enviar o aviso.");
       return;
     }
 
@@ -67,14 +70,14 @@ export function NoticeCard({ onRefresh }: NoticeCardProps) {
         throw new Error("Erro ao enviar o aviso.");
       }
 
-      alert("Aviso enviado com sucesso!");
+      toast.success("Aviso enviado com sucesso!");
       setAviso("");
 
       fetchClasses();
       onRefresh();
     } catch (error) {
       console.error("Erro ao enviar aviso:", error);
-      alert("Erro ao enviar aviso.");
+      toast.error("Erro ao enviar aviso.");
     }
   };
 
@@ -91,6 +94,8 @@ export function NoticeCard({ onRefresh }: NoticeCardProps) {
   }, [darkMode]);
 
   return (
+    <>
+    <ToastContainer />
     <div className="grid grid-cols-2 gap-6 mt-6">
       {/* Card turma */}
       <Card>
@@ -137,5 +142,6 @@ export function NoticeCard({ onRefresh }: NoticeCardProps) {
         </div>
       </Card>
     </div>
+    </>
   );
 }
