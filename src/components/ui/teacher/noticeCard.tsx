@@ -3,6 +3,9 @@ import { Card } from "@/components/ui/alunos/card";
 import { log } from "console";
 import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 interface TeacherProfile {
   nome: string;
@@ -10,7 +13,12 @@ interface TeacherProfile {
   dataNascimentoDocente: string;
   classes: { nomeTurma: string; id: number }[]; // Lista de turmas
 }
-export function NoticeCard() {
+
+interface NoticeCardProps {
+  onRefresh: () => void;
+}
+
+export function NoticeCard({ onRefresh }: NoticeCardProps) {
   const [aviso, setAviso] = useState("");
   const [darkMode, setDarkMode] = useState(false);
   const [teacherData, setTeacherData] = useState<TeacherProfile | null>(null);
@@ -49,7 +57,7 @@ export function NoticeCard() {
 
   const enviarAviso = async () => {
     if (!turmaSelecionada) {
-      alert("Selecione uma turma antes de enviar o aviso.");
+      toast.warn("Selecione uma turma antes de enviar o aviso.");
       return;
     }
   
@@ -57,12 +65,11 @@ export function NoticeCard() {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token não encontrado");
   
-      const decoded: any = jwtDecode(token); // Decodificação do JWT
-      const userId = decoded?.sub; // Extraindo o id do usuário do token
+      const decoded: any = jwtDecode(token);
+      const userId = decoded?.sub;
       if (!userId) throw new Error("ID do usuário não encontrado no token");
   
-      // Convertendo o userId para número inteiro
-      const userIdInt = parseInt(userId, 10); // Base 10 para decimal
+      const userIdInt = parseInt(userId, 10);
       if (isNaN(userIdInt)) throw new Error("ID do usuário não é um número válido");
   
       const response = await fetch("http://localhost:3000/api/reminder", {
@@ -71,32 +78,25 @@ export function NoticeCard() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          createdBy: {
-            id: userIdInt, // Enviando o ID do professor como parte de um objeto Teacher
-          },
-          classSt: {
-            id: turmaSelecionada.id, // Enviando o ID da turma como parte de um objeto ClassSt
-          },
+          createdBy: { id: userIdInt },
+          classSt: { id: turmaSelecionada.id },
           conteudo: aviso,
         }),
       });
-      
-      if (!response.ok) {
-        throw new Error("Erro ao enviar o aviso.");
-        console.log(response.body);
-        
-      }
   
-      alert("Aviso enviado com sucesso!");
-      console.log(aviso);
+      if (!response.ok) throw new Error("Erro ao enviar o aviso.");
+  
+      toast.success("Aviso enviado com sucesso!");
       setAviso(""); // Limpa o campo de aviso após o envio
+  
+      fetchTeacherData();
+      onRefresh();
     } catch (error) {
       console.error("Erro ao enviar aviso:", error);
-      console.log();
-      
-      alert("Erro ao enviar aviso.");
+      toast.error("Erro ao enviar aviso."); // Substituído o alert pelo toast.error
     }
   };
+  
   // Chama a função de fetch quando o componente for montado
   useEffect(() => {
     fetchTeacherData(); // Chamando a função para carregar os dados
@@ -111,6 +111,8 @@ export function NoticeCard() {
   }, [darkMode]);
 
   return (
+    <>
+    <ToastContainer />
     <div className="grid grid-cols-2 gap-6 mt-6">
       {/* Card turma */}
       <Card>
@@ -161,5 +163,6 @@ export function NoticeCard() {
         </div>
       </Card>
     </div>
+    </>
   );
 }

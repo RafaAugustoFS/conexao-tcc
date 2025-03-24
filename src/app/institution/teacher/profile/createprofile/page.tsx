@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/institution/checkbox";
 import { useParams } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
 import ModalCreate from "@/components/modals/modalCreate";
-
+import InputImage from "@/components/ui/institution/InputImage";
 
 interface Disciplina {
   id: number;
@@ -30,7 +30,9 @@ export default function Profile() {
   const [disciplineId, setDisciplineId] = useState<number[]>([]);
   const { darkMode, toggleTheme } = useTheme();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);  useEffect(() => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
     setLoading(true);
     fetch("http://localhost:3000/api/discipline")
       .then((response) => response.json())
@@ -62,38 +64,37 @@ export default function Profile() {
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("Evento detectado!"); // Log para testar se a função está sendo chamada
-
-    if (!event.target.files || event.target.files.length === 0) {
-      console.log("Nenhum arquivo selecionado.");
-      return;
-    }
+    if (!event.target.files || event.target.files.length === 0) return;
 
     const file = event.target.files[0];
-    console.log("Arquivo selecionado:", file);
-
     const reader = new FileReader();
     reader.onloadend = () => {
       if (typeof reader.result === "string") {
-        console.log("Imagem carregada:", reader.result);
         setImagemPerfil(reader.result);
       }
     };
     reader.readAsDataURL(file);
   };
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    if (!nomeDocente || !emailDocente || !dataNascimentoDocente || !telefoneDocente) {
+    if (
+      !nomeDocente ||
+      !emailDocente ||
+      !dataNascimentoDocente ||
+      !telefoneDocente
+    ) {
       alert("Preencha todos os campos obrigatórios.");
+      setIsSubmitting(false);
       return;
     }
 
     if (!validateEmail(emailDocente)) {
       alert("Por favor, insira um email válido.");
       setIsSubmitting(false);
+      return;
     }
 
     if (!validatePhone(telefoneDocente)) {
@@ -105,6 +106,7 @@ export default function Profile() {
     const token = localStorage.getItem("token");
     if (!token) {
       alert("Usuário não autenticado. Faça login novamente.");
+      setIsSubmitting(false);
       return;
     }
 
@@ -122,7 +124,7 @@ export default function Profile() {
           dataNascimentoDocente,
           telefoneDocente,
           imageUrl,
-          disciplineId
+          disciplineId,
         }),
       });
 
@@ -134,7 +136,7 @@ export default function Profile() {
       setBirthDate("");
       setPhone("");
     } catch (error) {
-        console.error("❌ Erro ao criar perfil:", error);
+      console.error("❌ Erro ao criar perfil:", error);
       alert("Erro ao criar perfil.");
     } finally {
       setIsSubmitting(false);
@@ -149,11 +151,11 @@ export default function Profile() {
 
   const getCurrentDate = () => {
     const today = new Date();
-    return today.toLocaleDateString('pt-BR', {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    return today.toLocaleDateString("pt-BR", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -179,39 +181,49 @@ export default function Profile() {
               <p className="text-gray-500">{getCurrentDate()}</p>
             </div>
             <Button onClick={toggleTheme}>
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </Button>
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </Button>
           </div>
+
           <div className="container mx-auto p-6 space-y-6 max-w-5xl h-1/2 bg-[#ffffff] dark:bg-[#1a1a1a] rounded-3xl">
-            <div className="flex items-start gap-6">
+            <div className="flex flex-col items-center gap-4">
               <Image
-                src="https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg"
+                src={
+                  imageUrl ||
+                  "https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg"
+                }
                 alt="Profile picture"
-                width={80}
-                height={80}
-                className="rounded-full"
+                width={100}
+                height={100}
+                className="rounded-full border border-gray-300 shadow-md"
               />
+
+              <InputImage onChange={handleImageChange} />
             </div>
-
-            <div className="space-y-2">
-            <label className="text-sm text-muted-foreground">Foto de Perfil</label>
-            <input type="file" accept="image/*" onChange={handleImageChange}/>
-
-          </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[
-                { label: "Nome Completo", state: nomeDocente, setState: setName },
+                {
+                  label: "Nome Completo",
+                  state: nomeDocente,
+                  setState: setName,
+                },
                 {
                   label: "Data de Nascimento",
                   state: dataNascimentoDocente,
                   setState: setBirthDate,
                 },
                 { label: "Email", state: emailDocente, setState: setEmail },
-                { label: "Telefone", state: telefoneDocente, setState: setPhone },
+                {
+                  label: "Telefone",
+                  state: telefoneDocente,
+                  setState: setPhone,
+                },
               ].map(({ label, state, setState }) => (
                 <div key={label} className="space-y-2">
-                  <label className="text-sm text-muted-foreground">{label}</label>
+                  <label className="text-sm text-muted-foreground">
+                    {label}
+                  </label>
                   <Input
                     type={label === "Data de Nascimento" ? "date" : "text"}
                     value={state}
@@ -260,12 +272,16 @@ export default function Profile() {
                 className="bg-blue-500 hover:bg-blue-600 text-white px-8"
                 onClick={handleSubmit}
               >
-                {isSubmitting ? "Salvando..." : "Salvar"}
+                {isSubmitting ? "Criando..." : "Criar professor"}
               </Button>
             </div>
           </div>
         </div>
-        <ModalCreate isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} message="Criando docente..." />
+        <ModalCreate
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          message="Criando docente..."
+        />
       </main>
     </div>
   );

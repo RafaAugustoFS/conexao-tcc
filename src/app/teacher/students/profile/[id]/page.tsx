@@ -51,10 +51,10 @@ export default function User({
     fetchStudentData(); // Chamando a função para carregar os dados
   }, []);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-  }, [darkMode]);
+  // useEffect(() => {
+  //   document.documentElement.classList.toggle("dark", darkMode);
+  //   localStorage.setItem("theme", darkMode ? "dark" : "light");
+  // }, [darkMode]);
 
   return (
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">

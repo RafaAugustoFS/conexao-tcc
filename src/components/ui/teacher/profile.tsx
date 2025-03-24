@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
 
 interface ProfileInfoProps {
   imageUrl: string;
@@ -64,7 +63,7 @@ export function ProfileInfo({
             type="text"
             value={name}
             readOnly
-             className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700 cursor-not-allowed"
+             className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]  cursor-not-allowed"
           />
         </div>
 
@@ -77,7 +76,7 @@ export function ProfileInfo({
             type="text"
             value={formatDate(birthDate)}
             readOnly
-              className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700 cursor-not-allowed"
+              className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]  cursor-not-allowed"
           />
         </div>
 
@@ -90,7 +89,7 @@ export function ProfileInfo({
             type="email"
             value={email}
             readOnly
-              className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700 cursor-not-allowed"
+              className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]  cursor-not-allowed"
           />
         </div>
 
@@ -103,7 +102,7 @@ export function ProfileInfo({
             type="tel"
             value={phone}
             readOnly
-             className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700 cursor-not-allowed"
+             className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]  cursor-not-allowed"
           />
         </div>
 
@@ -116,19 +115,16 @@ export function ProfileInfo({
             type="text"
             value={registrationNumber}
             readOnly
-            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700 cursor-not-allowed"
+            className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]  cursor-not-allowed"
           />
         </div>
-
-        {/* Campo de Senha */}
-        
 
         {/* Turmas */}
         <div className="space-y-2">
           <label className="block text-sm text-gray-600 dark:text-[#ffffffd8]">
             Turmas
           </label>
-          <select   className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-gray-900 dark:text-white dark:border-gray-700 cursor-not-allowed">
+          <select   className="w-full p-2 rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]  cursor-not-allowed">
           <option value="">Turmas</option>
             {classes.map((turma, index) => (
               <option key={index} value={turma.nomeTurma}>

@@ -39,11 +39,6 @@ export default function TeacherList({
   const { darkMode, toggleTheme } = useTheme(); 
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-  }, [darkMode]);
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [search]);
 

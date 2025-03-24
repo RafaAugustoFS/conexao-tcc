@@ -7,9 +7,6 @@ import { Moon, Sun } from "lucide-react";
 import Image from "next/image";
 import { Input } from "@/components/ui/institution/input";
 import { useParams } from "next/navigation";
-import { useTheme } from "@/components/ThemeProvider";
-import ModalCreate from "@/components/modals/modalCreate";
-
 
 interface Turma {
   id: number;
@@ -31,36 +28,10 @@ export default function Profile({
   const [dataNascimentoAluno, setBirthDate] = useState("");
   const [telefoneAluno, setPhone] = useState("");
   const [turma, setTurma] = useState("");
-  const [imageUrl, setImagemPerfil] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const { darkMode, toggleTheme } = useTheme(); 
-
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("Evento detectado!"); // Log para testar se a função está sendo chamada
-
-    if (!event.target.files || event.target.files.length === 0) {
-      console.log("Nenhum arquivo selecionado.");
-      return;
-    }
-
-    const file = event.target.files[0];
-    console.log("Arquivo selecionado:", file);
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      if (typeof reader.result === "string") {
-        console.log("Imagem carregada:", reader.result);
-        setImagemPerfil(reader.result);
-      }
-    };
-    reader.readAsDataURL(file);
-  };
+  const [darkMode, setDarkMode] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
     if (!nomeAluno || !emailAluno || !dataNascimentoAluno || !telefoneAluno) {
       alert("Preencha todos os campos obrigatórios.");
@@ -74,7 +45,6 @@ export default function Profile({
     }
 
     try {
-      setIsModalOpen(true)
       const response = await fetch("http://localhost:3000/api/student", {
         method: "POST",
         headers: {
@@ -87,7 +57,6 @@ export default function Profile({
           dataNascimentoAluno,
           telefoneAluno,
           turmaId: id,
-          imageUrl
         }),
       });
 
@@ -99,11 +68,8 @@ export default function Profile({
       setBirthDate("");
       setPhone("");
     } catch (error) {
-        console.error("❌ Erro ao criar perfil:", error);
+        console.error("❌ Erro ao criar turma:", error);
       alert("Erro ao criar perfil.");
-    } finally {
-      setIsSubmitting(false);
-      setIsModalOpen(false);
     }
   };
 
@@ -119,7 +85,6 @@ export default function Profile({
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   useEffect(() => {
@@ -133,20 +98,10 @@ export default function Profile({
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
       <Sidebar />
       <main className="flex-1 p-8">
-      <div className="space-y-2">
-            <label className="text-sm text-muted-foreground">Foto de Perfil</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="bg-blue-50 dark:bg-gray-800 p-2 border rounded"
-            />
-          </div>
-
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold dark:text-white">{turma.nomeTurma}</h1>
           <p className="text-gray-500">{getCurrentDate()}</p>
-          <Button onClick={toggleTheme}>
+          <Button onClick={() => setDarkMode(!darkMode)}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>
@@ -192,7 +147,6 @@ export default function Profile({
             </Button>
           </div>
         </div>
-        <ModalCreate isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} message="Criando aluno..." />
       </main>
     </div>
   );
