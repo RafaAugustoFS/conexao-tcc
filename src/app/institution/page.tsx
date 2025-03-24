@@ -28,7 +28,7 @@ export default function DashboardTeacher() {
 
   return (
     <div
-      className={`flex h-screen ${
+      className={`flex ${
         darkMode ? "bg-[#141414] text-white" : "bg-[#F0F7FF] text-black"
       }`}
     >
