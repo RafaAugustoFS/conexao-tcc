@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/institution/button";
+import { Button } from "@/components/ui/institution/buttonSubmit";
 import { Checkbox } from "@/components/ui/institution/checkbox";
 import { Input } from "@/components/ui/institution/input";
 import {
@@ -144,7 +144,7 @@ export default function CreateClass() {
 
           <div
             className={`container mx-auto p-6 space-y-6 max-w-5xl ${
-              darkMode ? "bg-[#1E1E1E] text-white" : "bg-white text-black"
+              darkMode ? "bg-black text-white" : "bg-white text-black"
             } rounded-3xl`}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -160,7 +160,7 @@ export default function CreateClass() {
                   <Input
                     className={`${
                       darkMode
-                        ? "bg-[#2D2D2D] border-[#444444] text-white"
+                        ? "bg-[#141414] border-[#141414] text-white"
                         : "bg-blue-50"
                     }`}
                     value={nomeTurma}
@@ -183,7 +183,7 @@ export default function CreateClass() {
                     <SelectTrigger
                       className={`${
                         darkMode
-                          ? "bg-[#2D2D2D] border-[#444444] text-white"
+                          ? "bg-[#141414] border-[#141414] text-white"
                           : "bg-blue-50"
                       }`}
                     >
@@ -216,7 +216,7 @@ export default function CreateClass() {
                     <SelectTrigger
                       className={`${
                         darkMode
-                          ? "bg-[#2D2D2D] border-[#444444] text-white"
+                          ? "bg-[#141414] border-[#141414] text-white"
                           : "bg-blue-50"
                       }`}
                     >
@@ -245,7 +245,7 @@ export default function CreateClass() {
                       type="number"
                       className={`${
                         darkMode
-                          ? "bg-[#2D2D2D] border-[#444444] text-white"
+                          ? "bg-[#141414] border-[#141414] text-white"
                           : "bg-blue-50"
                       }`}
                       value={capacidadeTurma}
@@ -263,7 +263,7 @@ export default function CreateClass() {
                     <Input
                       className={`${
                         darkMode
-                          ? "bg-[#2D2D2D] border-[#444444] text-white"
+                          ? "bg-[#141414] border-[#141414] text-white"
                           : "bg-blue-50"
                       }`}
                       value={salaTurma}
@@ -347,7 +347,7 @@ export default function CreateClass() {
                 className="bg-blue-500 hover:bg-blue-600 text-white px-8"
                 onClick={criarTurma}
               >
-                Salvar edição
+                Criar Turma
               </Button>
             </div>
           </div>

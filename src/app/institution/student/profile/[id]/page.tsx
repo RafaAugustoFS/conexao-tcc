@@ -81,10 +81,10 @@ export default function User({
     }
   };
 
-  // useEffect(() => {
-  //   document.documentElement.classList.toggle("dark", darkMode);
-  //   localStorage.setItem("theme", darkMode ? "dark" : "light");
-  // }, [darkMode]);
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
 
   return (
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">

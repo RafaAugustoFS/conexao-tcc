@@ -14,7 +14,7 @@ import {
   TableCell,
 } from "@/components/ui/alunos/table";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation"; // Adicionado useRouter
+import { useParams, useRouter } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
 import Modal from "@/components/modals/modelDelete";
 
@@ -125,6 +125,11 @@ export default function User() {
     }
   };
 
+  //  useEffect(() => {
+  //   document.documentElement.classList.toggle("dark", darkMode);
+  //   localStorage.setItem("theme", darkMode ? "dark" : "light");
+  // }, [darkMode]);
+
   // Função para buscar os feedbacks da API
   const fetchFeedbacks = async () => {
     try {
@@ -170,7 +175,9 @@ export default function User() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
+    <div className={`flex flex-row ${
+      darkMode ? "bg-[#141414]" : "bg-[#F0F7FF]"
+    } min-h-screen`}>
       <Sidebar />
       <main className="flex-1">
         <div className="p-8">
