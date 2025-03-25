@@ -198,8 +198,8 @@ export default function Profile() {
                 <Image
                  src={imageUrl || User}
                   alt="Profile picture"
-                  width={100}
-                  height={100}
+                  width={80}
+                  height={80}
                 />
 
                 <InputImage onChange={handleImageChange} />
