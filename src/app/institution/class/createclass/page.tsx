@@ -14,6 +14,10 @@ import {
 import Sidebar from "@/components/layout/sidebarInstitution";
 import { useTheme } from "@/components/ThemeProvider";
 import { Moon, Sun } from "lucide-react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function CreateClass() {
   const [docentes, setDocentes] = useState([]);
@@ -26,6 +30,7 @@ export default function CreateClass() {
   const [disciplineId, setDisciplineIds] = useState([]);
   const [idTeacher, setIdTeachers] = useState([]);
   const { darkMode, toggleTheme } = useTheme();
+  const router = useRouter();
 
   // Buscar docentes
   useEffect(() => {
@@ -68,13 +73,13 @@ export default function CreateClass() {
 
     if (!token) {
       console.error("❌ Token JWT não encontrado!");
-      alert("Usuário não autenticado. Faça login novamente.");
+      toast.warn("Usuário não autenticado. Faça login novamente.");
       return;
     }
 
-    if (!anoLetivoTurma) {
+    if (!nomeTurma || !anoLetivoTurma || !periodoTurma || !capacidadeTurma || !salaTurma) {
       console.error("❌ O ano letivo está vazio!");
-      alert("Selecione um ano letivo.");
+      toast.warn("Preencha todos os campos.");
       return;
     }
 
@@ -97,21 +102,27 @@ export default function CreateClass() {
         },
         body: JSON.stringify(payload),
       });
-
       if (!response.ok) {
         throw new Error("Erro ao criar a turma.");
       }
 
-      alert("✅ Turma criada com sucesso!");
+      toast.success("Turma criada com sucesso!");
+
+      setTimeout(() => {
+        router.push("/institution/class");
+      }, 2000); // Aguarda 2 segundos antes de mudar a página
+
     } catch (error) {
       console.error("❌ Erro ao criar turma:", error);
       console.log(payload);
       
-      alert("Erro ao criar turma.");
+      toast.error("Erro ao criar turma.");
     }
   };
 
   return (
+    <>
+    <ToastContainer/>
     <div
       className={`flex flex-row ${
         darkMode ? "bg-[#141414]" : "bg-[#F0F7FF]"
@@ -354,5 +365,6 @@ export default function CreateClass() {
         </div>
       </main>
     </div>
+    </>
   );
 }
