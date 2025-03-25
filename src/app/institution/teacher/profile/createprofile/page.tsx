@@ -10,7 +10,6 @@ import { useParams } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
 import ModalCreate from "@/components/modals/modalCreate";
 import InputImage from "@/components/ui/institution/InputImage";
-import User from '@/assets/images/adicionar-usuario 1.png';
 
 interface Disciplina {
   id: number;
@@ -176,8 +175,8 @@ export default function Profile() {
         <div className="p-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-bold text-blue-500">
-                Criar Novo Docente
+              <h1 className="text-2xl font-bold text-[#0D0D0D] dark:text-[#ffffff]">
+                Instituição
               </h1>
               <p className="text-gray-500">{getCurrentDate()}</p>
             </div>
@@ -186,14 +185,17 @@ export default function Profile() {
             </Button>
           </div>
 
-          <div className="container mx-auto p-6 space-y-6 max-w-5xl h-1/2 bg-[#ffffff] dark:bg-black rounded-3xl">
+          <div className="container mx-auto p-6 space-y-6 max-w-5xl h-1/2 bg-[#ffffff] dark:bg-[#1a1a1a] rounded-3xl">
             <div className="flex flex-col items-center gap-4">
               <Image
-               src={User}
+                src={
+                  imageUrl ||
+                  "https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg"
+                }
                 alt="Profile picture"
-                width={80}
-                height={80}
-                className=""
+                width={100}
+                height={100}
+                className="rounded-full border border-gray-300 shadow-md"
               />
 
               <InputImage onChange={handleImageChange} />
@@ -219,14 +221,14 @@ export default function Profile() {
                 },
               ].map(({ label, state, setState }) => (
                 <div key={label} className="space-y-2">
-                  <label className="text-sm text-muted-foreground dark:text-gray-400">
+                  <label className="text-sm text-muted-foreground">
                     {label}
                   </label>
                   <Input
                     type={label === "Data de Nascimento" ? "date" : "text"}
                     value={state}
                     onChange={(e) => setState(e.target.value)}
-                    className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white"
+                    className="bg-blue-50 dark:bg-gray-800"
                   />
                 </div>
               ))}
@@ -234,7 +236,7 @@ export default function Profile() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h3 className="text-sm text-muted-foreground mb-4 dark:text-gray-400">
+                <h3 className="text-sm text-muted-foreground mb-4">
                   Seleção de disciplinas
                 </h3>
                 {loading ? (
@@ -246,7 +248,7 @@ export default function Profile() {
                     {disciplinas.map((disciplina) => (
                       <div
                         key={disciplina.id}
-                        className="flex items-center space-x-2 dark:text-white"
+                        className="flex items-center space-x-2"
                       >
                         <Checkbox
                           id={`disciplina-${disciplina.id}`}
@@ -267,7 +269,7 @@ export default function Profile() {
 
             <div className="flex justify-center">
               <Button
-                className="bg-blue-500 border-blue-50 hover:bg-blue-600 text-white px-8"
+                className="bg-blue-500 hover:bg-blue-600 text-white px-8"
                 onClick={handleSubmit}
               >
                 {isSubmitting ? "Criando..." : "Criar professor"}
