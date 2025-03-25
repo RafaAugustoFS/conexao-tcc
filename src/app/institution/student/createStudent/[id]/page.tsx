@@ -141,7 +141,7 @@ export default function Profile({
                 darkMode ? "text-blue-500" : "text-blue-500"
               }`}
             >
-              Criar Novo aluno
+              Criar Novo Aluno
             </h1>
             <p
               className={`text-sm ${
