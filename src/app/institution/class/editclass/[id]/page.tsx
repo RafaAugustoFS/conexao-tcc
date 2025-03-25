@@ -144,7 +144,7 @@ export default function EditClass() {
             <div>
               <h1
                 className={`text-2xl font-bold ${
-                  darkMode ? "text-white" : "text-[#0D0D0D]"
+                  darkMode ? "text-blue-500" : "text-blue-500"
                 }`}
               >
                 Editar Turma
@@ -169,7 +169,7 @@ export default function EditClass() {
                   Nome da turma
                 </label>
                 <Input
-                  className="bg-blue-50"
+                  className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white"
                   value={nomeTurma}
                   onChange={(e) => setNomeTurma(e.target.value)}
                 />
@@ -183,7 +183,7 @@ export default function EditClass() {
                   console.log("📆 Ano letivo atualizado:", value);
                   setPeriodoTurma(value);
                 }}>
-                  <SelectTrigger className="bg-blue-50">
+                  <SelectTrigger className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white">
                     <SelectValue placeholder="Selecione o período" />
                   </SelectTrigger>
                   <SelectContent>
@@ -207,7 +207,7 @@ export default function EditClass() {
                     setAnoLetivoTurma(value);
                   }}
                 >
-                  <SelectTrigger className="bg-blue-50">
+                  <SelectTrigger className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white">
                     <SelectValue placeholder="Selecione o ano" />
                   </SelectTrigger>
                   <SelectContent>
@@ -225,7 +225,7 @@ export default function EditClass() {
                   </label>
                   <Input
                     type="number"
-                    className="bg-blue-50"
+                    className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white"
                     value={capacidadeTurma}
                     onChange={(e) => setCapacidadeTurma(e.target.value)}
                   />
@@ -235,7 +235,7 @@ export default function EditClass() {
                     N° da sala
                   </label>
                   <Input
-                    className="bg-blue-50"
+                    className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white"
                     value={salaTurma}
                     onChange={(e) => setSalaTurma(e.target.value)}
                   />
@@ -251,7 +251,7 @@ export default function EditClass() {
               </h3>
               <div className="space-y-3">
                 {docentes.map((docente) => (
-                  <div key={docente.id} className="flex items-center space-x-2">
+                  <div key={docente.id} className="flex items-center space-x-2 dark:text-white">
                     <Checkbox
                       id={`docente-${docente.id}`}
                       checked={idTeachers.includes(docente.id)}
@@ -273,7 +273,7 @@ export default function EditClass() {
                 {disciplinas.map((disciplina) => (
                   <div
                     key={disciplina.id}
-                    className="flex items-center space-x-2"
+                    className="flex items-center space-x-2 dark:text-white"
                   >
                     <Checkbox
                       id={`disciplina-${disciplina.id}`}
