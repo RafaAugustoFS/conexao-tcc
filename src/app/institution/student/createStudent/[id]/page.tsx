@@ -11,6 +11,9 @@ import { useTheme } from "@/components/ThemeProvider";
 import ModalCreate from "@/components/modals/modalCreate";
 import InputImage from "@/components/ui/institution/InputImage";
 import User from '@/assets/images/adicionar-usuario 1.png';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 interface Turma {
   id: number;
@@ -61,14 +64,37 @@ export default function Profile({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    const validateEmail = (email: string) => {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return regex.test(email);
+    };
+  
+    const validatePhone = (phone: string) => {
+      const regex = /^\d{10,11}$/;
+      return regex.test(phone);
+    };
+
     if (!nomeAluno || !emailAluno || !dataNascimentoAluno || !telefoneAluno) {
-      alert("Preencha todos os campos obrigatórios.");
+      toast.warn("Preencha todos os campos obrigatórios.");
+      return;
+    }
+
+    if (!validateEmail(emailAluno)) {
+      toast.warn("Por favor, insira um email válido.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!validatePhone(telefoneAluno)) {
+      toast.warn("Por favor, insira um telefone válido.");
+      setIsSubmitting(false);
       return;
     }
 
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Usuário não autenticado. Faça login novamente.");
+      toast.warn("Usuário não autenticado. Faça login novamente.");
+      setIsSubmitting(false);
       return;
     }
 
@@ -92,14 +118,15 @@ export default function Profile({
 
       if (!response.ok) throw new Error("Erro ao criar o perfil.");
 
-      alert("✅ Perfil criado com sucesso!");
+      toast.success("Perfil criado com sucesso!");
       setName("");
       setEmail("");
       setBirthDate("");
       setPhone("");
+      setImagemPerfil("");
     } catch (error) {
       console.error("❌ Erro ao criar perfil:", error);
-      alert("Erro ao criar perfil.");
+      toast.error("Erro ao criar perfil.");
     } finally {
       setIsSubmitting(false);
       setIsModalOpen(false);
@@ -130,6 +157,8 @@ export default function Profile({
   }, []);
 
   return (
+    <>
+    <ToastContainer/>
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
       <Sidebar />
       <main className="flex-1 p-8">
@@ -159,7 +188,7 @@ export default function Profile({
         <div className="container mx-auto p-6 space-y-6 max-w-5xl bg-white dark:bg-black rounded-3xl">
         <div className="flex flex-col items-center gap-4">
               <Image
-                src={User}
+                src={imageUrl || User}
                 alt="Profile picture"
                 width={80}
                 height={80}
@@ -203,5 +232,6 @@ export default function Profile({
         <ModalCreate isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} message="Criando aluno..." />
       </main>
     </div>
+    </>
   );
 }
