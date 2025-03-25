@@ -124,7 +124,7 @@ export default function CreateClass() {
             <div>
               <h1
                 className={`text-2xl font-bold ${
-                  darkMode ? "text-white" : "text-[#0D0D0D]"
+                  darkMode ? "text-blue-500" : "text-blue-500"
                 }`}
               >
                 Criar Nova Turma
@@ -161,7 +161,7 @@ export default function CreateClass() {
                     className={`${
                       darkMode
                         ? "bg-[#141414] border-[#141414] text-white"
-                        : "bg-blue-50"
+                        : "bg-blue-50 border-blue-50"
                     }`}
                     value={nomeTurma}
                     onChange={(e) => setNomeTurma(e.target.value)}
@@ -184,7 +184,7 @@ export default function CreateClass() {
                       className={`${
                         darkMode
                           ? "bg-[#141414] border-[#141414] text-white"
-                          : "bg-blue-50"
+                          : "bg-blue-50 border-blue-50"
                       }`}
                     >
                       <SelectValue placeholder="Selecione o período" />
@@ -217,7 +217,7 @@ export default function CreateClass() {
                       className={`${
                         darkMode
                           ? "bg-[#141414] border-[#141414] text-white"
-                          : "bg-blue-50"
+                          : "bg-blue-50 border-blue-50"
                       }`}
                     >
                       <SelectValue placeholder="Selecione o ano" />
@@ -246,7 +246,7 @@ export default function CreateClass() {
                       className={`${
                         darkMode
                           ? "bg-[#141414] border-[#141414] text-white"
-                          : "bg-blue-50"
+                          : "bg-blue-50 border-blue-50"
                       }`}
                       value={capacidadeTurma}
                       onChange={(e) => setCapacidadeTurma(e.target.value)}
@@ -264,7 +264,7 @@ export default function CreateClass() {
                       className={`${
                         darkMode
                           ? "bg-[#141414] border-[#141414] text-white"
-                          : "bg-blue-50"
+                          : "bg-blue-50 border-blue-50"
                       }`}
                       value={salaTurma}
                       onChange={(e) => setSalaTurma(e.target.value)}
