@@ -155,7 +155,7 @@ const GradeCard: React.FC = () => {
   }
 
   return (
-    <div className="w-80 p-4 rounded-lg bg-white dark:bg-[#141414] shadow-sm">
+    <div className="w-80 p-3 rounded-lg bg-white dark:bg-[#141414] shadow-sm">
       <div className="flex flex-row justify-between items-center mb-4">
         <h2 className="text-lg font-bold">Notas</h2>
         <div className="flex flex-row items-center justify-center">

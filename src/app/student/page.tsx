@@ -85,7 +85,7 @@ export default function Dashboard() {
         </div>
 
         {/* Cartões de Média e Notas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           <Card>
             <CardContent>
               <MediaCard atualizarMedia={atualizarMedia} />
@@ -104,7 +104,7 @@ export default function Dashboard() {
         </div>
 
         {/* Lista de Mensagens */}
-        <div className="mt-6 w-full">
+        <div className="mt-4 w-full">
           <div className="rounded-xl">
             <MessageList />
           </div>
