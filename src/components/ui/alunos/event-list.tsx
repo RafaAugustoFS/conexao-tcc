@@ -8,6 +8,7 @@ interface EventListProps {
 export function EventList({ className }: EventListProps) {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedEventId, setExpandedEventId] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchEvents() {
@@ -15,7 +16,6 @@ export function EventList({ className }: EventListProps) {
         const response = await fetch("http://localhost:3000/api/event");
         const data: Event[] = await response.json();
 
-        // Filtra os eventos para exibir apenas os futuros
         const today = new Date().toISOString().split("T")[0];
         const upcomingEvents = data.filter((event) => event.dataEvento >= today);
 
@@ -30,42 +30,114 @@ export function EventList({ className }: EventListProps) {
     fetchEvents();
   }, []);
 
+  const toggleEventExpansion = (eventId: number) => {
+    setExpandedEventId(expandedEventId === eventId ? null : eventId);
+  };
+
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    };
+    return new Date(dateString).toLocaleDateString('pt-BR', options);
+  };
+
   if (loading) {
-    return <p>Carregando eventos...</p>;
+    return (
+      <div className="flex justify-center py-8">
+        <p className="text-gray-500">Carregando eventos...</p>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h2 className="text-lg font-semibold mb-4">Próximos eventos</h2>
-      <div className="space-y-3">
-        {events.length === 0 ? (
-          <p>Nenhum evento futuro encontrado.</p>
-        ) : (
-          events.map((event) => (
+    <div className={`w-full max-w-4xl mx-auto px-4 sm:px-6 ${className || ""}`}>
+      <h2 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-6">Próximos eventos</h2>
+      
+      {events.length === 0 ? (
+        <div className="text-center py-8">
+          <p className="text-gray-500">Nenhum evento futuro encontrado.</p>
+        </div>
+      ) : (
+        <div className="space-y-2 sm:space-y-3">
+          {events.map((event) => (
             <div
               key={event.id}
-              className="flex items-center space-x-4 p-4 rounded-2xl dark:bg-[#0D0D0D] dark:hover:bg-[#000000] hover:bg-gray-100 transition-colors cursor-pointer"
+              className={`rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-200 ${
+                expandedEventId === event.id 
+                  ? "dark:bg-[#0D0D0D] bg-white shadow-md"
+                  : "dark:bg-[#0D0D0D] hover:bg-gray-100 dark:hover:bg-[#000000]"
+              }`}
             >
-              <div
-                className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium"
+              <div 
+                className="flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 cursor-pointer"
+                onClick={() => toggleEventExpansion(event.id)}
               >
-                {new Date(event.dataEvento).getDate()}
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-500 flex-shrink-0 flex items-center justify-center text-white font-medium">
+                  {new Date(event.dataEvento).getDate()}
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium text-sm sm:text-base">{event.tituloEvento}</h3>
+                  <p className="text-xs sm:text-sm text-gray-500">
+                    {new Date(event.dataEvento).toLocaleDateString("pt-BR", {
+                      day: '2-digit',
+                      month: 'short',
+                      year: 'numeric'
+                    })}
+                  </p>
+                </div>
+                
+                <button 
+                  className="p-1 sm:p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full flex-shrink-0"
+                  aria-label={expandedEventId === event.id ? "Recolher detalhes" : "Expandir detalhes"}
+                >
+                  <svg 
+                    className={`w-5 h-5 sm:w-6 sm:h-6 text-gray-400 transition-transform ${
+                      expandedEventId === event.id ? "transform rotate-90" : ""
+                    }`}
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
               </div>
-              <div className="flex-1">
-                <h3 className="font-medium">{event.tituloEvento}</h3>
-                <p className="text-sm text-gray-500">
-                  {new Date(event.dataEvento).toLocaleDateString("pt-BR")} • {event.horarioEvento}
-                </p>
-              </div>
-              <button className="p-2 hover:bg-gray-200 rounded-full">
-                <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
+
+              {expandedEventId === event.id && (
+                <div className="px-4 pb-4 sm:px-6 sm:pb-6 pt-0 border-t dark:border-gray-800">
+                  <div className="flex flex-row  sm:grid-cols-2 gap-4">
+                    <div className="col-span-2">
+                      <h4 className="font-medium mb-2">Descrição</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                        {event.descricaoEvento || "Nenhuma descrição fornecida."}
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-medium mb-2">Detalhes</h4>
+                      <ul className="text-sm space-y-2 text-gray-600 dark:text-gray-300">
+                        <li>
+                          <span className="font-semibold">Data:</span> {formatDate(event.dataEvento)}
+                        </li>
+                        <li>
+                          <span className="font-semibold">Horário:</span> {event.horarioEvento}
+                        </li>
+                        <li>
+                          <span className="font-semibold">Local:</span> {event.localEvento || "Não especificado"}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
