@@ -219,10 +219,8 @@ export default function User() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="dark:text-white">Título</TableHead>
                       <TableHead className="dark:text-white">Conteúdo</TableHead>
                       <TableHead className="dark:text-white">Criado por</TableHead>
-                      <TableHead className="dark:text-white">Professor</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
