@@ -9,6 +9,9 @@ import FloatingButton from "@/components/ui/institution/FloatingButton";
 import Link from "next/link";
 import DeleteModal from "@/components/modals/modelDelete";
 import { useTheme } from "@/components/ThemeProvider";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 
 interface ClassProfile {
@@ -78,6 +81,7 @@ export default function CheckInEmocional({
   const confirmDelete = () => {
     if (selectedClassId !== null) {
       deleteClass(selectedClassId);
+      toast.success("Turma deletada com sucesso!")
     }
   };
 
@@ -107,6 +111,8 @@ export default function CheckInEmocional({
   );
 
   return (
+    <>
+    <ToastContainer/>
     <div
       className={`min-h-screen bg-[#F0F7FF] flex flex-row dark:bg-[#141414]`}
     >
@@ -198,5 +204,6 @@ export default function CheckInEmocional({
         onConfirm={confirmDelete} // Só exclui quando confirmar
       />
     </div>
+    </>
   );
 }
