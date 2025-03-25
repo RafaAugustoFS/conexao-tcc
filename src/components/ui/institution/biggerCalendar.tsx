@@ -303,22 +303,6 @@ export default function ResponsiveCalendar() {
   return (
     <>
       <nav className="flex justify-between mb-4 md:mb-2 border-violet-100 p-2 md:p-4">
-        <Button
-          onClick={() => {
-            setSelectedEvent({
-              tituloEvento: "",
-              dataEvento: new Date().toISOString().split("T")[0],
-              horarioEvento: "00:00:00",
-              localEvento: "",
-              descricaoEvento: "",
-            })
-            setIsEditing(false)
-            setOpenModal(true)
-          }}
-          className="bg-blue-600 hover:bg-blue-700"
-        >
-          <Plus className="mr-2 h-4 w-4" /> Novo Evento
-        </Button>
       </nav>
       <main className="flex flex-col items-center justify-between p-2 md:p-6 lg:p-16">
         <div className="w-full max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
