@@ -66,7 +66,7 @@ export default function LateralCalendar() {
       <div
         className={`${
           isOpen ? "translate-x-0" : "translate-x-full"
-        } fixed 2xl:static right-0 z-40 w-80 h-screen bg-white dark:bg-black rounded-l-[20px] transition-transform duration-300 ease-in-out overflow-y-auto`}
+        } fixed 2xl:static right-0 z-40 w-80 max-2xl:h-screen bg-white dark:bg-black rounded-l-[20px] transition-transform duration-300 ease-in-out overflow-y-auto`}
       >
         <div className="max-w-md mx-auto p-4">
           {/* Botão de Notificação */}

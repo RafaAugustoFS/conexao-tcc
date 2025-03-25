@@ -96,7 +96,7 @@ function MessageList({ className }: { className?: string }) {
 
   return (
     <div
-      className={`bg-white dark:bg-black rounded-xl shadow-md p-4 overflow-hidden ${className}`}
+      className={`bg-white dark:bg-black rounded-xl shadow-md p-3 overflow-hidden ${className}`}
     >
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold">Avisos</h2>
@@ -109,7 +109,7 @@ function MessageList({ className }: { className?: string }) {
       ) : messages.length === 0 ? (
         <p className="text-center text-gray-500">Nenhum aviso disponível.</p>
       ) : (
-        <div className="max-h-60 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 dark:scrollbar-track-[#141414]">
+        <div className="max-h-56 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 dark:scrollbar-track-[#141414]">
           {messages.map((message, index) => (
             <div key={message.id}>
               {index > 0 && <hr className="border-gray-200 my-4" />}
