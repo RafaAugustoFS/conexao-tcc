@@ -64,9 +64,9 @@ const Modal = ({ tipo, disciplina, bimestre, notaAtual, idNota, onClose, onSave,
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+      <div className="bg-white dark:bg-[#141414] p-6 rounded-lg shadow-lg w-full max-w-md">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-xl font-bold text-blue-500">
             {tipo === "editar" ? "Editar Nota" : "Adicionar Nota"}
           </h2>
           <button
@@ -88,7 +88,7 @@ const Modal = ({ tipo, disciplina, bimestre, notaAtual, idNota, onClose, onSave,
               <select
                 value={novaDisciplina}
                 onChange={(e) => setNovaDisciplina(e.target.value)}
-                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full p-2 border border-gray-300 dark:border-gray-400 rounded bg-white dark:bg-black text-gray-900 dark:text-white"
               >
                 <option value="">Selecione uma disciplina</option>
                 {disciplinas.map((disc) => (
@@ -108,7 +108,7 @@ const Modal = ({ tipo, disciplina, bimestre, notaAtual, idNota, onClose, onSave,
               <select
                 value={novoBimestre}
                 onChange={(e) => setNovoBimestre(Number.parseInt(e.target.value))}
-                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full p-2 border border-gray-300 dark:border-gray-400 rounded bg-white dark:bg-black text-gray-900 dark:text-white"
               >
                 <option value={1}>1º Bimestre</option>
                 <option value={2}>2º Bimestre</option>
@@ -127,7 +127,7 @@ const Modal = ({ tipo, disciplina, bimestre, notaAtual, idNota, onClose, onSave,
               step="0.1"
               value={novaNota}
               onChange={(e) => setNovaNota(e.target.value)}
-              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              className="w-full p-2 border border-gray-300 dark:border-gray-400 rounded bg-white dark:bg-black text-gray-900 dark:text-white"
               placeholder="Digite a nota (0-10)"
             />
           </div>
