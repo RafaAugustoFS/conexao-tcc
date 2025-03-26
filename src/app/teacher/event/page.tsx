@@ -29,7 +29,7 @@ export default function Event() {
           </div>
         </div>
 
-        <div className="w-[800px]  mx-auto bg-white  rounded-[20px] p-1 dark:bg-black">
+        <div className="max-w-[800px]  mx-auto bg-white  rounded-[20px] p-1 dark:bg-black">
           <BiggerCalendar />
         </div>
       </main>
