@@ -8,16 +8,15 @@ import { Moon, Sun } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import { useTheme } from "@/components/ThemeProvider";
 
-
 interface TeacherProfile {
   imageUrl: string;
-  nomeDocente: string; // Nome do professor
-  emailDocente: string; // E-mail do professor
-  dataNascimentoDocente: string; // Data de nascimento do professor
-  telefoneDocente: string; // Telefone do professor
-  identifierCode: string; // Código identificador do professor
+  nomeDocente: string;
+  emailDocente: string;
+  dataNascimentoDocente: string;
+  telefoneDocente: string;
+  identifierCode: string;
   classes: Array<{
-    nomeTurma: string; // Nome da turma
+    nomeTurma: string;
   }>;
 }
 
@@ -33,14 +32,13 @@ export default function User({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Função de buscar os dados do estudante
   const fetchDocenteData = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token não encontrado");
 
-      const decoded: any = jwtDecode(token); // Decodificação do JWT
-      const id = decoded?.sub; // Extraindo o id do usuário do token
+      const decoded: any = jwtDecode(token);
+      const id = decoded?.sub;
       if (!id) throw new Error("ID do usuário não encontrado no token");
 
       const response = await fetch(`http://localhost:3000/api/teacher/${id}`);
@@ -48,47 +46,54 @@ export default function User({
         throw new Error("Não foi possível carregar os dados do estudante");
 
       const data = await response.json();
-      setDocenteData(data); // Setando os dados do estudante
+      setDocenteData(data);
     } catch (err: any) {
-      setError(err.message); // Tratamento de erro
+      setError(err.message);
     } finally {
-      setLoading(false); // Finalizando o carregamento
+      setLoading(false);
     }
   };
 
-  // Chama a função de fetch quando o componente for montado
   useEffect(() => {
-    fetchDocenteData(); // Chamando a função para carregar os dados
+    fetchDocenteData();
   }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
+
   return (
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
       <Sidebar />
       <main className="flex-1">
-        <div className="p-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <WelcomeUser name={docenteData?.nomeDocente || "Nao achou"} />
+        <div className="p-4 md:p-6 lg:p-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
+            <div className="w-full sm:w-auto">
+              <WelcomeUser 
+                name={docenteData?.nomeDocente || "Nao achou"} 
+                className="text-xl sm:text-2xl lg:text-3xl"
+              />
             </div>
-            <Button onClick={toggleTheme}>
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </Button>
+            <Button 
+              onClick={toggleTheme}
+            >
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </Button>
           </div>
           {docenteData && (
-            <ProfileInfo
-              imageUrl={docenteData.imageUrl || "https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg?t=st=1738800543~exp=1738804143~hmac=5400a6f0c02663ed6f91ff172c490ed49dbd456d03bed9e4c98b2aed06b0dfdb&w=826"}
-              name={docenteData.nomeDocente} // Nome do professor
-              email={docenteData.emailDocente} // E-mail do professor
-              birthDate={docenteData.dataNascimentoDocente} // Data de nascimento do professor
-              phone={docenteData.telefoneDocente} // Telefone do professor
-              registrationNumber={docenteData.identifierCode} // Código identificador do professor
-              classes={docenteData.classes} // Lista de turmas (vazia neste exemplo)
-              password={""} // Senha (vazia neste exemplo)
-            />
+            <div className="text-sm sm:text-base lg:text-lg">
+              <ProfileInfo
+                imageUrl={docenteData.imageUrl || "https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg?t=st=1738800543~exp=1738804143~hmac=5400a6f0c02663ed6f91ff172c490ed49dbd456d03bed9e4c98b2aed06b0dfdb&w=826"}
+                name={docenteData.nomeDocente}
+                email={docenteData.emailDocente}
+                birthDate={docenteData.dataNascimentoDocente}
+                phone={docenteData.telefoneDocente}
+                registrationNumber={docenteData.identifierCode}
+                classes={docenteData.classes}
+                password={""}
+              />
+            </div>
           )}
         </div>
       </main>
