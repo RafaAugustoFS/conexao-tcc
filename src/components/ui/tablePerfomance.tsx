@@ -18,6 +18,7 @@ interface FeedbackData {
 interface ChartData {
   name: string;
   value: number;
+  fullName: string; // Adicionado para armazenar o nome completo
 }
 
 interface Creator {
@@ -26,18 +27,33 @@ interface Creator {
 }
 
 const EngagementChart: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // Acessa o parâmetro `id` da URL
-  const studentId = id ? parseInt(id, 10) : null; // Converte para número
-
+  const { id } = useParams<{ id: string }>();
+  const studentId = id ? parseInt(id, 10) : null;
   const [data, setData] = useState<ChartData[]>([]);
   const [loading, setLoading] = useState(true);
   const [bimestre, setBimestre] = useState<number>(1);
-  const [allData, setAllData] = useState<FeedbackData[]>([]);
   const [selectedType, setSelectedType] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [creators, setCreators] = useState<Creator[]>([]);
   const [selectedCreator, setSelectedCreator] = useState<number | null>(null);
   const [selectedCreatorName, setSelectedCreatorName] = useState<string | null>(null);
+  const [chartWidth, setChartWidth] = useState<number>(0);
+
+  // Monitorar o tamanho da janela
+  useEffect(() => {
+    const handleResize = () => {
+      setChartWidth(window.innerWidth);
+    };
+
+    // Definir largura inicial
+    handleResize();
+
+    // Adicionar listener para redimensionamento
+    window.addEventListener("resize", handleResize);
+
+    // Limpar listener ao desmontar
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const valorVindoDoSelect = (value: string) => {
     switch (value) {
@@ -82,12 +98,11 @@ const EngagementChart: React.FC = () => {
       if (!resposta.ok) throw new Error("Falha ao buscar os criadores");
 
       const dados = await resposta.json();
-      console.log("Dados dos criadores:", dados); // Inspecione os dados aqui
       setCreators(dados);
     } catch (err: any) {
-      console.error("Erro ao buscar criadores:", err); // Log de erro
+      console.error("Erro ao buscar criadores:", err);
       setError(err.message || "Erro ao buscar os criadores");
-      setCreators([]); // Define creators como array vazio em caso de erro
+      setCreators([]);
     }
   };
 
@@ -107,31 +122,25 @@ const EngagementChart: React.FC = () => {
       if (!resposta.ok) throw new Error("Falha ao buscar os dados");
 
       const dados = await resposta.json();
-      console.log("Dados recebidos:", dados); // Debug: inspecione os dados
 
-      // Verifica se os dados foram carregados corretamente
       if (!dados || dados.length === 0) {
-        setData([]); // Define data como array vazio
+        setData([]);
         return;
       }
 
-      // Filtra os feedbacks pelo criador selecionado (com verificação de createdByDTO)
       const filteredByCreator = selectedCreator
         ? dados.filter((item: FeedbackData) => item.createdByDTO && item.createdByDTO.id === selectedCreator)
         : dados;
 
-      // Filtra os feedbacks pelo bimestre
       const filteredData = bimestre === 0
         ? filteredByCreator
         : filteredByCreator.filter((item: FeedbackData) => item.bimestre === bimestre);
 
-      // Se não houver dados após os filtros, define data como array vazio
       if (filteredData.length === 0) {
-        setData([]); // Define data como array vazio
+        setData([]);
         return;
       }
 
-      // Extrai os valores das respostas do primeiro feedback filtrado
       const values = [
         filteredData[0].resposta1,
         filteredData[0].resposta2,
@@ -140,22 +149,27 @@ const EngagementChart: React.FC = () => {
         filteredData[0].resposta5,
       ];
 
-      // Normaliza os valores para o gráfico
       const normalizedValues = normalizeData(values);
 
-      // Formata os dados para o gráfico
-      const formattedData = [
-        { name: 'Engajamento', value: normalizedValues[0] },
-        { name: 'Disposição', value: normalizedValues[1] },
-        { name: 'Entrega', value: normalizedValues[2] },
-        { name: 'Atenção', value: normalizedValues[3] },
-        { name: 'Comportamento', value: normalizedValues[4] },
+      // Definir nomes completos e abreviados para cada categoria
+      const categories = [
+        { tiny: "Eng", short: "Eng", full: "Engajamento" },
+        { tiny: "Dis", short: "Disp", full: "Disposição" },
+        { tiny: "Ent", short: "Ent", full: "Entrega" },
+        { tiny: "Atn", short: "Aten", full: "Atenção" },
+        { tiny: "Cmp", short: "Comp", full: "Comportamento" },
       ];
 
-      setData(formattedData); // Define os dados formatados
+      // Formata os dados para o gráfico com nomes completos e abreviados
+      const formattedData = categories.map((category, index) => ({
+        name: chartWidth < 350 ? category.tiny : chartWidth < 600 ? category.short : category.full,
+        fullName: category.full, // Nome completo para o tooltip
+        value: normalizedValues[index],
+      }));
+
+      setData(formattedData);
       setError(null);
 
-      // Atualiza o nome do docente selecionado
       if (filteredData.length > 0 && filteredData[0].createdByDTO) {
         setSelectedCreatorName(filteredData[0].createdByDTO.nomeDocente);
       } else {
@@ -163,7 +177,7 @@ const EngagementChart: React.FC = () => {
       }
     } catch (err: any) {
       setError(err.message);
-      setData([]); // Em caso de erro, define data como array vazio
+      setData([]);
     } finally {
       setLoading(false);
     }
@@ -175,42 +189,61 @@ const EngagementChart: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, [bimestre, selectedCreator, studentId]);
+  }, [bimestre, selectedCreator, studentId, chartWidth]);
+
+  // Componente de tooltip personalizado
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const dataPoint = payload[0].payload;
+      return (
+        <div className="bg-white dark:bg-gray-800 p-2 border border-gray-200 dark:border-gray-700 rounded shadow-md">
+          <p className="font-semibold">{dataPoint.fullName}</p>
+          <p>Valor: {payload[0].value.toFixed(2)}</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   if (loading) return <div>Carregando...</div>;
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-lg dark:bg-[#141414]">
-      <div className="mb-4 flex justify-end items-center gap-4">
-        <Select onValueChange={(value) => {
-          const selectedId = Number(value);
-          const selectedCreator = creators.find((creator) => creator.id === selectedId);
-          setSelectedCreator(selectedId);
-          setSelectedCreatorName(selectedCreator ? selectedCreator.nomeDocente : null);
-        }}>
-          <SelectTrigger>
-            <SelectValue placeholder=" Docente">
-              {selectedCreatorName || "Selecione o Criador"} {/* Exibe o nome do docente selecionado */}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            {creators.map((creator) => (
-              <SelectItem key={creator.id} value={String(creator.id)}>
-                {creator.nomeDocente} {/* Exibe o nome do docente no dropdown */}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <SmallSelect
-          aria-label="Selecione o Bimestre"
-          selectedType={selectedType}
-          setSelectedType={valorVindoDoSelect}
-          placeholder="Selecione o Bimestre"
-          items={types}
-        />
+    <div className={`${chartWidth < 400 ? "p-2 sm:p-4" : "p-6"} bg-white shadow-md rounded-lg dark:bg-[#141414]`}>
+      <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="w-full sm:w-auto">
+          <Select
+            onValueChange={(value) => {
+              const selectedId = Number(value);
+              const selectedCreator = creators.find((creator) => creator.id === selectedId);
+              setSelectedCreator(selectedId);
+              setSelectedCreatorName(selectedCreator ? selectedCreator.nomeDocente : null);
+            }}
+          >
+            <SelectTrigger className="w-full sm:w-[200px]">
+              <SelectValue placeholder="Selecione o Criador">
+                {selectedCreatorName || "Selecione o Criador"}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {creators.map((creator) => (
+                <SelectItem key={creator.id} value={String(creator.id)}>
+                  {creator.nomeDocente}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="w-full sm:w-auto">
+          <SmallSelect
+            aria-label="Selecione o Bimestre"
+            selectedType={selectedType}
+            setSelectedType={valorVindoDoSelect}
+            placeholder="Selecione o Bimestre"
+            items={types}
+          />
+        </div>
       </div>
 
-      {/* Exibe o nome do docente selecionado */}
       {selectedCreatorName && (
         <div className="mb-4 text-gray-700 dark:text-white">
           Docente: <strong>{selectedCreatorName}</strong>
@@ -223,21 +256,40 @@ const EngagementChart: React.FC = () => {
           {error}
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis domain={[0, 5]} />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="value" fill="#3182CE" />
-          </BarChart>
-        </ResponsiveContainer>
+        <div className="h-[350px] w-full overflow-hidden">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={data}
+              margin={{
+                top: 20,
+                right: chartWidth < 400 ? 10 : 20,
+                left: chartWidth < 400 ? 0 : 10,
+                bottom: 60,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="name"
+                angle={0}
+                textAnchor="middle"
+                height={60}
+                tick={{ fontSize: chartWidth < 400 ? 9 : 11 }}
+                interval={0}
+              />
+              <YAxis
+                domain={[0, 5]}
+                width={chartWidth < 400 ? 25 : 35}
+                tick={{ fontSize: chartWidth < 400 ? 10 : 12 }}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend wrapperStyle={{ paddingTop: 10 }} />
+              <Bar dataKey="value" fill="#3182CE" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       )}
       {data.length === 0 && !loading && (
-        <div className="text-center text-gray-500 mt-4">
-          Nenhum feedback disponível para o bimestre selecionado.
-        </div>
+        <div className="text-center text-gray-500 mt-4">Nenhum feedback disponível para o bimestre selecionado.</div>
       )}
     </div>
   );
