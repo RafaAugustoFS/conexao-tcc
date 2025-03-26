@@ -31,7 +31,7 @@ interface ModalProps {
   disciplinas: string[]
 }
 
-// Componente do Modal
+// Componente do Modal (mantido igual)
 const Modal = ({ tipo, disciplina, bimestre, notaAtual, idNota, onClose, onSave, disciplinas }: ModalProps) => {
   const [novaDisciplina, setNovaDisciplina] = useState(disciplina || "")
   const [novoBimestre, setNovoBimestre] = useState(bimestre || 1)
@@ -64,7 +64,7 @@ const Modal = ({ tipo, disciplina, bimestre, notaAtual, idNota, onClose, onSave,
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white dark:bg-[#141414] p-6 rounded-lg shadow-lg w-full max-w-md">
+      <div className="bg-white dark:bg-[#141414] p-6 rounded-lg shadow-lg w-full max-w-md mx-4">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-blue-500">
             {tipo === "editar" ? "Editar Nota" : "Adicionar Nota"}
@@ -358,35 +358,64 @@ const Table = () => {
   }
 
   return (
-    <div className="flex flex-col overflow-x-auto p-4 w-full justify-center items-center bg-white dark:bg-black rounded-[20px]">
-      <table className="w-1/2 border-separate border-spacing-8">
-        <thead>
-          <tr className="bg-blue-600 text-white">
-            <th className="p-2">Matéria</th>
-            <th className="p-2">1° Bim.</th>
-            <th className="p-2">2° Bim.</th>
-            <th className="p-2">3° Bim.</th>
-            <th className="p-2">4° Bim.</th>
-          </tr>
-        </thead>
-        <tbody>
-          {disciplinas.map((materia, index) => (
-            <tr key={index} className="odd:bg-gray-100 even:bg-gray-200">
-              <td className="p-2 bg-blue-600 text-white font-semibold text-center">{materia.nomeDisciplina}</td>
+    <div className="w-full p-4 bg-white dark:bg-black rounded-[20px]">
+      {/* Tabela para desktop */}
+      <div className="hidden md:flex overflow-x-auto md:justify-center">
+        <table className="min-w-[50%] border-separate border-spacing-4">
+          <thead>
+            <tr className="bg-blue-600 text-white">
+              <th className="p-3 text-left">Matéria</th>
+              <th className="p-3 text-center">1° Bim.</th>
+              <th className="p-3 text-center">2° Bim.</th>
+              <th className="p-3 text-center">3° Bim.</th>
+              <th className="p-3 text-center">4° Bim.</th>
+            </tr>
+          </thead>
+          <tbody>
+            {disciplinas.map((materia, index) => (
+              <tr key={index} className="odd:bg-gray-100 dark:odd:bg-gray-800 even:bg-gray-200 dark:even:bg-gray-700">
+                <td className="p-3 bg-blue-600 text-white font-semibold">{materia.nomeDisciplina}</td>
+                {materia.notas.map((nota, i) => (
+                  <td
+                    key={i}
+                    className="p-3 text-center border border-transparent text-black dark:text-white bg-[#EAF4FF] dark:bg-[#141414] cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
+                    onClick={() => abrirModalEdicao(materia.nomeDisciplina, i + 1, nota, undefined)}
+                  >
+                    {nota !== null ? nota : "-"}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Lista para mobile */}
+      <div className="md:hidden space-y-4">
+        {disciplinas.map((materia, index) => (
+          <div key={index} className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+            <div className="bg-blue-600 text-white p-3 font-semibold">
+              {materia.nomeDisciplina}
+            </div>
+            <div className="grid grid-cols-2 gap-2 p-2">
               {materia.notas.map((nota, i) => (
-                <td
+                <div 
                   key={i}
-                  className="p-2 text-center border border-transparent text-black bg-[#EAF4FF] dark:bg-[#141414] dark:text-white cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
+                  className="bg-[#EAF4FF] dark:bg-[#141414] p-3 rounded text-center cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
                   onClick={() => abrirModalEdicao(materia.nomeDisciplina, i + 1, nota, undefined)}
                 >
-                  {nota !== null ? nota : "-"}
-                </td>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">{i + 1}° Bim.</div>
+                  <div className="font-medium text-black dark:text-white">
+                    {nota !== null ? nota : "-"}
+                  </div>
+                </div>
               ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="space-x-4 mt-4">
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex justify-center mt-6">
         <button
           onClick={() => abrirModalAdicao()}
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
