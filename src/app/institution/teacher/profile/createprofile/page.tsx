@@ -10,6 +10,10 @@ import { useParams } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
 import ModalCreate from "@/components/modals/modalCreate";
 import InputImage from "@/components/ui/institution/InputImage";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import User from '@/assets/images/adicionar-usuario 1.png';
 
 interface Disciplina {
   id: number;
@@ -86,26 +90,26 @@ export default function Profile() {
       !dataNascimentoDocente ||
       !telefoneDocente
     ) {
-      alert("Preencha todos os campos obrigatórios.");
+      toast.warn("Preencha todos os campos obrigatórios.");
       setIsSubmitting(false);
       return;
     }
 
     if (!validateEmail(emailDocente)) {
-      alert("Por favor, insira um email válido.");
+      toast.warn("Por favor, insira um email válido.");
       setIsSubmitting(false);
       return;
     }
 
     if (!validatePhone(telefoneDocente)) {
-      alert("Por favor, insira um telefone válido.");
+      toast.warn("Por favor, insira um telefone válido.");
       setIsSubmitting(false);
       return;
     }
 
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Usuário não autenticado. Faça login novamente.");
+      toast.warn("Usuário não autenticado. Faça login novamente.");
       setIsSubmitting(false);
       return;
     }
@@ -130,14 +134,16 @@ export default function Profile() {
 
       if (!response.ok) throw new Error("Erro ao criar o perfil.");
 
-      alert("✅ Perfil criado com sucesso!");
+      toast.success("Perfil criado com sucesso!");
       setName("");
       setEmail("");
       setBirthDate("");
       setPhone("");
+      setImagemPerfil("")
+      setDisciplineId([])
     } catch (error) {
       console.error("❌ Erro ao criar perfil:", error);
-      alert("Erro ao criar perfil.");
+      toast.error("Erro ao criar perfil.");
     } finally {
       setIsSubmitting(false);
       setIsModalOpen(false);
@@ -169,120 +175,119 @@ export default function Profile() {
   }, [darkMode]);
 
   return (
-    <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
-      <Sidebar />
-      <main className="flex-1">
-        <div className="p-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-2xl font-bold text-[#0D0D0D] dark:text-[#ffffff]">
-                Instituição
-              </h1>
-              <p className="text-gray-500">{getCurrentDate()}</p>
-            </div>
-            <Button onClick={toggleTheme}>
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </Button>
-          </div>
-
-          <div className="container mx-auto p-6 space-y-6 max-w-5xl h-1/2 bg-[#ffffff] dark:bg-[#1a1a1a] rounded-3xl">
-            <div className="flex flex-col items-center gap-4">
-              <Image
-                src={
-                  imageUrl ||
-                  "https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg"
-                }
-                alt="Profile picture"
-                width={100}
-                height={100}
-                className="rounded-full border border-gray-300 shadow-md"
-              />
-
-              <InputImage onChange={handleImageChange} />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[
-                {
-                  label: "Nome Completo",
-                  state: nomeDocente,
-                  setState: setName,
-                },
-                {
-                  label: "Data de Nascimento",
-                  state: dataNascimentoDocente,
-                  setState: setBirthDate,
-                },
-                { label: "Email", state: emailDocente, setState: setEmail },
-                {
-                  label: "Telefone",
-                  state: telefoneDocente,
-                  setState: setPhone,
-                },
-              ].map(({ label, state, setState }) => (
-                <div key={label} className="space-y-2">
-                  <label className="text-sm text-muted-foreground">
-                    {label}
-                  </label>
-                  <Input
-                    type={label === "Data de Nascimento" ? "date" : "text"}
-                    value={state}
-                    onChange={(e) => setState(e.target.value)}
-                    className="bg-blue-50 dark:bg-gray-800"
-                  />
-                </div>
-              ))}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <>
+    <ToastContainer />
+      <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
+        <Sidebar />
+        <main className="flex-1">
+          <div className="p-8">
+            <div className="flex items-center justify-between mb-8">
               <div>
-                <h3 className="text-sm text-muted-foreground mb-4">
-                  Seleção de disciplinas
-                </h3>
-                {loading ? (
-                  <p>Carregando disciplinas...</p>
-                ) : error ? (
-                  <p className="text-red-500">{error}</p>
-                ) : (
-                  <div className="space-y-3">
-                    {disciplinas.map((disciplina) => (
-                      <div
-                        key={disciplina.id}
-                        className="flex items-center space-x-2"
-                      >
-                        <Checkbox
-                          id={`disciplina-${disciplina.id}`}
-                          checked={disciplineId.includes(disciplina.id)}
-                          onCheckedChange={() =>
-                            handleDisciplineSelection(disciplina.id)
-                          }
-                        />
-                        <label htmlFor={`disciplina-${disciplina.id}`}>
-                          {disciplina.nomeDisciplina}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <h1 className="text-2xl font-bold text-blue-500">
+                  Criar Docente
+                </h1>
+                <p className="text-gray-500">{getCurrentDate()}</p>
               </div>
-            </div>
-
-            <div className="flex justify-center">
-              <Button
-                className="bg-blue-500 hover:bg-blue-600 text-white px-8"
-                onClick={handleSubmit}
-              >
-                {isSubmitting ? "Criando..." : "Criar professor"}
+              <Button onClick={toggleTheme}>
+                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
               </Button>
             </div>
+
+            <div className="container mx-auto p-6 space-y-6 max-w-5xl h-1/2 bg-[#ffffff] dark:bg-black rounded-3xl">
+              <div className="flex flex-col items-center gap-4">
+                <Image
+                 src={imageUrl || User}
+                  alt="Profile picture"
+                  width={80}
+                  height={80}
+                />
+
+                <InputImage onChange={handleImageChange} />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[
+                  {
+                    label: "Nome Completo",
+                    state: nomeDocente,
+                    setState: setName,
+                  },
+                  {
+                    label: "Data de Nascimento",
+                    state: dataNascimentoDocente,
+                    setState: setBirthDate,
+                  },
+                  { label: "Email", state: emailDocente, setState: setEmail },
+                  {
+                    label: "Telefone",
+                    state: telefoneDocente,
+                    setState: setPhone,
+                  },
+                ].map(({ label, state, setState }) => (
+                  <div key={label} className="space-y-2">
+                    <label className="text-sm text-muted-foreground dark:text-gray-400">
+                      {label}
+                    </label>
+                    <Input
+                      type={label === "Data de Nascimento" ? "date" : "text"}
+                      value={state}
+                      onChange={(e) => setState(e.target.value)}
+                      className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-sm text-muted-foreground mb-4 dark:text-gray-400">
+                    Seleção de disciplinas
+                  </h3>
+                  {loading ? (
+                    <p>Carregando disciplinas...</p>
+                  ) : error ? (
+                    <p className="text-red-500">{error}</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {disciplinas.map((disciplina) => (
+                        <div
+                          key={disciplina.id}
+                          className="flex items-center space-x-2 dark:text-white"
+                        >
+                          <Checkbox
+                            id={`disciplina-${disciplina.id}`}
+                            checked={disciplineId.includes(disciplina.id)}
+                            onCheckedChange={() =>
+                              handleDisciplineSelection(disciplina.id)
+                            }
+                          />
+                          <label htmlFor={`disciplina-${disciplina.id}`}>
+                            {disciplina.nomeDisciplina}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex justify-center">
+                <Button
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-8"
+                  onClick={handleSubmit}
+                >
+                  {isSubmitting ? "Criando..." : "Criar professor"}
+                </Button>
+              </div>
+            </div>
           </div>
-        </div>
-        <ModalCreate
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          message="Criando docente..."
-        />
-      </main>
-    </div>
+          <ModalCreate
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            message="Criando docente..."
+          />
+        </main>
+      </div>
+    </>
   );
 }

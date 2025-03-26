@@ -1,6 +1,6 @@
 "use client";
 import Sidebar from "@/components/layout/sidebarInstitution";
-import { Button } from "@/components/ui/alunos/button";
+import { Button } from "@/components/ui/institution/buttonSubmit";
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Input } from "@/components/ui/institution/input";
@@ -137,7 +137,7 @@ export default function Profile({ value, className }: { value: number; className
       <Sidebar />
       <main className="flex-1 p-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold dark:text-white">Editar docente</h1>
+          <h1 className="text-2xl font-bold text-blue-500">Editar docente</h1>
           <p className="text-gray-500">{getCurrentDate()}</p>
           <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}

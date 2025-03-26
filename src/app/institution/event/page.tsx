@@ -26,9 +26,6 @@ export default function Event() {
         <div className="p-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-bold text-[#0D0D0D] dark:text-[#ffffff]">
-                Bem-Vinda, Renata
-              </h1>
               <p className="text-gray-500">Tue, 07 June 2022</p>
             </div>
             <Button onClick={toggleTheme}>

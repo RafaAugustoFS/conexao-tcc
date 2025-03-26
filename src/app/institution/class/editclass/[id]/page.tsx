@@ -17,6 +17,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
 import { Moon, Sun } from "lucide-react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function EditClass() {
   const params = useParams(); // Obtém os parâmetros da URL
@@ -31,6 +35,7 @@ export default function EditClass() {
   const { darkMode, toggleTheme } = useTheme();
   const [disciplineIds, setDisciplineIds] = useState([]);
   const [idTeachers, setIdTeachers] = useState([]); // 🔹 Agora é um array
+  const router = useRouter();
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
@@ -95,25 +100,18 @@ export default function EditClass() {
       );
 
       const responseData = await response.json().catch(() => null);
-      const limparCampos = () => {
-        setNomeTurma("");
-        setAnoLetivoTurma("");
-        setPeriodoTurma("");
-        setCapacidadeTurma("");
-        setSalaTurma("");
-        setIdTeachers([]); // 🔹 Resetando professores selecionados
-        setDisciplineIds([]); // 🔹 Resetando disciplinas selecionadas
-      };
 
       if (!response.ok) {
         throw new Error("Erro ao atualizar a turma.");
       }
 
-      alert("Turma atualizada com sucesso!");
-      limparCampos();
+      toast.success("Turma atualizada com sucesso!");
+      setTimeout(() => {
+        router.push("/institution/class");
+      }, 2000);
     } catch (error) {
       console.error("Erro ao atualizar turma:", error);
-      alert("Erro ao atualizar turma.");
+      toast.error("Erro ao atualizar turma.");
     }
   };
   useEffect(() => {
@@ -134,174 +132,187 @@ export default function EditClass() {
   }, [id]); // 🔹 Só executa quando o ID mudar
 
   return (
-    <div className={`flex flex-row ${
-      darkMode ? "bg-[#141414]" : "bg-[#F0F7FF]"
-    } min-h-screen`}>
-      <Sidebar />
-      <main className="flex-1 p-8">
-        <div className="p-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1
-                className={`text-2xl font-bold ${
-                  darkMode ? "text-white" : "text-[#0D0D0D]"
-                }`}
-              >
-                Editar Turma
-              </h1>
-              <p
-                className={`text-sm ${
-                  darkMode ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                Preencha os campos abaixo para editar a turma.
-              </p>
-            </div>
-            <Button onClick={toggleTheme}>
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </Button>
-          </div>
-          <div className="container mx-auto p-6 space-y-6 max-w-5xl h-1/2 bg-[#ffffff] rounded-3xl dark:bg-black">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
+    <>
+      <ToastContainer />
+      <div
+        className={`flex flex-row ${
+          darkMode ? "bg-[#141414]" : "bg-[#F0F7FF]"
+        } min-h-screen`}
+      >
+        <Sidebar />
+        <main className="flex-1 p-8">
+          <div className="p-8">
+            <div className="flex items-center justify-between mb-8">
               <div>
-                <label className="text-sm text-muted-foreground dark:text-gray-400">
-                  Nome da turma
-                </label>
-                <Input
-                  className="bg-blue-50"
-                  value={nomeTurma}
-                  onChange={(e) => setNomeTurma(e.target.value)}
-                />
-              </div>
-  
-              <div>
-                <label className="text-sm text-muted-foreground dark:text-gray-400">Período</label>
-                <Select 
-                value={periodoTurma}
-                onChange={(value) => {
-                  console.log("📆 Ano letivo atualizado:", value);
-                  setPeriodoTurma(value);
-                }}>
-                  <SelectTrigger className="bg-blue-50">
-                    <SelectValue placeholder="Selecione o período" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Manhã">Manhã</SelectItem>
-                    <SelectItem value="Tarde">Tarde</SelectItem>
-                    <SelectItem value="Noite">Noite</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-  
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm text-muted-foreground dark:text-gray-400">
-                  Ano letivo
-                </label>
-                <Select
-                  value={anoLetivoTurma}
-                  onChange={(value) => {
-                    console.log("📆 Ano letivo atualizado:", value);
-                    setAnoLetivoTurma(value);
-                  }}
+                <h1
+                  className={`text-2xl font-bold ${
+                    darkMode ? "text-blue-500" : "text-blue-500"
+                  }`}
                 >
-                  <SelectTrigger className="bg-blue-50">
-                    <SelectValue placeholder="Selecione o ano" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="2025-01-01">2025</SelectItem>
-                    <SelectItem value="2024-01-01">2024</SelectItem>
-                    <SelectItem value="2023-01-01">2023</SelectItem>
-                  </SelectContent>
-                </Select>
+                  Editar Turma
+                </h1>
+                <p
+                  className={`text-sm ${
+                    darkMode ? "text-gray-400" : "text-gray-500"
+                  }`}
+                >
+                  Preencha os campos abaixo para editar a turma.
+                </p>
               </div>
-  
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm text-muted-foreground dark:text-gray-400">
-                    Capacidade máxima
-                  </label>
-                  <Input
-                    type="number"
-                    className="bg-blue-50"
-                    value={capacidadeTurma}
-                    onChange={(e) => setCapacidadeTurma(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground dark:text-gray-400">
-                    N° da sala
-                  </label>
-                  <Input
-                    className="bg-blue-50"
-                    value={salaTurma}
-                    onChange={(e) => setSalaTurma(e.target.value)}
-                  />
-                </div>
-              </div>
+              <Button onClick={toggleTheme}>
+                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+              </Button>
             </div>
-          </div>
-  
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h3 className="text-sm text-muted-foreground mb-4">
-                Seleção de docentes
-              </h3>
-              <div className="space-y-3">
-                {docentes.map((docente) => (
-                  <div key={docente.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`docente-${docente.id}`}
-                      checked={idTeachers.includes(docente.id)}
-                      onCheckedChange={() => handleTeacherSelection(docente.id)}
-                    />
-                    <label htmlFor={`docente-${docente.id}`}>
-                      {docente.nomeDocente}
+            <div className="container mx-auto p-6 space-y-6 max-w-5xl h-1/2 bg-[#ffffff] rounded-3xl dark:bg-black">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm text-muted-foreground dark:text-gray-400">
+                      Nome da turma
                     </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-  
-            <div>
-              <h3 className="text-sm text-muted-foreground mb-4">
-                Seleção de disciplinas
-              </h3>
-              <div className="space-y-3">
-                {disciplinas.map((disciplina) => (
-                  <div
-                    key={disciplina.id}
-                    className="flex items-center space-x-2"
-                  >
-                    <Checkbox
-                      id={`disciplina-${disciplina.id}`}
-                      checked={disciplineIds.includes(disciplina.id)}
-                      onCheckedChange={() =>
-                        handleDisciplineSelection(disciplina.id)
-                      }
+                    <Input
+                      className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white"
+                      value={nomeTurma}
+                      onChange={(e) => setNomeTurma(e.target.value)}
                     />
-                    <label htmlFor={`disciplina-${disciplina.id}`}>
-                      {disciplina.nomeDisciplina}
-                    </label>
                   </div>
-                ))}
+
+                  <div>
+                    <label className="text-sm text-muted-foreground dark:text-gray-400">
+                      Período
+                    </label>
+                    <Select
+                      value={periodoTurma}
+                      onChange={(value) => {
+                        console.log("📆 Ano letivo atualizado:", value);
+                        setPeriodoTurma(value);
+                      }}
+                    >
+                      <SelectTrigger className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white">
+                        <SelectValue placeholder="Selecione o período" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Manhã">Manhã</SelectItem>
+                        <SelectItem value="Tarde">Tarde</SelectItem>
+                        <SelectItem value="Noite">Noite</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm text-muted-foreground dark:text-gray-400">
+                      Ano letivo
+                    </label>
+                    <Select
+                      value={anoLetivoTurma}
+                      onChange={(value) => {
+                        console.log("📆 Ano letivo atualizado:", value);
+                        setAnoLetivoTurma(value);
+                      }}
+                    >
+                      <SelectTrigger className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white">
+                        <SelectValue placeholder="Selecione o ano" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="2025-01-01">2025</SelectItem>
+                        <SelectItem value="2024-01-01">2024</SelectItem>
+                        <SelectItem value="2023-01-01">2023</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm text-muted-foreground dark:text-gray-400">
+                        Capacidade máxima
+                      </label>
+                      <Input
+                        type="number"
+                        className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white"
+                        value={capacidadeTurma}
+                        onChange={(e) => setCapacidadeTurma(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-muted-foreground dark:text-gray-400">
+                        N° da sala
+                      </label>
+                      <Input
+                        className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white"
+                        value={salaTurma}
+                        onChange={(e) => setSalaTurma(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-sm text-muted-foreground mb-4">
+                    Seleção de docentes
+                  </h3>
+                  <div className="space-y-3">
+                    {docentes.map((docente) => (
+                      <div
+                        key={docente.id}
+                        className="flex items-center space-x-2 dark:text-white"
+                      >
+                        <Checkbox
+                          id={`docente-${docente.id}`}
+                          checked={idTeachers.includes(docente.id)}
+                          onCheckedChange={() =>
+                            handleTeacherSelection(docente.id)
+                          }
+                        />
+                        <label htmlFor={`docente-${docente.id}`}>
+                          {docente.nomeDocente}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm text-muted-foreground mb-4">
+                    Seleção de disciplinas
+                  </h3>
+                  <div className="space-y-3">
+                    {disciplinas.map((disciplina) => (
+                      <div
+                        key={disciplina.id}
+                        className="flex items-center space-x-2 dark:text-white"
+                      >
+                        <Checkbox
+                          id={`disciplina-${disciplina.id}`}
+                          checked={disciplineIds.includes(disciplina.id)}
+                          onCheckedChange={() =>
+                            handleDisciplineSelection(disciplina.id)
+                          }
+                        />
+                        <label htmlFor={`disciplina-${disciplina.id}`}>
+                          {disciplina.nomeDisciplina}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-center">
+                <Button
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-8"
+                  onClick={editarTurma}
+                >
+                  Editar turma
+                </Button>
               </div>
             </div>
           </div>
-  
-          <div className="flex justify-center">
-            <Button
-              className="bg-blue-500 hover:bg-blue-600 text-white px-8"
-              onClick={editarTurma}
-            >
-              Editar turma
-            </Button>
-          </div>
-        </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }
