@@ -85,7 +85,7 @@ const SidebarInstitution = () => {
       <div
         className={`${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } fixed 2xl:static z-40 w-64 h-screen bg-white dark:bg-black flex flex-col justify-between rounded-r-[20px] transition-transform duration-300 ease-in-out ${
+        } fixed 2xl:static z-40 w-64 max-2xl:h-screen bg-white dark:bg-black flex flex-col justify-between rounded-r-[20px] transition-transform duration-300 ease-in-out ${
           epilogue.className
         }`}
       >
@@ -99,45 +99,45 @@ const SidebarInstitution = () => {
             />
             <span className="text-[#6A95F4] text-xl font-bold">ONA</span>
           </div>
-          <nav className="w-64 mt-24">
+          <nav className="w-64 mt-24 short:mt-4">
             <ul>
-              <li className="group pt-4 pb-4 flex flex-row justify-center hover:bg-[#F0F7FF] hover:text-blue-500 dark:hover:bg-[#141414] hover:border-l-4 border-blue-500 ">
+              <li className="group pt-4 pb-4 short:pt-3 short:pb-3 flex flex-row justify-center hover:bg-[#F0F7FF] hover:text-blue-500 dark:hover:bg-[#141414] hover:border-l-4 border-blue-500 ">
                 <Link
                   href="/institution"
                   className="flex items-center space-x-2 text-gray-500 w-32 text-center text-base font-semibold "
                   onClick={() => isCollapsed && setIsOpen(false)}
                 >
-                  <Home className="w-8 h-8 stroke-2 group-hover:text-blue-500" />
+                  <Home className="w-8 h-8 short:w-6 short:h-6 stroke-2 group-hover:text-blue-500" />
                   <span className="group-hover:text-blue-500">Home</span>
                 </Link>
               </li>
-              <li className="group pt-4 pb-4 flex flex-row justify-center hover:bg-[#F0F7FF] hover:text-blue-500 dark:hover:bg-[#141414] hover:border-l-4 border-blue-500">
+              <li className="group pt-4 pb-4 short:pt-3 short:pb-3 flex flex-row justify-center hover:bg-[#F0F7FF] hover:text-blue-500 dark:hover:bg-[#141414] hover:border-l-4 border-blue-500">
                 <Link
                   href="/institution/class"
                   className="flex items-center space-x-2 text-gray-500 w-32 text-center text-base font-semibold"
                   onClick={() => isCollapsed && setIsOpen(false)}
                 >
-                  <User className="w-8 h-8 stroke-2 group-hover:text-blue-500" />
+                  <User className="w-8 h-8 short:w-6 short:h-6 stroke-2 group-hover:text-blue-500" />
                   <span className="group-hover:text-blue-500">Turmas</span>
                 </Link>
               </li>
-              <li className="group pt-4 pb-4 flex flex-row justify-center hover:bg-[#F0F7FF] hover:text-blue-500 dark:hover:bg-[#141414] hover:border-l-4 border-blue-500">
+              <li className="group pt-4 pb-4 short:pt-3 short:pb-3 flex flex-row justify-center hover:bg-[#F0F7FF] hover:text-blue-500 dark:hover:bg-[#141414] hover:border-l-4 border-blue-500">
                 <Link
                   href="/institution/event"
                   className="flex items-center space-x-2 text-gray-500 w-32 text-center text-base font-semibold"
                   onClick={() => isCollapsed && setIsOpen(false)}
                 >
-                  <FileText className="w-8 h-8 stroke-2 group-hover:text-blue-500" />
+                  <FileText className="w-8 h-8 short:w-6 short:h-6 stroke-2 group-hover:text-blue-500" />
                   <span className="group-hover:text-blue-500">Eventos</span>
                 </Link>
               </li>
-              <li className="group pt-4 pb-4 flex flex-row justify-center hover:bg-[#F0F7FF] hover:text-blue-500 dark:hover:bg-[#141414] hover:border-l-4 border-blue-500">
+              <li className="group pt-4 pb-4 short:pt-3 short:pb-3 flex flex-row justify-center hover:bg-[#F0F7FF] hover:text-blue-500 dark:hover:bg-[#141414] hover:border-l-4 border-blue-500">
                 <Link
                   href="/institution/teacher"
                   className="flex items-center space-x-2 text-gray-500 w-32 text-center text-base font-semibold"
                   onClick={() => isCollapsed && setIsOpen(false)}
                 >
-                  <FaRegAddressCard className="w-8 h-8 stroke-2 group-hover:text-blue-500" />
+                  <FaRegAddressCard className="w-8 h-8 short:w-6 short:h-6 stroke-2 group-hover:text-blue-500" />
                   <span className="group-hover:text-blue-500">Docentes</span>
                 </Link>
               </li>
@@ -147,9 +147,9 @@ const SidebarInstitution = () => {
         <div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center space-x-2 justify-center text-red-500 text-center text-base font-semibold pb-8 w-full"
+            className="flex items-center space-x-2 justify-center text-red-500 text-center text-base font-semibold pb-8 w-full short:p-6"
           >
-            <LogOut className="w-8 h-8 stroke-2" />
+            <LogOut className="w-8 h-8 stroke-2 short:w-6 short:h-6" />
             <span>Sair</span>
           </button>
         </div>

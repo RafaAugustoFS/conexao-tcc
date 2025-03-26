@@ -170,7 +170,7 @@ const Sidebar = () => {
         <div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center space-x-2 justify-center text-red-500 text-center text-base font-semibold pb-8 w-full"
+            className="flex items-center space-x-2 justify-center text-red-500 text-center text-base font-semibold pb-8 w-full short:p-6"
           >
             <LogOut className="w-8 h-8 short:w-6 short:h-6 stroke-2" />
             <span>Sair</span>

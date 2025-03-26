@@ -70,14 +70,14 @@ export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
   const firstDayOfMonth = getFirstDayOfMonth(selectedMonth, selectedYear)
 
   return (
-    <div className="mb-6">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold text-[#666666] dark:text-[#D0CECE]">Eventos</h1>
-        <div className="flex items-center space-x-2">
+    <div className="mb-6 w-full max-w-3xl mx-auto px-4">
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-4 gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-[#666666] dark:text-[#D0CECE]">Eventos</h1>
+        <div className="flex items-center w-full sm:w-auto">
           <select
             value={selectedMonth}
             onChange={handleMonthChange}
-            className="bg-white dark:bg-[#0D0D0D] px-3 py-2 rounded-lg text-[#8A8A8A] dark:text-[#D0CECE]"
+            className="bg-white dark:bg-[#0D0D0D] px-3 py-2 rounded-lg text-[#8A8A8A] dark:text-[#D0CECE] w-full sm:w-auto"
           >
             {MONTHS.map((month, index) => (
               <option key={index} value={index}>
@@ -88,17 +88,17 @@ export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-2 mb-2">
+      <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2">
         {WEEKDAYS.map((day) => (
-          <div key={day} className="text-center text-sm text-[#333333] dark:text-[#D0CECE]">
+          <div key={day} className="text-center text-xs sm:text-sm text-[#333333] dark:text-[#D0CECE]">
             {day}
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {Array.from({ length: firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1 }).map((_, i) => (
-          <div key={`empty-${i}`} className="h-8 w-8"></div>
+          <div key={`empty-${i}`} className="h-6 sm:h-8 aspect-square"></div>
         ))}
 
         {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
@@ -109,9 +109,9 @@ export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
           return (
             <button
               key={day}
-              className={`h-8 w-8 rounded-full flex items-center justify-center text-sm text-[#666666]
+              className={`h-6 sm:h-8 aspect-square rounded-full flex items-center justify-center text-xs sm:text-sm text-[#666666]
                 ${event ? "bg-blue-500 text-white" : "hover:bg-[#ffffff] dark:hover:bg-[#000000] dark:text-[#666666]"}`}
-              title={event ? event.descricaoEvento : ""}
+              title={event ? `${event.tituloEvento}\n${event.descricaoEvento}\nLocal: ${event.localEvento}\nHorário: ${event.horarioEvento}` : ""}
             >
               {day}
             </button>

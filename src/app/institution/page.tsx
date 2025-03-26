@@ -27,9 +27,7 @@ export default function DashboardTeacher() {
   }, [darkMode]);
 
   return (
-    <div
-      className={`flex ${
-        darkMode ? "bg-[#141414] text-white" : "bg-[#F0F7FF] text-black"
+    <div className={`flex ${darkMode ? "bg-[#141414] text-white" : "bg-[#F0F7FF] text-black"
       }`}
     >
       <SidebarInstitution />
