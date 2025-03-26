@@ -70,9 +70,7 @@ export default function User({
         <div className="p-4 md:p-6 lg:p-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
             <div className="w-full sm:w-auto">
-              <WelcomeUser 
-                name={docenteData?.nomeDocente || "Nao achou"} 
-                className="text-xl sm:text-2xl lg:text-3xl"
+              <WelcomeUser
               />
             </div>
             <Button 

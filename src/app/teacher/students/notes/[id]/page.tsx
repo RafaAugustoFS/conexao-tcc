@@ -33,7 +33,6 @@ export default function Notes({
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
           </div>
-
           <Table />
         </div>
       </main>
