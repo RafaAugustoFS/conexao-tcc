@@ -17,6 +17,9 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
 import Modal from "@/components/modals/modelDelete";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 interface TeacherProfile {
   id: number;
@@ -101,9 +104,6 @@ export default function User() {
       });
   
       if (!response.ok) throw new Error("Erro ao excluir Docente");
-  
-      // Redireciona para a lista de docentes após a exclusão
-      router.push("/institution/teacher");
     } catch (error: any) {
       setError(error); // Armazena o objeto de erro completo
       console.error(error); // Log do erro no console para depuração
@@ -122,6 +122,10 @@ export default function User() {
   const confirmDelete = () => {
     if (selectedClassId !== null) {
       deleteTeacher(selectedClassId);
+      toast.success("Docente excluído com sucesso");
+      setTimeout(() =>{
+        router.push("/institution/teacher");
+      },2000)
     }
   };
 
@@ -175,6 +179,8 @@ export default function User() {
   }
 
   return (
+    <>
+    <ToastContainer/>
     <div className={`flex flex-row ${
       darkMode ? "bg-[#141414]" : "bg-[#F0F7FF]"
     } min-h-screen`}>
@@ -263,5 +269,6 @@ export default function User() {
       />
       </main>
     </div>
+    </>
   );
 }
