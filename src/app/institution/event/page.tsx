@@ -5,7 +5,6 @@ import  BiggerCalendar from "@/components/ui/institution/biggerCalendar";
 import { Button } from "@/components/ui/alunos/button";
 import { Moon, Plus, Sun } from "lucide-react";
 import { EventSidebar } from "@/components/ui/alunos/event-sidebar";
-import FloatingButton from "@/components/ui/institution/FloatingButton";
 import Modal from "@/components/modals/modalFloatingButton";
 import { useTheme } from "@/components/ThemeProvider";
 
