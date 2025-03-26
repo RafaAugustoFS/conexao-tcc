@@ -64,7 +64,6 @@ export default function Dashboard() {
       }`}
     >
       <Sidebar />
-
       <main className="flex-1 pl-6 pb-6 pr-6 pt-2">
         {/* Botão de Modo Escuro */}
         <div className="flex justify-end">

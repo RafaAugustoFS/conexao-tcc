@@ -46,7 +46,7 @@ export default function DashboardTeacher() {
         <NoticeCard onRefresh={handleRefresh}/>
 
         <div className="mt-6 w-full">
-          <div className="rounded-xl">
+          <div className="rounded-xl mt-14">
             <MessageList key={refreshKey}/>
           </div>
         </div>

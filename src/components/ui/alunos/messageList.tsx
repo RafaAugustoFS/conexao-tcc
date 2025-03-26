@@ -98,7 +98,7 @@ function MessageList({ className }: { className?: string }) {
     <div
       className={`bg-white dark:bg-black rounded-xl shadow-md p-3 overflow-hidden ${className}`}
     >
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-5">
         <h2 className="text-lg font-bold">Avisos</h2>
       </div>
 
