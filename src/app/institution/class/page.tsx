@@ -13,7 +13,6 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
-
 interface ClassProfile {
   id: number;
   nomeTurma: string;
@@ -53,6 +52,7 @@ export default function CheckInEmocional({
       setLoading(false);
     }
   };
+  
   const deleteClass = async (id: number) => {
     try {
       const response = await fetch(`http://localhost:3000/api/class/${id}`, {
@@ -64,20 +64,18 @@ export default function CheckInEmocional({
       setClasses((prevClasses) =>
         prevClasses.filter((turma) => turma.id !== id)
       );
-      setIsModalOpen(false); // Fecha o modal após a exclusão
-      setSelectedClassId(null); // Reseta o ID selecionado
+      setIsModalOpen(false);
+      setSelectedClassId(null);
     } catch (error: any) {
       setError(error.message);
     }
   };
 
-  // Função para abrir o modal e armazenar o ID da turma
   const handleDeleteClick = (id: number) => {
     setSelectedClassId(id);
     setIsModalOpen(true);
   };
 
-  // Função para confirmar a exclusão no modal
   const confirmDelete = () => {
     if (selectedClassId !== null) {
       deleteClass(selectedClassId);
@@ -88,11 +86,6 @@ export default function CheckInEmocional({
   useEffect(() => {
     fetchClassesData();
   }, []);
-
-  // useEffect(() => {
-  //   document.documentElement.classList.toggle("dark", darkMode);
-  //   localStorage.setItem("theme", darkMode ? "dark" : "light");
-  // }, [darkMode]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -112,98 +105,97 @@ export default function CheckInEmocional({
 
   return (
     <>
-    <ToastContainer/>
-    <div
-      className={`min-h-screen bg-[#F0F7FF] flex flex-row dark:bg-[#141414]`}
-    >
-      <Sidebar />
-      <div className="w-full flex flex-col items-center mt-8">
-        <div className="w-full flex justify-end mb-8 mr-28">
-        <Button onClick={toggleTheme}>
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </Button>
-        </div>
-        <div className="container mx-auto border bg-[#FFFFFF] w-[85%] h-[85%] p-8 pr-15 pt-20 pb-20 space-y-2 rounded-3xl dark:bg-black dark:border-black">
-          <div className="relative w-full max-w-md mx-auto flex justify-center items-center mb-6">
-            {/* <SearchInput placeholder="Digite o nome ou código da turma" onChange={(e) => setSearch(e.target.value)} /> */}
+      <ToastContainer/>
+      <div className="min-h-screen bg-[#F0F7FF] flex flex-col md:flex-row dark:bg-[#141414]">
+        <Sidebar />
+        <div className="w-full flex flex-col items-center mt-4 md:mt-8 px-4 md:px-0">
+          <div className="w-full flex justify-end mb-4 md:mb-8 md:mr-28">
+            <Button onClick={toggleTheme}>
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </Button>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {loading ? (
-              <p className="text-center text-gray-700 dark:text-white">
-                Carregando turmas...
-              </p>
-            ) : error ? (
-              <p className="text-center text-red-500">{error}</p>
-            ) : displayedClasses.length === 0 ? (
-              <p className="text-center text-gray-700 dark:text-white">
-                Nenhuma turma encontrada.
-              </p>
-            ) : (
-              displayedClasses.map((turma) => (
-                <div
-                  key={turma.id}
-                  className="bg-blue-50 dark:bg-[#141414] p-4 rounded-lg shadow"
-                >
-                  <h3 className="font-bold text-lg dark:text-white">
-                    {turma.nomeTurma}{" "}
-                    <span className="text-gray-500 text-sm dark:text-[#8A8A8A]">
-                      Nº{turma.id}
-                    </span>
-                  </h3>
-                  <p className="text-gray-700 dark:text-white">
-                    {turma.alunosAtivos} alunos ativos
-                  </p>
-                  <div className="flex flex-row items-center space-x-16">
-                    <Link href={`class/viewclass/${turma.id}`}>
-                      <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
-                        Visualizar turma
-                      </button>
-                    </Link>
-                    <div className="space-x-4">
-                      <Link href={`class/editclass/${turma.id}`}>
-                        <button className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600">
-                          <Pencil size={20} />
+          <div className="w-full max-w-6xl border bg-[#FFFFFF] p-4 md:p-8 pt-10 md:pt-20 pb-10 md:pb-20 space-y-2 rounded-3xl dark:bg-black dark:border-black">
+            <div className="relative w-full max-w-md mx-auto flex justify-center items-center mb-6">
+              {/* <SearchInput placeholder="Digite o nome ou código da turma" onChange={(e) => setSearch(e.target.value)} /> */}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {loading ? (
+                <p className="text-center text-gray-700 dark:text-white col-span-full">
+                  Carregando turmas...
+                </p>
+              ) : error ? (
+                <p className="text-center text-red-500 col-span-full">{error}</p>
+              ) : displayedClasses.length === 0 ? (
+                <p className="text-center text-gray-700 dark:text-white col-span-full">
+                  Nenhuma turma encontrada.
+                </p>
+              ) : (
+                displayedClasses.map((turma) => (
+                  <div
+                    key={turma.id}
+                    className="bg-blue-50 dark:bg-[#141414] p-4 rounded-lg shadow"
+                  >
+                    <h3 className="font-bold text-lg dark:text-white">
+                      {turma.nomeTurma}{" "}
+                      <span className="text-gray-500 text-sm dark:text-[#8A8A8A]">
+                        Nº{turma.id}
+                      </span>
+                    </h3>
+                    <p className="text-gray-700 dark:text-white">
+                      {turma.alunosAtivos} alunos ativos
+                    </p>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4 gap-2">
+                      <Link href={`class/viewclass/${turma.id}`} className="w-full sm:w-auto">
+                        <button className="w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                          Visualizar turma
                         </button>
                       </Link>
-
-                      <button
-                        className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600"
-                        onClick={() => handleDeleteClick(turma.id)} // Abre o modal antes de excluir
-                      >
-                        <Trash size={20} />
-                      </button>
+                      <div className="flex justify-end sm:justify-normal gap-2">
+                        <Link href={`class/editclass/${turma.id}`}>
+                          <button className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition">
+                            <Pencil size={20} />
+                          </button>
+                        </Link>
+                        <button
+                          className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition"
+                          onClick={() => handleDeleteClick(turma.id)}
+                        >
+                          <Trash size={20} />
+                        </button>
+                      </div>
                     </div>
                   </div>
+                ))
+              )}
+            </div>
+            {totalPages > 1 && (
+              <div className="flex justify-center mt-6 overflow-x-auto">
+                <div className="flex space-x-1">
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`px-3 py-1 sm:px-4 sm:py-2 rounded-md transition ${
+                        currentPage === i + 1
+                          ? "bg-blue-500 text-white dark:text-black"
+                          : "bg-[#F0F7FF] text-blue-500 hover:bg-gray-300 dark:bg-[#141414]"
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
                 </div>
-              ))
+              </div>
             )}
           </div>
-          {totalPages > 1 && (
-            <div className="flex justify-center mt-6">
-              {Array.from({ length: totalPages }, (_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={`px-4 py-2 mx-1 rounded-md transition ${
-                    currentPage === i + 1
-                      ? "bg-blue-500 text-white dark:text-black"
-                      : "bg-[#F0F7FF] text-blue-500 hover:bg-gray-300 dark:bg-[#141414]"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-            </div>
-          )}
+          <FloatingButton rote="class/createclass" />
         </div>
-        <FloatingButton rote="class/createclass" />
+        <DeleteModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={confirmDelete}
+        />
       </div>
-      <DeleteModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={confirmDelete} // Só exclui quando confirmar
-      />
-    </div>
     </>
   );
 }

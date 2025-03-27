@@ -243,7 +243,7 @@ export default function CreateClass() {
                   </Select>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4 max-xs:grid-cols-1">
                   <div>
                     <label
                       className={`text-sm ${
