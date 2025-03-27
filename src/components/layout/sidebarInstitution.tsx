@@ -161,8 +161,8 @@ const SidebarInstitution = () => {
         confirmButtonColor="bg-red-600" // Cor personalizada
         confirmButtonText="Sair"
       >
-        <h2 className="text-lg font-bold mb-4">Confirmar saída</h2>
-        <p>Tem certeza que deseja sair?</p>
+        <h2 className="text-lg font-bold mb-4 dark:text-white">Confirmar saída</h2>
+        <p className="dark:text-white">Tem certeza que deseja sair?</p>
       </Modal>
     </>
   );
