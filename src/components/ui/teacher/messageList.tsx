@@ -72,7 +72,7 @@ function MessageList({ className }: { className?: string }) {
 
   return (
     <div
-      className={`bg-white dark:bg-black rounded-xl shadow-md p-4 overflow-hidden ${className}`}
+      className={`bg-white dark:bg-black rounded-xl shadow-md p-4 overflow-hidden ${className} h-[332px]`}
     >
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold">Avisos</h2>
