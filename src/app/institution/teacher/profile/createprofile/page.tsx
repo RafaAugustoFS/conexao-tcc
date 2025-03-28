@@ -13,7 +13,7 @@ import InputImage from "@/components/ui/institution/InputImage";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-import User from '@/assets/images/adicionar-usuario 1.png';
+import User from "@/assets/images/adicionar-usuario 1.png";
 
 interface Disciplina {
   id: number;
@@ -139,8 +139,8 @@ export default function Profile() {
       setEmail("");
       setBirthDate("");
       setPhone("");
-      setImagemPerfil("")
-      setDisciplineId([])
+      setImagemPerfil("");
+      setDisciplineId([]);
     } catch (error) {
       console.error("❌ Erro ao criar perfil:", error);
       toast.error("Erro ao criar perfil.");
@@ -176,7 +176,7 @@ export default function Profile() {
 
   return (
     <>
-    <ToastContainer />
+      <ToastContainer />
       <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
         <Sidebar />
         <main className="flex-1">
@@ -196,7 +196,7 @@ export default function Profile() {
             <div className="container mx-auto p-6 space-y-6 max-w-5xl h-1/2 bg-[#ffffff] dark:bg-black rounded-3xl">
               <div className="flex flex-col items-center gap-4">
                 <Image
-                 src={imageUrl || User}
+                  src={imageUrl || User}
                   alt="Profile picture"
                   width={80}
                   height={80}
@@ -211,19 +211,27 @@ export default function Profile() {
                     label: "Nome Completo",
                     state: nomeDocente,
                     setState: setName,
+                    maxLength: 100, // Limite para nome
                   },
                   {
                     label: "Data de Nascimento",
                     state: dataNascimentoDocente,
                     setState: setBirthDate,
+                    // Não aplicamos maxLength para date
                   },
-                  { label: "Email", state: emailDocente, setState: setEmail },
+                  {
+                    label: "Email",
+                    state: emailDocente,
+                    setState: setEmail,
+                    maxLength: 100, // Limite para email
+                  },
                   {
                     label: "Telefone",
                     state: telefoneDocente,
                     setState: setPhone,
+                    maxLength: 15, // Limite para telefone (incluindo DDD e possivelmente código do país)
                   },
-                ].map(({ label, state, setState }) => (
+                ].map(({ label, state, setState, maxLength }) => (
                   <div key={label} className="space-y-2">
                     <label className="text-sm text-muted-foreground dark:text-gray-400">
                       {label}
@@ -233,6 +241,7 @@ export default function Profile() {
                       value={state}
                       onChange={(e) => setState(e.target.value)}
                       className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white"
+                      maxLength={maxLength} // Aplica maxLength apenas quando definido
                     />
                   </div>
                 ))}

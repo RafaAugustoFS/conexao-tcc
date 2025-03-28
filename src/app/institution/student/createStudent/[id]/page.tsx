@@ -10,7 +10,7 @@ import { useParams } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
 import ModalCreate from "@/components/modals/modalCreate";
 import InputImage from "@/components/ui/institution/InputImage";
-import User from '@/assets/images/adicionar-usuario 1.png';
+import User from "@/assets/images/adicionar-usuario 1.png";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
@@ -68,7 +68,7 @@ export default function Profile({
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return regex.test(email);
     };
-  
+
     const validatePhone = (phone: string) => {
       const regex = /^\d{10,11}$/;
       return regex.test(phone);
@@ -99,7 +99,7 @@ export default function Profile({
     }
 
     try {
-      setIsModalOpen(true)
+      setIsModalOpen(true);
       const response = await fetch("http://localhost:3000/api/student", {
         method: "POST",
         headers: {
@@ -112,7 +112,7 @@ export default function Profile({
           dataNascimentoAluno,
           telefoneAluno,
           turmaId: id,
-          imageUrl
+          imageUrl,
         }),
       });
 
@@ -158,35 +158,34 @@ export default function Profile({
 
   return (
     <>
-    <ToastContainer/>
-    <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
-      <Sidebar />
-      <main className="flex-1 p-8">
-    
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1
-              className={`text-2xl font-bold ${
-                darkMode ? "text-blue-500" : "text-blue-500"
-              }`}
-            >
-              Criar Novo aluno
-            </h1>
-            <p
-              className={`text-sm ${
-                darkMode ? "text-gray-400" : "text-gray-500"
-              }`}
-            >
-              Preencha os campos abaixo para criar uma novo aluno.
-            </p>
+      <ToastContainer />
+      <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
+        <Sidebar />
+        <main className="flex-1 p-8">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1
+                className={`text-2xl font-bold ${
+                  darkMode ? "text-blue-500" : "text-blue-500"
+                }`}
+              >
+                Criar Novo aluno
+              </h1>
+              <p
+                className={`text-sm ${
+                  darkMode ? "text-gray-400" : "text-gray-500"
+                }`}
+              >
+                Preencha os campos abaixo para criar uma novo aluno.
+              </p>
+            </div>
+            <Button onClick={toggleTheme}>
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </Button>
           </div>
-          <Button onClick={toggleTheme}>
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </Button>
-        </div>
 
-        <div className="container mx-auto p-6 space-y-6 max-w-5xl bg-white dark:bg-black rounded-3xl">
-        <div className="flex flex-col items-center gap-4">
+          <div className="container mx-auto p-6 space-y-6 max-w-5xl bg-white dark:bg-black rounded-3xl">
+            <div className="flex flex-col items-center gap-4">
               <Image
                 src={imageUrl || User}
                 alt="Profile picture"
@@ -197,41 +196,61 @@ export default function Profile({
               <InputImage onChange={handleImageChange} />
             </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              { label: "Nome Completo", state: nomeAluno, setState: setName },
-              {
-                label: "Data de Nascimento",
-                state: dataNascimentoAluno,
-                setState: setBirthDate,
-              },
-              { label: "Email", state: emailAluno, setState: setEmail },
-              { label: "Telefone", state: telefoneAluno, setState: setPhone },
-            ].map(({ label, state, setState }) => (
-              <div key={label} className="space-y-2">
-                <label className="text-sm text-muted-foreground dark:text-gray-500">{label}</label>
-                <Input
-                  type={label === "Data de Nascimento" ? "date" : "text"}
-                  value={state}
-                  onChange={(e) => setState(e.target.value)}
-                  className="bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]"
-                />
-              </div>
-            ))}
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                {
+                  label: "Nome Completo",
+                  state: nomeAluno,
+                  setState: setName,  
+                },
+                {
+                  label: "Data de Nascimento",
+                  state: dataNascimentoAluno,
+                  setState: setBirthDate,
+                },
+                {
+                  label: "Email",
+                  state: emailAluno,
+                  setState: setEmail
+                },
+                {
+                  label: "Telefone",
+                  state: telefoneAluno,
+                  setState: setPhone,
+                  maxLength: 11, 
+                },
+              ].map(({ label, state, setState, maxLength }) => (
+                <div key={label} className="space-y-2">
+                  <label className="text-sm text-muted-foreground dark:text-gray-500">
+                    {label}
+                  </label>
+                  <Input
+                    type={label === "Data de Nascimento" ? "date" : "text"}
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    className="bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]"
+                    maxLength={maxLength}     
+                  />
+                </div>
+              ))}
+            </div>
 
-          <div className="flex justify-center">
-            <Button
-              className="bg-blue-500 hover:bg-blue-600 text-white px-8"
-              onClick={handleSubmit}
-            >
-              Criar estudante
-            </Button>
+            <div className="flex justify-center">
+              <Button
+                className="bg-blue-500 hover:bg-blue-600 text-white px-8"
+                onClick={handleSubmit}
+              >
+                Criar estudante
+              </Button>
+            </div>
           </div>
-        </div>
-        <ModalCreate isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} message="Criando aluno..." />
-      </main>
-    </div>
+          <ModalCreate
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            message="Criando aluno..."
+          />
+        </main>
+      </div>
     </>
   );
 }

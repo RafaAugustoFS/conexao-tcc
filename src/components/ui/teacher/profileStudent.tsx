@@ -57,6 +57,7 @@ export function ProfileInfo({ name, email, birthDate, phone, registrationNumber 
           <input
             type="tel"
             value={phone}
+            maxLength={11}
             readOnly
             className="w-full p-2 rounded-lg border text-[#00000075] border-[#F0F7FF] bg-[#F0F7FF] dark:bg-[#141414] dark:text-[#ffffff94] dark:border-[#141414]"
           />
