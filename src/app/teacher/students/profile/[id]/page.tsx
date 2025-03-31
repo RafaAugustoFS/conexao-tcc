@@ -7,7 +7,6 @@ import { useParams } from "next/navigation";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 
-
 interface StudentProfile {
   imageUrl: string;
   nome: string;
@@ -35,7 +34,8 @@ export default function User({
   const fetchStudentData = async () => {
     try {
       const response = await fetch(`http://localhost:3000/api/student/${id}`);
-      if (!response.ok) throw new Error("Não foi possível carregar os dados do estudante");
+      if (!response.ok)
+        throw new Error("Não foi possível carregar os dados do estudante");
 
       const data = await response.json();
       setStudentData(data); // Setando os dados do estudante
@@ -51,11 +51,6 @@ export default function User({
     fetchStudentData(); // Chamando a função para carregar os dados
   }, []);
 
-  // useEffect(() => {
-  //   document.documentElement.classList.toggle("dark", darkMode);
-  //   localStorage.setItem("theme", darkMode ? "dark" : "light");
-  // }, [darkMode]);
-
   return (
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
       <Sidebar />
@@ -69,7 +64,10 @@ export default function User({
           <div className="bg-white dark:bg-black rounded-lg shadow-sm p-3">
             {studentData && (
               <ProfileInfo
-                imageUrl={studentData.imageUrl || "https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg?t=st=1738800543~exp=1738804143~hmac=5400a6f0c02663ed6f91ff172c490ed49dbd456d03bed9e4c98b2aed06b0dfdb&w=826"}
+                imageUrl={
+                  studentData.imageUrl ||
+                  "https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg?t=st=1738800543~exp=1738804143~hmac=5400a6f0c02663ed6f91ff172c490ed49dbd456d03bed9e4c98b2aed06b0dfdb&w=826"
+                }
                 name={studentData.nome}
                 email={studentData.emailAluno}
                 birthDate={studentData.dataNascimentoAluno}

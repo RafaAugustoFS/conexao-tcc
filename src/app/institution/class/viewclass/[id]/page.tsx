@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowDownCircle, Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/alunos/button";
 import Sidebar from "@/components/layout/sidebarInstitution";
 import SearchInput from "@/components/ui/search";
@@ -38,7 +38,9 @@ export default function StudentsPage({
 
     const fetchStudents = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/class/students/${id}`);
+        const response = await fetch(
+          `http://localhost:3000/api/class/students/${id}`
+        );
         if (!response.ok) throw new Error("Erro ao buscar alunos");
         const data = await response.json();
         setEstudante(Array.isArray(data.students) ? data.students : []);
@@ -67,7 +69,9 @@ export default function StudentsPage({
   }, [search]);
 
   return (
-    <div className="min-h-screen bg-[#F0F7FF] flex flex-col md:flex-row dark:bg-[#141414]">
+    <div
+      className={`min-h-screen bg-[#F0F7FF] flex flex-row dark:bg-[#141414]`}
+    >
       <Sidebar />
       <div className="w-full flex flex-col items-center mt-4 md:mt-8 px-4">
         <div className="w-full flex justify-end mb-4 md:mb-8 md:mr-28">
@@ -93,16 +97,16 @@ export default function StudentsPage({
                 <table className="w-full text-left border-collapse border border-[#1A85FF] dark:border-black">
                   <thead>
                     <tr className="bg-[#1A85FF] text-white">
-                      <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414] text-sm md:text-base">
+                      <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414]">
                         Nome do aluno
                       </th>
-                      <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414] text-sm md:text-base">
-                        Matrícula
+                      <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414]">
+                        Nº da Matrícula
                       </th>
-                      <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414] text-sm md:text-base">
+                      <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414]">
                         Perfil
                       </th>
-                      <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414] text-sm md:text-base">
+                      <th className="p-2 border border-blue-500 bg-[#F0F7FF] text-blue-500 dark:bg-[#141414]">
                         Notas
                       </th>
                     </tr>
@@ -110,27 +114,27 @@ export default function StudentsPage({
                   <tbody>
                     {displayedStudents.map((student) => (
                       <tr key={student.id} className="border border-blue-500">
-                        <td className="p-2 border border-blue-500 dark:text-white text-sm md:text-base">
+                        <td className="p-2 border border-blue-500 dark:text-[#8A8A8A]">
                           {student.nomeAluno}
                         </td>
-                        <td className="p-2 border border-blue-500 dark:text-[#8A8A8A] text-sm md:text-base">
+                        <td className="p-2 border border-blue-500 dark:text-[#8A8A8A]">
                           {student.identifierCode}
                         </td>
-                        <td className="p-2 border border-blue-500 dark:text-white text-sm md:text-base">
-                          <Link
+                        <td className="p-2 border border-blue-500 dark:text-white">
+                          <a
                             href={`/institution/student/profile/${student.id}`}
-                            className="text-blue-500 hover:underline"
+                            className="text-blue-500"
                           >
                             Ver perfil
-                          </Link>
+                          </a>
                         </td>
-                        <td className="p-2 border border-blue-500 cursor-pointer text-sm md:text-base">
-                          <Link
+                        <td className="p-2 border border-blue-500 cursor-pointer">
+                          <a
                             href={`/institution/student/notes/${student.id}`}
-                            className="text-blue-500 hover:underline"
+                            className="text-blue-500"
                           >
                             Ver Notas
-                          </Link>
+                          </a>
                         </td>
                       </tr>
                     ))}

@@ -12,7 +12,6 @@ import {
   Select,
 } from "@/components/ui/institution/select";
 import Sidebar from "@/components/layout/sidebarInstitution";
-import SearchInput from "@/components/ui/search";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";

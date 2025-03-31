@@ -1,13 +1,11 @@
 "use client";
 
-import { Card } from "@/components/ui/alunos/card";
 import MessageList from "@/components/ui/institution/messageList";
 import SidebarInstitution from "@/components/layout/sidebarInstitution";
 import { Button } from "@/components/ui/alunos/button";
 import { Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
 import WelcomeMessage from "@/components/ui/welcomeMessage";
-import { Class } from "@/components/ui/teacher/class";
 import { NoticeCard } from "@/components/ui/institution/noticeCard";
 import LateralCalendar from "@/components/ui/lateralCalendar";
 import { useTheme } from "@/components/ThemeProvider";

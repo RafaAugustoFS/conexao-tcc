@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import Select from "react-select";
 import { OccurrencesTable } from "@/components/ui/alunos/occurrences-table";
 import Sidebar from "@/components/layout/sidebarInstitution";
 import { Button } from "@/components/ui/alunos/button";

@@ -75,7 +75,7 @@ export default function User({
       <Sidebar />
       <main className="flex-1 p-4 md:p-8 overflow-auto">
         <div className="flex flex-row items-start md:items-center justify-between mb-6 md:mb-8 gap-4">
-          <WelcomeUser name={studentData?.nome || ""} />
+          <WelcomeUser/>
           <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>

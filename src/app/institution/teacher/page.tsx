@@ -27,11 +27,6 @@ export default function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const teachersPerPage = 6;
 
-  // useEffect(() => {
-  //   document.documentElement.classList.toggle("dark", darkMode);
-  //   localStorage.setItem("theme", darkMode ? "dark" : "light");
-  // }, [darkMode]);
-
   useEffect(() => {
     setCurrentPage(1);
   }, [search]);
