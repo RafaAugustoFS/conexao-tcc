@@ -2,11 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import Table from "../../../components/ui/alunos/gradeTable";
-import WelcomeUser from "@/components/ui/welcomeUser";
 import Sidebar from "@/components/layout/sidebar";
 import { Button } from "@/components/ui/alunos/button";
 import { Moon, Sun } from "lucide-react";
-import {jwtDecode} from 'jwt-decode'; // Biblioteca para decodificar JWT
+import {jwtDecode} from 'jwt-decode';
 import { useTheme } from "@/components/ThemeProvider";
 
 // Tipagem para os dados do estudante

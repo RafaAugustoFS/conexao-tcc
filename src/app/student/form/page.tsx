@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ArrowDownCircle, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/alunos/button";
 import Sidebar from "@/components/layout/sidebar";
@@ -15,7 +15,7 @@ export default function CheckInEmocional({
   value: number;
   className?: string;
 }) {
-  const { darkMode, toggleTheme } = useTheme(); 
+  const { darkMode, toggleTheme } = useTheme();
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
@@ -27,7 +27,7 @@ export default function CheckInEmocional({
       <Sidebar />
       <div className="w-full flex flex-col items-center mt-8 px-4 lg:px-0">
         <div className="w-full flex justify-end mb-8 lg:mr-28">
-        <Button onClick={toggleTheme}>
+          <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>
