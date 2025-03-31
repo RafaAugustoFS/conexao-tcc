@@ -210,7 +210,7 @@ export default function ResponsiveCalendar() {
       // })
       setOpenModal(false)
       fetchEvents()
-      toast.success("AAA")
+      toast.success("Evento criado com sucesso!")
     } catch (error) {
       console.error("Erro ao adicionar evento:", error)
       // toast({
@@ -218,6 +218,7 @@ export default function ResponsiveCalendar() {
       //   description: "Não foi possível adicionar o evento",
       //   variant: "destructive",
       // })
+      toast.error("Erro ao criar o evento.")
     } finally {
       setIsLoading(false)
     }
