@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/alunos/button";
 import Sidebar from "@/components/layout/sidebarTeacher";
+import GlobalTablePerformance from "@/components/ui/globalTablePerformance";
 import SearchInput from "@/components/ui/search";
 import { useParams } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
@@ -158,6 +159,7 @@ export default function StudentsPage({
             </div>
           )}
         </div>
+        <GlobalTablePerformance/>
       </div>
     </div>
   );
