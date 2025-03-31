@@ -16,7 +16,10 @@ import { Input } from "@/components/ui/institution/input"
 import { Label } from "@/components/ui/institution/label"
 import { Textarea } from "@/components/ui/institution/textarea"
 import { Plus, Trash2, Edit, Calendar } from "lucide-react"
-import { toast } from "@/components/ui/institution/use-toast"
+//import { toast } from "@/components/ui/institution/use-toast"
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 interface Event {
   id: number
@@ -76,11 +79,11 @@ export default function ResponsiveCalendar() {
       setAllEvents(events)
     } catch (error) {
       console.error("Erro ao buscar eventos:", error)
-      toast({
-        title: "Erro",
-        description: "Não foi possível carregar os eventos",
-        variant: "destructive",
-      })
+      // toast({
+      //   title: "Erro",
+      //   description: "Não foi possível carregar os eventos",
+      //   variant: "destructive",
+      // })
     } finally {
       setIsLoading(false)
     }
@@ -201,19 +204,20 @@ export default function ResponsiveCalendar() {
         throw new Error("Falha ao adicionar evento")
       }
 
-      toast({
-        title: "Sucesso",
-        description: "Evento adicionado com sucesso",
-      })
+      // toast({
+      //   title: "Sucesso",
+      //   description: "Evento adicionado com sucesso",
+      // })
       setOpenModal(false)
       fetchEvents()
+      toast.success("AAA")
     } catch (error) {
       console.error("Erro ao adicionar evento:", error)
-      toast({
-        title: "Erro",
-        description: "Não foi possível adicionar o evento",
-        variant: "destructive",
-      })
+      // toast({
+      //   title: "Erro",
+      //   description: "Não foi possível adicionar o evento",
+      //   variant: "destructive",
+      // })
     } finally {
       setIsLoading(false)
     }
@@ -240,19 +244,19 @@ export default function ResponsiveCalendar() {
         throw new Error("Falha ao atualizar evento")
       }
 
-      toast({
-        title: "Sucesso",
-        description: "Evento atualizado com sucesso",
-      })
+      // toast({
+      //   title: "Sucesso",
+      //   description: "Evento atualizado com sucesso",
+      // })
       setOpenModal(false)
       fetchEvents()
     } catch (error) {
       console.error("Erro ao atualizar evento:", error)
-      toast({
-        title: "Erro",
-        description: "Não foi possível atualizar o evento",
-        variant: "destructive",
-      })
+      // toast({
+      //   title: "Erro",
+      //   description: "Não foi possível atualizar o evento",
+      //   variant: "destructive",
+      // })
     } finally {
       setIsLoading(false)
     }
@@ -281,20 +285,20 @@ export default function ResponsiveCalendar() {
         throw new Error("Falha ao excluir evento")
       }
 
-      toast({
-        title: "Sucesso",
-        description: "Evento excluído com sucesso",
-      })
+      // toast({
+      //   title: "Sucesso",
+      //   description: "Evento excluído com sucesso",
+      // })
       setOpenDeleteDialog(false)
       setOpenModal(false)
       fetchEvents()
     } catch (error) {
       console.error("Erro ao excluir evento:", error)
-      toast({
-        title: "Erro",
-        description: "Não foi possível excluir o evento",
-        variant: "destructive",
-      })
+      // toast({
+      //   title: "Erro",
+      //   description: "Não foi possível excluir o evento",
+      //   variant: "destructive",
+      // })
     } finally {
       setIsLoading(false)
     }
@@ -302,6 +306,7 @@ export default function ResponsiveCalendar() {
 
   return (
     <>
+    <ToastContainer/>
       <nav className="flex justify-between mb-4 md:mb-2 border-violet-100 p-2 md:p-4">
       </nav>
       <main className="flex flex-col items-center justify-between p-2 md:p-6 lg:p-16">
