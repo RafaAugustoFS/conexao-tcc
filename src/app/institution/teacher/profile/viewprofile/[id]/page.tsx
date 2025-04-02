@@ -117,28 +117,30 @@ export default function User() {
     }
   };
 
-  // Função para buscar os feedbacks
-  const fetchFeedbacks = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("Token não encontrado");
+ // Função para buscar os feedbacks
+const fetchFeedbacks = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Token não encontrado");
 
-      const response = await fetch(`http://localhost:3000/api/feedbackStudent/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    const response = await fetch(`http://localhost:3000/api/feedbackStudent/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-      if (!response.ok) {
-        throw new Error("Não foi possível carregar os feedbacks");
-      }
-
-      const data = await response.json();
-      setFeedbacks(Array.isArray(data) ? data : [data]); // Garante que é um array
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      console.warn("Nenhum feedback encontrado para este docente.");
+      setFeedbacks([]); // Garante que não quebre a interface
+      return;
     }
-  };
+
+    const data = await response.json();
+    setFeedbacks(Array.isArray(data) ? data : []);
+  } catch (err: any) {
+    console.warn("Erro ao carregar feedbacks:", err.message);
+    setFeedbacks([]); // Evita quebrar a interface
+  }
+};
+
 
   useEffect(() => {
     fetchDocenteData();
