@@ -91,7 +91,7 @@ export default function CreateClass() {
 
     const payload = {
       nomeTurma,
-      anoLetivoTurma,
+      anoLetivoTurma: parseInt(anoLetivoTurma, 10),
       periodoTurma,
       capacidadeMaximaTurma: capacidadeTurma,
       salaTurma,
@@ -239,9 +239,9 @@ export default function CreateClass() {
                       <SelectContent
                         className={darkMode ? "bg-[#2D2D2D] text-white" : ""}
                       >
-                        <SelectItem value="2025-01-01">2025</SelectItem>
-                        <SelectItem value="2024-01-01">2024</SelectItem>
-                        <SelectItem value="2023-01-01">2023</SelectItem>
+                        <SelectItem value="2025">2025</SelectItem>
+                        <SelectItem value="2024">2024</SelectItem>
+                        <SelectItem value="2023">2023</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

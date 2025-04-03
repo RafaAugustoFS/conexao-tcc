@@ -45,7 +45,7 @@ function MessageList({ className }: { className?: string }) {
           }
         );
   
-        if (!response.ok) throw new Error("Erro ao buscar dados do aluno");
+        if (!response.ok) throw new Error("Nenhum aviso disponível.");
   
         const data = await response.json();
         setStudentTurma(data.turma.idTurma);
