@@ -205,7 +205,7 @@ export default function EditClass() {
                       Ano letivo
                     </label>
                     <Select
-                      value={anoLetivoTurma}
+                      value={anoLetivoTurma.toString()}
                       onChange={(value) => {
                         console.log("📆 Ano letivo atualizado:", value);
                         setAnoLetivoTurma(value);

@@ -43,7 +43,11 @@ interface EventData {
   descricaoEvento: string
 }
 
-export default function ResponsiveCalendar() {
+interface BiggerCalendarProps {
+  onEventCreated: () => void;
+}
+
+export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarProps) {
   const [allEvents, setAllEvents] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [openModal, setOpenModal] = useState(false)
@@ -211,6 +215,7 @@ export default function ResponsiveCalendar() {
       setOpenModal(false)
       fetchEvents()
       toast.success("Evento criado com sucesso!")
+      onEventCreated();
     } catch (error) {
       console.error("Erro ao adicionar evento:", error)
       // toast({
