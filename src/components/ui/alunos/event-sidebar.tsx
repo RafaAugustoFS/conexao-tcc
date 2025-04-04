@@ -80,13 +80,16 @@ export function EventSidebar() {
 
   // Format date from API (YYYY-MM-DD) to "DD - MMM YYYY"
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date
+    const [year, month, day] = dateString.split("-").map(Number);
+    const date = new Date(year, month - 1, day); // mês começa do zero
+    const dayFormatted = day; // Pegamos diretamente do split, sem confiar no Date
+    const monthFormatted = date
       .toLocaleString("pt-BR", { month: "short" })
       .replace(".", "");
-    const year = date.getFullYear();
-    return `${day} - ${month.charAt(0).toUpperCase() + month.slice(1)} ${year}`;
+    const yearFormatted = year;
+    return `${dayFormatted} - ${
+      monthFormatted.charAt(0).toUpperCase() + monthFormatted.slice(1)
+    } ${yearFormatted}`;
   };
 
   // Format time from API (HH:MM:SS) to "H A.M - (H+1) A.M"
@@ -199,7 +202,7 @@ export function EventSidebar() {
                             eventColors[index % eventColors.length]
                           } rounded-full flex items-center justify-center text-white`}
                         >
-                          {new Date(event.dataEvento).getDate()}{" "}
+                          {event.dataEvento.split("-")[2]}
                           {/* Extrai o dia da data do evento */}
                         </div>
                         <div>

@@ -86,27 +86,27 @@ export default function FeedbackForm() {
   const questions: Question[] = [
     {
       id: 1,
-      text: "Nível de Engajamento (O quanto a aula prendeu a atenção e motivou a participação?)",
+      text: "Nível de Engajamento do aluno",
       responseKey: "resposta1",
     },
     {
       id: 2,
-      text: "Clareza da Explicação (O quão bem o conteúdo foi explicado?)",
+      text: "Nível de disposição do aluno",
       responseKey: "resposta2",
     },
     {
       id: 3,
-      text: "Relevância do Conteúdo (O quão útil foi o material apresentado?)",
+      text: "Nível de entrega do aluno",
       responseKey: "resposta3",
     },
     {
       id: 4,
-      text: "Interatividade (O quanto você pôde participar e interagir durante a aula?)",
+      text: "Nível de atenção do aluno",
       responseKey: "resposta4",
     },
     {
       id: 5,
-      text: "Satisfação Geral (Qual sua avaliação geral da aula?)",
+      text: "Nível de comportamento do aluno",
       responseKey: "resposta5",
     },
   ];
