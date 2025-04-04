@@ -28,12 +28,14 @@ interface TeacherProfile {
   dataNascimentoDocente: string;
   telefoneDocente: string;
   identifierCode: string;
-  classes: Array<{ nomeTurma: string; id: number; quantidadeAlunos: number }>;
+  classes: Array<{
+    nomeTurma: string;
+  }>;
 }
 
 interface Feedback {
   conteudo: string;
-  createdBy: { nomeAluno: string }; // Corrigido para incluir o nome do aluno
+  aluno: { nomeAluno: string }; // Corrigido para incluir o nome do aluno
   recipientTeacher: { id: number };
 }
 
@@ -123,7 +125,7 @@ const fetchFeedbacks = async () => {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("Token não encontrado");
 
-    const response = await fetch(`http://localhost:3000/api/feedbackStudent/${id}`, {
+    const response = await fetch(`http://localhost:3000/api/feedbackStudent/teacher/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -172,7 +174,7 @@ const fetchFeedbacks = async () => {
                   birthDate={docenteData.dataNascimentoDocente}
                   phone={docenteData.telefoneDocente}
                   registrationNumber={docenteData.identifierCode}
-                  classes={docenteData.classes.map((classe) => classe.nomeTurma)}
+                  classes={docenteData.classes}
                 />
 
                 <div className="w-full flex flex-row justify-end space-x-4 pr-8">
@@ -207,7 +209,7 @@ const fetchFeedbacks = async () => {
                       feedbacks.map((feedback, index) => (
                         <TableRow key={index}>
                           <TableCell>{feedback.conteudo}</TableCell>
-                          <TableCell>{feedback.createdBy?.nomeAluno || "Desconhecido"}</TableCell>
+                          <TableCell>{feedback.aluno?.nomeAluno || "Desconhecido"}</TableCell>
                         </TableRow>
                       ))
                     ) : (

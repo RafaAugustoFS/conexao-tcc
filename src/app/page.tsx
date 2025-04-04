@@ -154,8 +154,8 @@ export default function LoginPage() {
                   isDark ? "text-white" : "text-gray-900"
                 }`}
               >
-                Bem-vindo à <br />
-                (plataforma)
+                Bem-vindo ao <br />
+                On Academy!
               </h1>
               <p
                 className={`text-base sm:text-lg ${
