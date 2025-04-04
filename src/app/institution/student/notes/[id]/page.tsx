@@ -1,6 +1,6 @@
 "use client";
 
-import Table from "@/components/ui/teacher/gradeTableStudents";
+import Table from "@/components/ui/institution/gradeTableStudents";
 import Sidebar from "@/components/layout/sidebarInstitution";
 import { Button } from "@/components/ui/alunos/button";
 import { Moon, Sun } from "lucide-react";
