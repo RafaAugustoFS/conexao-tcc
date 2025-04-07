@@ -193,13 +193,34 @@ export default function FeedbackForm() {
           <h2 className="text-2xl font-bold text-blue-600 mb-4">
             Obrigado pelo seu feedback!
           </h2>
-          <p className="text-gray-700">
+          <p className="text-gray-700 mb-6">
             Suas respostas foram enviadas com sucesso.
           </p>
+          <button
+            onClick={() => {
+              setResponses({
+                resposta1: 0,
+                resposta2: 0,
+                resposta3: 0,
+                resposta4: 0,
+                resposta5: 0,
+                bimestre: 1,
+                createdBy: { id: responses.createdBy.id },
+                recipientStudent: { id: responses.recipientStudent.id },
+              });
+              setCurrentQuestion(0);
+              setIsSubmitted(false);
+              setErrorMessage(null);
+            }}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-md transition-colors"
+          >
+            Adicionar novo feedback
+          </button>
         </div>
       </div>
     );
   }
+  
 
   if (isLoading) {
     return (

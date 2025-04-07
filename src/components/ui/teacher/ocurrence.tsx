@@ -13,6 +13,11 @@ export default function Ocurrence() {
 
   const enviarFeedback = async () => {
     try {
+      if (feedback.length > 100) {
+        toast.warn("O feedback deve ter no máximo 100 caracteres.");
+        return;
+      }
+
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token não encontrado");
 
