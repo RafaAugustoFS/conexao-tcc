@@ -68,7 +68,7 @@ function MessageList({ className }: { className?: string }) {
         );
   
         if (!reminderResponse.ok)
-          throw new Error("Erro ao buscar avisos da turma");
+          throw new Error("Nenhum aviso disponível");
   
         const reminders: Message[] = await reminderResponse.json();
   
