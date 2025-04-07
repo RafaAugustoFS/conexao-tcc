@@ -150,6 +150,7 @@ export default function CardFeedback({ persons = [] }: CardFeedbackProps) {
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
                       placeholder="Digite seu feedback..."
+                      maxLength={100}
                       className="w-full p-2 border rounded-lg dark:bg-[#222] dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <button
