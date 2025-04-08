@@ -119,16 +119,22 @@ export default function EditClass() {
     fetch(`http://localhost:3000/api/class/teacher/disciplinas/${id}`)
       .then((response) => response.json())
       .then((data) => {
-        setNomeTurma(data.nomeTurma || "");
-        setAnoLetivoTurma(data.anoLetivoTurma || "");
-        setPeriodoTurma(data.periodoTurma || "");
-        setCapacidadeTurma(String(data.capacidadeMaximaTurma) || "");
-        setSalaTurma(String(data.salaTurma) || "");
-        setIdTeachers(data.idTeacher || []);
-        setDisciplineIds(data.disciplineId || []);
+        setNomeTurma(data.nomeTurma || "")
+        setAnoLetivoTurma(data.anoLetivoTurma || "")
+        setPeriodoTurma(data.periodoTurma || "")
+        setCapacidadeTurma(String(data.capacidadeMaximaTurma) || "")
+        setSalaTurma(String(data.salaTurma) || "")
+
+        // Extrair IDs dos professores do array teachers
+        const teacherIds = data.teachers ? data.teachers.map((teacher) => teacher.id) : []
+        setIdTeachers(teacherIds)
+
+        // Extrair IDs das disciplinas do array disciplines
+        const disciplineIds = data.disciplines ? data.disciplines.map((discipline) => discipline.id) : []
+        setDisciplineIds(disciplineIds)
       })
-      .catch((error) => console.error("Erro ao buscar turma:", error));
-  }, [id]); // 🔹 Só executa quando o ID mudar
+      .catch((error) => console.error("Erro ao buscar turma:", error))
+  }, [id]) // 🔹 Só executa quando o ID mudar
 
   return (
     <>
@@ -171,6 +177,7 @@ export default function EditClass() {
                     </label>
                     <Input
                       className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white"
+                      maxLength={50}
                       value={nomeTurma}
                       onChange={(e) => setNomeTurma(e.target.value)}
                     />

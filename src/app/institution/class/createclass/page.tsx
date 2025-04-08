@@ -180,6 +180,7 @@ export default function CreateClass() {
                           : "bg-blue-50 border-blue-50"
                       }`}
                       value={nomeTurma}
+                      maxLength={50}
                       onChange={(e) => setNomeTurma(e.target.value)}
                     />
                   </div>
