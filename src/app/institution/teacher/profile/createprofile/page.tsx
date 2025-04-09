@@ -197,9 +197,10 @@ export default function Profile() {
               <div className="flex flex-col items-center gap-4">
                 <Image
                   src={imageUrl || User}
-                  alt="Profile picture"
                   width={80}
                   height={80}
+                  className="rounded-full w-16 h-16 sm:w-20 sm:h-20"
+                  alt="Foto de perfil"
                 />
 
                 <InputImage onChange={handleImageChange} />
@@ -211,25 +212,24 @@ export default function Profile() {
                     label: "Nome Completo",
                     state: nomeDocente,
                     setState: setName,
-                    maxLength: 100, // Limite para nome
+                    maxLength: 100,
                   },
                   {
                     label: "Data de Nascimento",
                     state: dataNascimentoDocente,
                     setState: setBirthDate,
-                    // Não aplicamos maxLength para date
                   },
                   {
                     label: "Email",
                     state: emailDocente,
                     setState: setEmail,
-                    maxLength: 100, // Limite para email
+                    maxLength: 100,
                   },
                   {
                     label: "Telefone",
                     state: telefoneDocente,
                     setState: setPhone,
-                    maxLength: 15, // Limite para telefone (incluindo DDD e possivelmente código do país)
+                    maxLength: 11,
                   },
                 ].map(({ label, state, setState, maxLength }) => (
                   <div key={label} className="space-y-2">
@@ -241,7 +241,7 @@ export default function Profile() {
                       value={state}
                       onChange={(e) => setState(e.target.value)}
                       className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white"
-                      maxLength={maxLength} // Aplica maxLength apenas quando definido
+                      maxLength={maxLength}
                     />
                   </div>
                 ))}

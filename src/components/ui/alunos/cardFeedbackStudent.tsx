@@ -68,7 +68,7 @@ export default function CardFeedback({ persons = [] }: CardFeedbackProps) {
       if (!userId) throw new Error("ID do usuário não encontrado no token");
 
       if (!selectedId || !inputValue) {
-        alert("Selecione um professor e digite um feedback.");
+        toast.warn("Selecione um professor e digite um feedback.");
         return;
       }
 
