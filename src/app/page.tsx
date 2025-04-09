@@ -143,7 +143,7 @@ export default function LoginPage() {
       <ToastContainer />
       <main
         className={`min-h-screen w-full ${
-          isDark ? "dark bg-gray-900" : "bg-gray-50"
+          isDark ? "dark bg-[#141414]" : "bg-gray-50"
         }`}
       >
         <div className="container mx-auto px-4 py-8 flex min-h-screen relative">
@@ -181,7 +181,7 @@ export default function LoginPage() {
 
               <div
                 className={`w-full max-w-md p-6 sm:p-8 rounded-2xl shadow-xl ${
-                  isDark ? "bg-gray-800" : "bg-white"
+                  isDark ? "bg-black" : "bg-white"
                 }`}
               >
                 <form className="space-y-6" onSubmit={handleSubmit}>
@@ -192,7 +192,7 @@ export default function LoginPage() {
                       value={identifierCode}
                       onChange={(e) => setIdentifierCode(e.target.value)}
                       className={`w-full px-4 py-3 rounded-lg ${
-                        isDark ? "bg-gray-700 text-white" : "bg-gray-50"
+                        isDark ? "bg-[#141414] text-white" : "bg-gray-50"
                       } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     />
                   </div>
@@ -203,7 +203,7 @@ export default function LoginPage() {
                       onChange={(event) => setPassword(event.target.value)}
                       placeholder="••••••••"
                       className={`w-full px-4 py-3 rounded-lg ${
-                        isDark ? "bg-gray-700 text-white" : "bg-gray-50"
+                        isDark ? "bg-[#141414] text-white" : "bg-gray-50"
                       } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     />
                     <button

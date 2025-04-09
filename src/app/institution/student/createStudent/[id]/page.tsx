@@ -188,9 +188,10 @@ export default function Profile({
             <div className="flex flex-col items-center gap-4">
               <Image
                 src={imageUrl || User}
-                alt="Profile picture"
                 width={80}
                 height={80}
+                className="rounded-full w-16 h-16 sm:w-20 sm:h-20"
+                alt="Foto de perfil"
               />
 
               <InputImage onChange={handleImageChange} />
@@ -201,24 +202,23 @@ export default function Profile({
                 {
                   label: "Nome Completo",
                   state: nomeAluno,
-                  setState: setName,  
+                  setState: setName,
                 },
                 {
                   label: "Data de Nascimento",
                   state: dataNascimentoAluno,
                   setState: setBirthDate,
-                  max: new Date().toISOString().split("T")[0], // Define a data máxima como hoje
                 },
                 {
                   label: "Email",
                   state: emailAluno,
-                  setState: setEmail
+                  setState: setEmail,
                 },
                 {
                   label: "Telefone",
                   state: telefoneAluno,
                   setState: setPhone,
-                  maxLength: 11, 
+                  maxLength: 11,
                 },
               ].map(({ label, state, setState, maxLength }) => (
                 <div key={label} className="space-y-2">
@@ -231,11 +231,6 @@ export default function Profile({
                     onChange={(e) => setState(e.target.value)}
                     className="bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]"
                     maxLength={maxLength}
-                    max={
-                      label === "Data de Nascimento"
-                        ? new Date().toISOString().split("T")[0]
-                        : undefined
-                    }
                   />
                 </div>
               ))}
