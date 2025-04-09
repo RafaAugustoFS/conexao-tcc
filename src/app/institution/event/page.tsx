@@ -38,7 +38,7 @@ export default function Event() {
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
       <Sidebar />
       <main className="flex-1">
-        <div className="p-8">
+        <div className="p-8 max-2xl:pt-14">
           <div className="flex items-center justify-between mb-8">
             <div>
             <h1 className="text-2xl font-bold text-blue-500">

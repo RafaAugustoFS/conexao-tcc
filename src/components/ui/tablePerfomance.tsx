@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { jwtDecode } from 'jwt-decode';
-import SmallSelect from "@/components/ui/alunos/smallselect";
+import SmallSelect from "@/components/ui/institution/smallselect";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/alunos/select";
 import { useParams } from 'next/navigation';  
 
@@ -226,7 +226,7 @@ const EngagementChart: React.FC = () => {
             </SelectTrigger>
             <SelectContent>
               {creators.map((creator) => (
-                <SelectItem key={creator.id} value={String(creator.id)}>
+                <SelectItem key={creator.id} value={String(creator.nomeDocente)}>
                   {creator.nomeDocente}
                 </SelectItem>
               ))}
