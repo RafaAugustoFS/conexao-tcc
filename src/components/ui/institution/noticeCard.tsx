@@ -111,11 +111,11 @@ export function NoticeCard({ onRefresh }: NoticeCardProps) {
                   <button
                     key={turma.id}
                     onClick={() => setTurmaSelecionada(turma)}
-                    className={`block w-full p-3 text-left border border-[#F0F7FF] bg-[#F0F7FF] dark:bg-[#141414] dark:border-[#141414] dark:hover:border-blue-500 rounded-lg ${
+                    className={`block w-full p-3 text-left border rounded-lg max-w-3xl overflow-hidden transition-colors duration-200 ${
                       turmaSelecionada?.id === turma.id
-                        ? "border-blue-500"
-                        : "border-[#F0F7FF]"
-                    } max-w-3xl overflow-hidden`} // Adicione max-w-xs e overflow-hidden
+                        ? "border-blue-500 bg-blue-100 dark:bg-blue-900 dark:bg-opacity-50 shadow-md"
+                        : "border-[#F0F7FF] bg-[#F0F7FF] dark:bg-[#141414] dark:border-[#141414]"
+                    } hover:border-blue-500 dark:hover:border-blue-500`}
                   >
                     <span className="font-semibold break-words">
                       {turma.nomeTurma}
