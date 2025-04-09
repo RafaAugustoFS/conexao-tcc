@@ -370,6 +370,7 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
                   name="tituloEvento"
                   placeholder="Digite o título do evento"
                   value={selectedEvent?.tituloEvento || ""}
+                  maxLength={50}
                   onChange={handleInputChange}
                 />
               </div>
@@ -418,6 +419,7 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
                   placeholder="Digite o local do evento"
                   value={selectedEvent?.localEvento || ""}
                   onChange={handleInputChange}
+                  maxLength={35}
                 />
               </div>
               <div className="grid gap-2">
@@ -430,6 +432,7 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
                   placeholder="Descreva os detalhes do evento"
                   value={selectedEvent?.descricaoEvento || ""}
                   onChange={handleInputChange}
+                  maxLength={100}
                   rows={3}
                 />
               </div>

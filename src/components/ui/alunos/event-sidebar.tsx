@@ -148,10 +148,10 @@ export function EventSidebar() {
             <>
               <div className="bg-[#FFFFFF] dark:bg-black pt-8 pl-16 pr-16 pb-8 rounded-[20px]">
                 <div>
-                  <h3 className="dark:text-white text-lg font-semibold mb-2">
+                  <h3 className="dark:text-white text-lg font-semibold mb-2 max-w-56 break-words">
                     {selectedEvent?.tituloEvento || "Sobre o Evento"}
                   </h3>
-                  <p className="text-sm text-muted-foreground dark:text-[#D0CECE]">
+                  <p className="text-sm text-muted-foreground dark:text-[#D0CECE] max-w-56 break-words">
                     {selectedEvent?.descricaoEvento ||
                       "Nenhum evento selecionado"}
                   </p>
@@ -172,7 +172,7 @@ export function EventSidebar() {
                 </div>
 
                 <div>
-                  <p className="pt-4 text-sm mb-4 dark:text-[#D0CECE]">
+                  <p className="pt-4 text-sm mb-4 dark:text-[#D0CECE] max-w-56 break-words">
                     {selectedEvent?.localEvento ||
                       "Cotia SP, Senai Ricardo Lerner"}
                     <br />
@@ -206,7 +206,7 @@ export function EventSidebar() {
                           {/* Extrai o dia da data do evento */}
                         </div>
                         <div>
-                          <p className="font-medium dark:text-white">
+                          <p className="font-medium dark:text-white break-words max-w-40 max-md:max-w-28">
                             {event.tituloEvento}
                           </p>
                           <p className="text-xs text-muted-foreground dark:text-white">
