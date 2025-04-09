@@ -32,7 +32,6 @@ export default function Profile({
   const [emailDocente, setEmailDocente] = useState("");
   const [dataNascimentoDocente, setDataNascimentoDocente] = useState("");
   const [telefoneDocente, setTelefoneDocente] = useState("");
-  const [password, setPassword] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,6 +39,22 @@ export default function Profile({
   const [disciplinas, setDisciplinas] = useState<Disciplina[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
+
+  // Função para obter a data atual no formato YYYY-MM-DD (para o input date)
+  const getCurrentDateFormatted = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Função para formatar a data da API para o formato YYYY-MM-DD
+  const formatApiDate = (apiDate: string) => {
+    if (!apiDate) return "";
+    // Extrai apenas a parte da data (YYYY-MM-DD) da string completa
+    return apiDate.split(' ')[0];
+  };
 
   // Busca as disciplinas disponíveis
   useEffect(() => {
@@ -68,7 +83,8 @@ export default function Profile({
         setImageUrl(data.imageUrl);
         setNomeDocente(data.nomeDocente || "");
         setEmailDocente(data.emailDocente || "");
-        setDataNascimentoDocente(data.dataNascimentoDocente || "");
+        // Formata a data da API para o formato correto
+        setDataNascimentoDocente(formatApiDate(data.dataNascimentoDocente) || "");
         setTelefoneDocente(data.telefoneDocente || "");
         // Define as disciplinas já associadas ao docente
         if (data.disciplinas && Array.isArray(data.disciplinas)) {
@@ -181,33 +197,42 @@ export default function Profile({
                   label: "Nome Completo",
                   state: nomeDocente,
                   setState: setNomeDocente,
+                  maxLength: 100,
+                  type: "text"
                 },
                 {
                   label: "Data de Nascimento",
                   state: dataNascimentoDocente,
                   setState: setDataNascimentoDocente,
+                  max: getCurrentDateFormatted(),
+                  type: "date"
                 },
                 {
                   label: "Email",
                   state: emailDocente,
                   setState: setEmailDocente,
+                  maxLength: 100,
+                  type: "email"
                 },
                 {
                   label: "Telefone",
                   state: telefoneDocente,
                   setState: setTelefoneDocente,
-                },
-                { label: "Senha", state: password, setState: setPassword },
-              ].map(({ label, state, setState }) => (
+                  maxLength: 20,
+                  type: "tel"
+                }
+              ].map(({ label, state, setState, maxLength, max, type }) => (
                 <div key={label} className="space-y-2">
                   <label className="text-sm text-muted-foreground dark:text-white">
                     {label}
                   </label>
                   <Input
-                    type={label === "Data de Nascimento" ? "date" : "text"}
+                    type={type}
                     value={state}
                     onChange={(e) => setState(e.target.value)}
                     className="bg-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-[#F0F7FF]"
+                    maxLength={maxLength}
+                    max={max}
                   />
                 </div>
               ))}
