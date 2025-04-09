@@ -207,6 +207,7 @@ export default function Profile({
                   label: "Data de Nascimento",
                   state: dataNascimentoAluno,
                   setState: setBirthDate,
+                  max: new Date().toISOString().split("T")[0], // Define a data máxima como hoje
                 },
                 {
                   label: "Email",
@@ -229,7 +230,12 @@ export default function Profile({
                     value={state}
                     onChange={(e) => setState(e.target.value)}
                     className="bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]"
-                    maxLength={maxLength}     
+                    maxLength={maxLength}
+                    max={
+                      label === "Data de Nascimento"
+                        ? new Date().toISOString().split("T")[0]
+                        : undefined
+                    }
                   />
                 </div>
               ))}

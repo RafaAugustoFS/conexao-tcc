@@ -217,7 +217,7 @@ export default function Profile() {
                     label: "Data de Nascimento",
                     state: dataNascimentoDocente,
                     setState: setBirthDate,
-                    // Não aplicamos maxLength para date
+                    max: new Date().toISOString().split("T")[0], // Define a data máxima como hoje
                   },
                   {
                     label: "Email",
@@ -237,12 +237,17 @@ export default function Profile() {
                       {label}
                     </label>
                     <Input
-                      type={label === "Data de Nascimento" ? "date" : "text"}
-                      value={state}
-                      onChange={(e) => setState(e.target.value)}
-                      className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white"
-                      maxLength={maxLength} // Aplica maxLength apenas quando definido
-                    />
+                    type={label === "Data de Nascimento" ? "date" : "text"}
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    className="bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]"
+                    maxLength={maxLength}
+                    max={
+                      label === "Data de Nascimento"
+                        ? new Date().toISOString().split("T")[0]
+                        : undefined
+                    }
+                  />
                   </div>
                 ))}
               </div>

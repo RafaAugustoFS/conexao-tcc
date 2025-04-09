@@ -22,7 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 interface TeacherProfile {
   id: number;
-  imageUrl: string;
+  imageUrl?: string;
   nomeDocente: string;
   emailDocente: string;
   dataNascimentoDocente: string;
@@ -35,7 +35,7 @@ interface TeacherProfile {
 
 interface Feedback {
   conteudo: string;
-  aluno: { nomeAluno: string }; // Corrigido para incluir o nome do aluno
+  aluno: { nomeAluno: string };
   recipientTeacher: { id: number };
 }
 
@@ -119,30 +119,29 @@ export default function User() {
     }
   };
 
- // Função para buscar os feedbacks
-const fetchFeedbacks = async () => {
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) throw new Error("Token não encontrado");
+  // Função para buscar os feedbacks
+  const fetchFeedbacks = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Token não encontrado");
 
-    const response = await fetch(`http://localhost:3000/api/feedbackStudent/teacher/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+      const response = await fetch(`http://localhost:3000/api/feedbackStudent/teacher/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    if (!response.ok) {
-      console.warn("Nenhum feedback encontrado para este docente.");
-      setFeedbacks([]); // Garante que não quebre a interface
-      return;
+      if (!response.ok) {
+        console.warn("Nenhum feedback encontrado para este docente.");
+        setFeedbacks([]);
+        return;
+      }
+
+      const data = await response.json();
+      setFeedbacks(Array.isArray(data) ? data : []);
+    } catch (err: any) {
+      console.warn("Erro ao carregar feedbacks:", err.message);
+      setFeedbacks([]);
     }
-
-    const data = await response.json();
-    setFeedbacks(Array.isArray(data) ? data : []);
-  } catch (err: any) {
-    console.warn("Erro ao carregar feedbacks:", err.message);
-    setFeedbacks([]); // Evita quebrar a interface
-  }
-};
-
+  };
 
   useEffect(() => {
     fetchDocenteData();
@@ -168,7 +167,7 @@ const fetchFeedbacks = async () => {
             {docenteData && (
               <>
                 <ProfileInfo
-                  imageUrl={docenteData.imageUrl}
+                  imageUrl={docenteData.imageUrl || "/default-profile.png"} // Adicionado fallback para imagem padrão
                   name={docenteData.nomeDocente}
                   email={docenteData.emailDocente}
                   birthDate={docenteData.dataNascimentoDocente}
