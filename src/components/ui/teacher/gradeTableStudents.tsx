@@ -15,6 +15,13 @@ interface Nota {
   nomeDisciplina: string
 }
 
+interface Turma {
+  disciplinaTurmas:{
+    id: number,
+    nomeDisciplina: string;
+  }
+}
+
 interface Materia {
   nomeDisciplina: string
   notas: (number | null)[] // Array de notas para cada bimestre
@@ -28,7 +35,7 @@ interface ModalProps {
   idNota?: number
   onClose: () => void
   onSave: (dados: { disciplina: string; bimestre: number; nota: number; idNota?: number }) => void
-  disciplinas: string[]
+  disciplinas: { id: number; nomeDisciplina: string }[]
 }
 
 // Componente do Modal (mantido igual)
@@ -92,10 +99,12 @@ const Modal = ({ tipo, disciplina, bimestre, notaAtual, idNota, onClose, onSave,
               >
                 <option value="">Selecione uma disciplina</option>
                 {disciplinas.map((disc) => (
-                  <option key={disc} value={disc}>
-                    {disc}
-                  </option>
-                ))}
+  <option key={disc.id} value={disc.nomeDisciplina}>
+    {disc.nomeDisciplina}
+  </option>
+))}
+
+
               </select>
             )}
           </div>
@@ -171,6 +180,8 @@ const Table = () => {
   } | null>(null)
   const [salvando, setSalvando] = useState<boolean>(false)
   const [mensagem, setMensagem] = useState<{ tipo: "sucesso" | "erro"; texto: string } | null>(null)
+  const [disciplinasDisponiveis, setDisciplinasDisponiveis] = useState<{ id: number, nomeDisciplina: string }[]>([]);
+  const [notasRaw, setNotasRaw] = useState<Nota[]>([])
 
   // Função para organizar as notas por disciplina
   const organizarNotasPorDisciplina = (notas: Nota[]): Materia[] => {
@@ -220,11 +231,14 @@ const Table = () => {
 
         const dados = await resposta.json()
 
-        // Organiza as notas por disciplina
-        const disciplinasOrganizadas = organizarNotasPorDisciplina(dados.notas)
+        setNotasRaw(dados.notas)
 
-        // Atualiza o estado com as disciplinas e notas organizadas
+        const disciplinasOrganizadas = organizarNotasPorDisciplina(dados.notas)
         setDisciplinas(disciplinasOrganizadas)
+
+        // Aqui você já tem as disciplinas da turma
+        setDisciplinasDisponiveis(dados.turma.disciplinaTurmas)
+
       } catch (erro) {
         setErro((erro as Error).message)
       } finally {
@@ -236,22 +250,27 @@ const Table = () => {
   }, [id]) // Adicionei id como dependência para recarregar quando mudar
 
   // Função para abrir o modal de edição
-  const abrirModalEdicao = (disciplina: string, bimestre: number, nota: number | null, idNota?: number) => {
+  const abrirModalEdicao = (disciplina: string, bimestre: number, nota: number | null) => {
     if (nota === null) {
-      // Se a nota for nula, abrimos o modal de adição em vez de edição
       abrirModalAdicao(disciplina, bimestre)
       return
     }
-
+  
+    // Buscar o ID da nota correspondente
+    const notaEncontrada = notasRaw.find(
+      (n) => n.nomeDisciplina === disciplina && n.bimestre === bimestre
+    )
+  
     setNotaSelecionada({
       disciplina,
       bimestre,
       nota,
-      idNota,
+      idNota: notaEncontrada?.idNota,
     })
     setModalTipo("editar")
     setModalAberto(true)
   }
+  
 
   // Função para abrir o modal de adição
   const abrirModalAdicao = (disciplina?: string, bimestre?: number) => {
@@ -282,27 +301,35 @@ const Table = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token não encontrado");
+
+      const disciplinaSelecionada = disciplinasDisponiveis.find(
+        (d) => d.nomeDisciplina === dados.disciplina
+      )
+      
+      if (!disciplinaSelecionada) throw new Error("Disciplina não encontrada")
   
-      // Endpoint para a requisição POST
-      const endpoint = "http://localhost:3000/api/note";
-  
-      // Corpo da requisição no formato especificado
+        const endpoint = dados.idNota
+        ? `http://localhost:3000/api/note/${dados.idNota}` // endpoint de edição
+        : "http://localhost:3000/api/note"; // endpoint de criação
+      
+      const metodo = dados.idNota ? "PUT" : "POST"
+      
       const corpo = {
-        studentId: id, // ID do aluno
-        nota: dados.nota, // Nota
-        bimestre: dados.bimestre, // Bimestre
-        disciplineId: 4, // ID da disciplina (ajuste conforme necessário)
-      };
-  
-      // Requisição POST
+        studentId: id,
+        nota: dados.nota,
+        bimestre: dados.bimestre,
+        disciplineId: disciplinaSelecionada.id,
+      }
+      
       const resposta = await fetch(endpoint, {
-        method: "POST",
+        method: metodo,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(corpo),
-      });
+      })
+      
   
       if (!resposta.ok) {
         throw new Error("Falha ao salvar a nota");
@@ -379,7 +406,7 @@ const Table = () => {
                   <td
                     key={i}
                     className="p-3 text-center border border-transparent text-black dark:text-white bg-[#EAF4FF] dark:bg-[#141414] cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
-                    onClick={() => abrirModalEdicao(materia.nomeDisciplina, i + 1, nota, undefined)}
+                    onClick={() => abrirModalEdicao(materia.nomeDisciplina, i + 1, nota)}
                   >
                     {nota !== null ? nota : "-"}
                   </td>
@@ -402,7 +429,7 @@ const Table = () => {
                 <div 
                   key={i}
                   className="bg-[#EAF4FF] dark:bg-[#141414] p-3 rounded text-center cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
-                  onClick={() => abrirModalEdicao(materia.nomeDisciplina, i + 1, nota, undefined)}
+                  onClick={() => abrirModalEdicao(materia.nomeDisciplina, i + 1, nota)}
                 >
                   <div className="text-sm text-gray-500 dark:text-gray-400">{i + 1}° Bim.</div>
                   <div className="font-medium text-black dark:text-white">
@@ -425,7 +452,7 @@ const Table = () => {
       </div>
 
       {/* Modal */}
-      {modalAberto && (
+      {modalAberto && notaSelecionada && (
         <Modal
           tipo={modalTipo}
           disciplina={notaSelecionada?.disciplina}
@@ -434,7 +461,7 @@ const Table = () => {
           idNota={notaSelecionada?.idNota}
           onClose={fecharModal}
           onSave={salvarNota}
-          disciplinas={todasDisciplinas}
+          disciplinas={disciplinasDisponiveis}
         />
       )}
 
