@@ -36,6 +36,26 @@ export default function Profile() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Função para obter a data atual no formato YYYY-MM-DD (para o input date)
+  const getTodayDate = (): string => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Função para formatar a data para exibição
+  const formatCurrentDate = (): string => {
+    const today = new Date();
+    return today.toLocaleDateString("pt-BR", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   useEffect(() => {
     setLoading(true);
     fetch("http://localhost:3000/api/discipline")
@@ -107,6 +127,13 @@ export default function Profile() {
       return;
     }
 
+    // Verifica se a data de nascimento é futura
+    if (new Date(dataNascimentoDocente) > new Date()) {
+      toast.warn("A data de nascimento não pode ser futura.");
+      setIsSubmitting(false);
+      return;
+    }
+
     const token = localStorage.getItem("token");
     if (!token) {
       toast.warn("Usuário não autenticado. Faça login novamente.");
@@ -139,7 +166,7 @@ export default function Profile() {
       setEmail("");
       setBirthDate("");
       setPhone("");
-      setImagemPerfil("");
+      setImagemPerfil(null);
       setDisciplineId([]);
     } catch (error) {
       console.error("❌ Erro ao criar perfil:", error);
@@ -155,25 +182,6 @@ export default function Profile() {
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
-  const getCurrentDate = () => {
-    const today = new Date();
-    return today.toLocaleDateString("pt-BR", {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
-  useEffect(() => {
-    localStorage.setItem("darkMode", darkMode.toString());
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [darkMode]);
-
   return (
     <>
       <ToastContainer />
@@ -186,7 +194,7 @@ export default function Profile() {
                 <h1 className="text-2xl font-bold text-blue-500">
                   Criar Docente
                 </h1>
-                <p className="text-gray-500">{getCurrentDate()}</p>
+                <p className="text-gray-500">{formatCurrentDate()}</p>
               </div>
               <Button onClick={toggleTheme}>
                 {darkMode ? <Sun size={20} /> : <Moon size={20} />}
@@ -213,35 +221,41 @@ export default function Profile() {
                     state: nomeDocente,
                     setState: setName,
                     maxLength: 100,
+                    type: "text",
                   },
                   {
                     label: "Data de Nascimento",
                     state: dataNascimentoDocente,
                     setState: setBirthDate,
+                    type: "date",
+                    max: getTodayDate(),
                   },
                   {
                     label: "Email",
                     state: emailDocente,
                     setState: setEmail,
                     maxLength: 100,
+                    type: "email",
                   },
                   {
                     label: "Telefone",
                     state: telefoneDocente,
                     setState: setPhone,
                     maxLength: 11,
+                    type: "tel",
                   },
-                ].map(({ label, state, setState, maxLength }) => (
+                ].map(({ label, state, setState, maxLength, type = "text", max }) => (
                   <div key={label} className="space-y-2">
                     <label className="text-sm text-muted-foreground dark:text-gray-400">
                       {label}
                     </label>
                     <Input
-                      type={label === "Data de Nascimento" ? "date" : "text"}
+                      type={type}
                       value={state}
                       onChange={(e) => setState(e.target.value)}
                       className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white"
                       maxLength={maxLength}
+                      max={max}
                     />
                   </div>
                 ))}
@@ -284,6 +298,7 @@ export default function Profile() {
                 <Button
                   className="bg-blue-500 hover:bg-blue-600 text-white px-8"
                   onClick={handleSubmit}
+                  disabled={isSubmitting}
                 >
                   {isSubmitting ? "Criando..." : "Criar professor"}
                 </Button>
