@@ -25,8 +25,8 @@ export default function Profile({
   value: number;
   className?: string;
 }) {
-  const params = useParams(); // Obtém os parâmetros da URL
-  const id = params.id as string; // Extrai o ID da turma da URL
+  const params = useParams();
+  const id = params.id as string;
   const { darkMode, toggleTheme } = useTheme();
   const [nomeDocente, setNomeDocente] = useState("");
   const [emailDocente, setEmailDocente] = useState("");
@@ -40,8 +40,8 @@ export default function Profile({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
-  // Função para obter a data atual no formato YYYY-MM-DD (para o input date)
-  const getCurrentDateFormatted = () => {
+  // Função para obter a data atual no formato YYYY-MM-DD
+  const getTodayDateString = (): string => {
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -49,10 +49,29 @@ export default function Profile({
     return `${year}-${month}-${day}`;
   };
 
+  // Função para validar e atualizar a data de nascimento
+  const handleDateChange = (value: string) => {
+    if (value) {
+      const selectedDate = new Date(value);
+      const minDate = new Date("1900-01-01");
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Remove a parte de horas para comparar apenas a data
+
+      if (selectedDate < minDate) {
+        toast.warn("A data não pode ser anterior a 1900");
+        return;
+      }
+      if (selectedDate > today) {
+        toast.warn("A data não pode ser posterior ao dia atual");
+        return;
+      }
+    }
+    setDataNascimentoDocente(value);
+  };
+
   // Função para formatar a data da API para o formato YYYY-MM-DD
   const formatApiDate = (apiDate: string) => {
     if (!apiDate) return "";
-    // Extrai apenas a parte da data (YYYY-MM-DD) da string completa
     return apiDate.split(' ')[0];
   };
 
@@ -72,7 +91,7 @@ export default function Profile({
       .finally(() => setLoading(false));
   }, []);
 
-  // Busca os dados do docente e suas disciplinas associadas
+  // Busca os dados do docente
   useEffect(() => {
     if (!id) return;
 
@@ -83,19 +102,15 @@ export default function Profile({
         setImageUrl(data.imageUrl);
         setNomeDocente(data.nomeDocente || "");
         setEmailDocente(data.emailDocente || "");
-        // Formata a data da API para o formato correto
         setDataNascimentoDocente(formatApiDate(data.dataNascimentoDocente) || "");
         setTelefoneDocente(data.telefoneDocente || "");
-        // Define as disciplinas já associadas ao docente
         if (data.disciplinas && Array.isArray(data.disciplinas)) {
           setDisciplineId(data.disciplinas.map((d: Disciplina) => d.id));
         }
       })
       .catch((error) => {
         console.error("Erro ao buscar dados do docente:", error);
-        setError(
-          "Erro ao carregar dados do docente. Tente novamente mais tarde."
-        );
+        setError("Erro ao carregar dados do docente. Tente novamente mais tarde.");
       })
       .finally(() => setLoading(false));
   }, [id]);
@@ -107,18 +122,33 @@ export default function Profile({
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    setIsModalOpen(true)
     e.preventDefault();
+    setIsModalOpen(true);
 
-    if (
-      !nomeDocente ||
-      !emailDocente ||
-      !dataNascimentoDocente ||
-      !telefoneDocente ||
-      disciplineId.length === 0
-    ) {
-      alert("Preencha todos os campos obrigatórios.");
+    // Validações
+    if (!nomeDocente || !emailDocente || !dataNascimentoDocente || !telefoneDocente || disciplineId.length === 0) {
+      toast.warn("Preencha todos os campos obrigatórios.");
+      setIsModalOpen(false);
       return;
+    }
+
+    // Validação da data
+    if (dataNascimentoDocente) {
+      const birthDate = new Date(dataNascimentoDocente);
+      const minDate = new Date("1900-01-01");
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (birthDate < minDate) {
+        toast.warn("A data de nascimento não pode ser anterior a 1900");
+        setIsModalOpen(false);
+        return;
+      }
+      if (birthDate > today) {
+        toast.warn("A data de nascimento não pode ser posterior ao dia atual");
+        setIsModalOpen(false);
+        return;
+      }
     }
 
     try {
@@ -143,10 +173,10 @@ export default function Profile({
         router.push("/institution/teacher");
       }, 2000);
     } catch (error) {
-      console.error("❌ Erro ao atualizar aluno:", error);
-      toast.error("Erro ao criar perfil.");
-    } finally{
-      setIsModalOpen(false)
+      console.error("❌ Erro ao atualizar docente:", error);
+      toast.error("Erro ao atualizar perfil.");
+    } finally {
+      setIsModalOpen(false);
     }
   };
 
@@ -203,9 +233,10 @@ export default function Profile({
                 {
                   label: "Data de Nascimento",
                   state: dataNascimentoDocente,
-                  setState: setDataNascimentoDocente,
-                  max: getCurrentDateFormatted(),
-                  type: "date"
+                  setState: handleDateChange,
+                  type: "date",
+                  min: "1900-01-01",
+                  max: getTodayDateString()
                 },
                 {
                   label: "Email",
@@ -221,7 +252,7 @@ export default function Profile({
                   maxLength: 20,
                   type: "tel"
                 }
-              ].map(({ label, state, setState, maxLength, max, type }) => (
+              ].map(({ label, state, setState, maxLength, type, min, max }) => (
                 <div key={label} className="space-y-2">
                   <label className="text-sm text-muted-foreground dark:text-white">
                     {label}
@@ -232,6 +263,7 @@ export default function Profile({
                     onChange={(e) => setState(e.target.value)}
                     className="bg-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-[#F0F7FF]"
                     maxLength={maxLength}
+                    min={min}
                     max={max}
                   />
                 </div>
@@ -240,11 +272,11 @@ export default function Profile({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h3 className="text-sm text-muted-foreground mb-4">
+                <h3 className="text-sm text-muted-foreground mb-4 dark:text-white">
                   Seleção de disciplinas
                 </h3>
                 {loading ? (
-                  <p>Carregando disciplinas...</p>
+                  <p className="dark:text-white">Carregando disciplinas...</p>
                 ) : error ? (
                   <p className="text-red-500">{error}</p>
                 ) : (

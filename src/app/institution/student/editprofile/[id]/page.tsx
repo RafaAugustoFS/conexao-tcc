@@ -1,6 +1,7 @@
 "use client";
 import Sidebar from "@/components/layout/sidebarInstitution";
 import { Button } from "@/components/ui/alunos/button";
+import { ButtonEdit } from "@/components/ui/institution/buttonEdit";
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Input } from "@/components/ui/institution/input";
@@ -19,8 +20,8 @@ export default function Profile({
   value: number;
   className?: string;
 }) {
-  const params = useParams(); // Obtém os parâmetros da URL
-  const id = params.id as string; // Extrai o ID da turma da URL
+  const params = useParams();
+  const id = params.id as string;
   const { darkMode, toggleTheme } = useTheme();
   const [nome, setName] = useState("");
   const [emailAluno, setEmail] = useState("");
@@ -28,19 +29,54 @@ export default function Profile({
   const [telefoneAluno, setPhone] = useState("");
   const [turmaId, setTurma] = useState("");
   const [matriculaAluno, setidentifierCode] = useState("");
-  const [password, setPassword] = useState("");
-  const [imageUrl, setImageUrl] = useState("")
+  const [imageUrl, setImageUrl] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleDateChange = (value: string) => {
+    if (value) {
+      const selectedDate = new Date(value);
+      const minDate = new Date("1900-01-01");
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Remove a parte de horas para comparar apenas a data
+
+      if (selectedDate < minDate) {
+        toast.warn("A data não pode ser anterior a 1900");
+        return;
+      }
+      if (selectedDate > today) {
+        toast.warn("A data não pode ser posterior ao dia atual");
+        return;
+      }
+    }
+    setBirthDate(value);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Verifica se a data é válida
+    if (dataNascimentoAluno) {
+      const birthDate = new Date(dataNascimentoAluno);
+      const minDate = new Date("1900-01-01");
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (birthDate < minDate) {
+        toast.warn("A data de nascimento não pode ser anterior a 1900");
+        return;
+      }
+      if (birthDate > today) {
+        toast.warn("A data de nascimento não pode ser posterior ao dia atual");
+        return;
+      }
+    }
 
     const formatDateForBackend = (dateString: string) => {
       const date = new Date(dateString);
       const formattedDate = date
         .toISOString()
         .replace("T", " ")
-        .substring(0, 19); // yyyy-MM-dd HH:mm:ss
+        .substring(0, 19);
       return formattedDate;
     };
 
@@ -48,8 +84,9 @@ export default function Profile({
       toast.warn("Preencha todos os campos obrigatórios.");
       return;
     }
+
     try {
-      setIsModalOpen(true)
+      setIsModalOpen(true);
       const response = await fetch(`http://localhost:3000/api/student/${id}`, {
         method: "PUT",
         headers: {
@@ -62,7 +99,6 @@ export default function Profile({
           telefoneAluno,
           turmaId,
           matriculaAluno,
-          password,
         }),
       });
 
@@ -74,7 +110,6 @@ export default function Profile({
       setBirthDate("");
       setPhone("");
       setidentifierCode("");
-      setPassword("");
     } catch (error) {
       console.error("❌ Erro ao atualizar aluno:", error);
       alert("Erro ao criar perfil.");
@@ -91,23 +126,32 @@ export default function Profile({
     });
   };
 
+  const getTodayDateString = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   useEffect(() => {
-    if (!id) return; // Se não houver ID, não faz a requisição
+    if (!id) return;
 
     fetch(`http://localhost:3000/api/student/${id}`)
       .then((response) => response.json())
       .then((data) => {
-        setImageUrl(data.imageUrl)
+        setImageUrl(data.imageUrl);
         setName(data.nome || "");
         setEmail(data.emailAluno || "");
         setBirthDate(data.dataNascimentoAluno || "");
         setPhone(data.telefoneAluno || "");
-        setTurma(data.turmaId), setidentifierCode(data.matriculaAluno);
+        setTurma(data.turmaId);
+        setidentifierCode(data.matriculaAluno);
       })
       .catch((error) => console.error("Erro ao buscar turma:", error));
   }, [id]);
@@ -124,7 +168,7 @@ export default function Profile({
           </Button>
         </div>
 
-        <div className="container mx-auto p-6 space-y-6 max-w-5xl bg-white dark:bg-gray-800 rounded-3xl">
+        <div className="container mx-auto p-6 space-y-6 max-w-5xl bg-white dark:bg-black rounded-3xl">
           <Image
             src="https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg"
             alt="Profile"
@@ -133,13 +177,13 @@ export default function Profile({
             className="rounded-full"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 dark:text-gray-400">
             {[
               { label: "Nome Completo", state: nome, setState: setName },
               {
                 label: "Data de Nascimento",
                 state: dataNascimentoAluno,
-                setState: setBirthDate,
+                setState: handleDateChange,
               },
               { label: "Email", state: emailAluno, setState: setEmail },
               { label: "Telefone", state: telefoneAluno, setState: setPhone },
@@ -148,7 +192,6 @@ export default function Profile({
                 state: matriculaAluno,
                 setState: setidentifierCode,
               },
-              { label: "Senha", state: password, setState: setPassword },
             ].map(({ label, state, setState }) => (
               <div key={label} className="space-y-2">
                 <label className="text-sm text-muted-foreground">{label}</label>
@@ -156,21 +199,24 @@ export default function Profile({
                   type={label === "Data de Nascimento" ? "date" : "text"}
                   value={state}
                   onChange={(e) => setState(e.target.value)}
-                  className="bg-blue-50 dark:bg-gray-800"
+                  className="bg-blue-50 dark:bg-[#141414]"
+                  min={label === "Data de Nascimento" ? "1900-01-01" : undefined}
+                  max={label === "Data de Nascimento" ? getTodayDateString() : undefined}
                 />
               </div>
             ))}
           </div>
 
           <div className="flex justify-center">
-            <Button
+            <ButtonEdit
               onClick={handleSubmit}
               className="bg-blue-500 hover:bg-blue-600 text-white px-8"
             >
               Editar estudante
-            </Button>
+            </ButtonEdit>
           </div>
         </div>
+        <ToastContainer />
       </main>
     </div>
   );

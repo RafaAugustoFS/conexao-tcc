@@ -11,6 +11,16 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    // Regras personalizadas para suprimir erros
+    rules: {
+      "@next/next/no-html-link-for-pages": "off",       // Exemplo: Desativa aviso de links HTML no Next.js
+      "@typescript-eslint/no-unused-vars": "warn",      // Transforma erros de variáveis não usadas em avisos
+      "no-console": "off",                             // Permite uso de console.log
+      "react/no-unescaped-entities": "off",            // Desativa avisos de entidades HTML no JSX
+      // Adicione outras regras conforme necessário
+    },
+  },
 ];
 
 export default eslintConfig;

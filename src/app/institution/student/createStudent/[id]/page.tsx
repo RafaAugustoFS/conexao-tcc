@@ -40,8 +40,37 @@ export default function Profile({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Função para formatar a data atual no formato YYYY-MM-DD
+  const getTodayDateString = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Função para validar e atualizar a data de nascimento
+  const handleDateChange = (value: string) => {
+    if (value) {
+      const selectedDate = new Date(value);
+      const minDate = new Date("1900-01-01");
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Remove a parte de horas para comparar apenas a data
+
+      if (selectedDate < minDate) {
+        toast.warn("A data não pode ser anterior a 1900");
+        return;
+      }
+      if (selectedDate > today) {
+        toast.warn("A data não pode ser posterior ao dia atual");
+        return;
+      }
+    }
+    setBirthDate(value);
+  };
+
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("Evento detectado!"); // Log para testar se a função está sendo chamada
+    console.log("Evento detectado!");
 
     if (!event.target.files || event.target.files.length === 0) {
       console.log("Nenhum arquivo selecionado.");
@@ -64,6 +93,8 @@ export default function Profile({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    
+    // Validações de email e telefone
     const validateEmail = (email: string) => {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return regex.test(email);
@@ -74,9 +105,30 @@ export default function Profile({
       return regex.test(phone);
     };
 
+    // Validação de campos obrigatórios
     if (!nomeAluno || !emailAluno || !dataNascimentoAluno || !telefoneAluno) {
       toast.warn("Preencha todos os campos obrigatórios.");
+      setIsSubmitting(false);
       return;
+    }
+
+    // Validação da data de nascimento
+    if (dataNascimentoAluno) {
+      const birthDate = new Date(dataNascimentoAluno);
+      const minDate = new Date("1900-01-01");
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (birthDate < minDate) {
+        toast.warn("A data de nascimento não pode ser anterior a 1900");
+        setIsSubmitting(false);
+        return;
+      }
+      if (birthDate > today) {
+        toast.warn("A data de nascimento não pode ser posterior ao dia atual");
+        setIsSubmitting(false);
+        return;
+      }
     }
 
     if (!validateEmail(emailAluno)) {
@@ -164,18 +216,10 @@ export default function Profile({
         <main className="flex-1 p-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1
-                className={`text-2xl font-bold ${
-                  darkMode ? "text-blue-500" : "text-blue-500"
-                }`}
-              >
+              <h1 className={`text-2xl font-bold ${darkMode ? "text-blue-500" : "text-blue-500"}`}>
                 Criar Novo aluno
               </h1>
-              <p
-                className={`text-sm ${
-                  darkMode ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
+              <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
                 Preencha os campos abaixo para criar uma novo aluno.
               </p>
             </div>
@@ -207,7 +251,7 @@ export default function Profile({
                 {
                   label: "Data de Nascimento",
                   state: dataNascimentoAluno,
-                  setState: setBirthDate,
+                  setState: handleDateChange,
                 },
                 {
                   label: "Email",
@@ -231,6 +275,8 @@ export default function Profile({
                     onChange={(e) => setState(e.target.value)}
                     className="bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]"
                     maxLength={maxLength}
+                    min={label === "Data de Nascimento" ? "1900-01-01" : undefined}
+                    max={label === "Data de Nascimento" ? getTodayDateString() : undefined}
                   />
                 </div>
               ))}
@@ -240,8 +286,9 @@ export default function Profile({
               <Button
                 className="bg-blue-500 hover:bg-blue-600 text-white px-8"
                 onClick={handleSubmit}
+                disabled={isSubmitting}
               >
-                Criar estudante
+                {isSubmitting ? "Criando..." : "Criar estudante"}
               </Button>
             </div>
           </div>

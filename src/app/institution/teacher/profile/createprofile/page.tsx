@@ -36,13 +36,33 @@ export default function Profile() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Função para obter a data atual no formato YYYY-MM-DD (para o input date)
-  const getTodayDate = (): string => {
+  // Função para obter a data atual no formato YYYY-MM-DD
+  const getTodayDateString = (): string => {
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  };
+
+  // Função para validar e atualizar a data de nascimento
+  const handleDateChange = (value: string) => {
+    if (value) {
+      const selectedDate = new Date(value);
+      const minDate = new Date("1900-01-01");
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Remove a parte de horas para comparar apenas a data
+
+      if (selectedDate < minDate) {
+        toast.warn("A data não pode ser anterior a 1900");
+        return;
+      }
+      if (selectedDate > today) {
+        toast.warn("A data não pode ser posterior ao dia atual");
+        return;
+      }
+    }
+    setBirthDate(value);
   };
 
   // Função para formatar a data para exibição
@@ -104,15 +124,29 @@ export default function Profile() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    if (
-      !nomeDocente ||
-      !emailDocente ||
-      !dataNascimentoDocente ||
-      !telefoneDocente
-    ) {
+    if (!nomeDocente || !emailDocente || !dataNascimentoDocente || !telefoneDocente) {
       toast.warn("Preencha todos os campos obrigatórios.");
       setIsSubmitting(false);
       return;
+    }
+
+    // Validação da data de nascimento
+    if (dataNascimentoDocente) {
+      const birthDate = new Date(dataNascimentoDocente);
+      const minDate = new Date("1900-01-01");
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (birthDate < minDate) {
+        toast.warn("A data de nascimento não pode ser anterior a 1900");
+        setIsSubmitting(false);
+        return;
+      }
+      if (birthDate > today) {
+        toast.warn("A data de nascimento não pode ser posterior ao dia atual");
+        setIsSubmitting(false);
+        return;
+      }
     }
 
     if (!validateEmail(emailDocente)) {
@@ -123,13 +157,6 @@ export default function Profile() {
 
     if (!validatePhone(telefoneDocente)) {
       toast.warn("Por favor, insira um telefone válido.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    // Verifica se a data de nascimento é futura
-    if (new Date(dataNascimentoDocente) > new Date()) {
-      toast.warn("A data de nascimento não pode ser futura.");
       setIsSubmitting(false);
       return;
     }
@@ -226,9 +253,10 @@ export default function Profile() {
                   {
                     label: "Data de Nascimento",
                     state: dataNascimentoDocente,
-                    setState: setBirthDate,
+                    setState: handleDateChange,
                     type: "date",
-                    max: getTodayDate(),
+                    min: "1900-01-01",
+                    max: getTodayDateString(),
                   },
                   {
                     label: "Email",
@@ -244,7 +272,7 @@ export default function Profile() {
                     maxLength: 11,
                     type: "tel",
                   },
-                ].map(({ label, state, setState, maxLength, type = "text", max }) => (
+                ].map(({ label, state, setState, maxLength, type = "text", min, max }) => (
                   <div key={label} className="space-y-2">
                     <label className="text-sm text-muted-foreground dark:text-gray-400">
                       {label}
@@ -255,6 +283,7 @@ export default function Profile() {
                       onChange={(e) => setState(e.target.value)}
                       className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white"
                       maxLength={maxLength}
+                      min={min}
                       max={max}
                     />
                   </div>
