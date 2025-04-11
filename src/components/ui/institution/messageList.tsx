@@ -30,7 +30,7 @@ function MessageList({ className }: { className?: string }) {
         );
 
         if (!reminderResponse.ok)
-          throw new Error("Erro ao buscar avisos da turma");
+          throw new Error("Nenhum aviso disponível.");
 
         const reminders: Message[] = await reminderResponse.json();
 
@@ -59,7 +59,7 @@ function MessageList({ className }: { className?: string }) {
 
   return (
     <div
-      className={`bg-white dark:bg-black rounded-xl shadow-md p-4 overflow-hidden ${className}`}
+      className={`bg-white dark:bg-black rounded-xl shadow-md p-4 overflow-hidden ${className} h-[320px]`}
     >
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold">Avisos</h2>
@@ -104,7 +104,7 @@ function MessageList({ className }: { className?: string }) {
                       )}
                     </span>
                   </div>
-                  <p className="text-gray-600 dark:text-[#8A8A8A] text-sm mt-1">
+                  <p className="text-gray-600 dark:text-[#8A8A8A] text-sm mt-1 max-w-3xl break-words">
                     {message.conteudo}
                   </p>
                 </div>

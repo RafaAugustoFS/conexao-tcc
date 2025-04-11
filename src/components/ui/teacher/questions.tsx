@@ -86,27 +86,27 @@ export default function FeedbackForm() {
   const questions: Question[] = [
     {
       id: 1,
-      text: "Nível de Engajamento (O quanto a aula prendeu a atenção e motivou a participação?)",
+      text: "Nível de Engajamento do aluno",
       responseKey: "resposta1",
     },
     {
       id: 2,
-      text: "Clareza da Explicação (O quão bem o conteúdo foi explicado?)",
+      text: "Nível de disposição do aluno",
       responseKey: "resposta2",
     },
     {
       id: 3,
-      text: "Relevância do Conteúdo (O quão útil foi o material apresentado?)",
+      text: "Nível de entrega do aluno",
       responseKey: "resposta3",
     },
     {
       id: 4,
-      text: "Interatividade (O quanto você pôde participar e interagir durante a aula?)",
+      text: "Nível de atenção do aluno",
       responseKey: "resposta4",
     },
     {
       id: 5,
-      text: "Satisfação Geral (Qual sua avaliação geral da aula?)",
+      text: "Nível de comportamento do aluno",
       responseKey: "resposta5",
     },
   ];
@@ -193,13 +193,34 @@ export default function FeedbackForm() {
           <h2 className="text-2xl font-bold text-blue-600 mb-4">
             Obrigado pelo seu feedback!
           </h2>
-          <p className="text-gray-700">
+          <p className="text-gray-700 mb-6">
             Suas respostas foram enviadas com sucesso.
           </p>
+          <button
+            onClick={() => {
+              setResponses({
+                resposta1: 0,
+                resposta2: 0,
+                resposta3: 0,
+                resposta4: 0,
+                resposta5: 0,
+                bimestre: 1,
+                createdBy: { id: responses.createdBy.id },
+                recipientStudent: { id: responses.recipientStudent.id },
+              });
+              setCurrentQuestion(0);
+              setIsSubmitted(false);
+              setErrorMessage(null);
+            }}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-md transition-colors"
+          >
+            Adicionar novo feedback
+          </button>
         </div>
       </div>
     );
   }
+  
 
   if (isLoading) {
     return (

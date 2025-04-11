@@ -65,7 +65,7 @@ export default function User({
       <Sidebar />
       <main className="flex-1">
         <div className="p-8">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-8 max-2xl:mt-5">
             <Button onClick={toggleTheme}>
               {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </Button>

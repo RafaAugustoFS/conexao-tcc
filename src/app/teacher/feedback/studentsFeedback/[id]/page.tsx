@@ -93,7 +93,7 @@ export default function TeacherList({
           </div>
 
           <div className="p-8 flex flex-col">
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 gap-6 max-md:grid-cols-2">
               {displayedStudents.map((student, index) => (
                 <Link key={index} href={`/teacher/feedback/studentsFeedback/studentProfile/${student.id}`}>
                   <div className="flex flex-col items-center p-4 rounded-lg shadow-md bg-[#F0F7FF] dark:bg-[#141414] dark:text-white border-[#F0F7FF] dark:border-[#141414] cursor-pointer">

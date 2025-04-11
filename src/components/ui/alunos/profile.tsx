@@ -10,6 +10,16 @@ interface ProfileInfoProps {
 }
 
 export function ProfileInfo({ imageUrl, name, email, birthDate, phone, registrationNumber }: ProfileInfoProps) {
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return "Data inválida";
+    }
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
   return (
     <div className="bg-white dark:bg-black rounded-lg shadow-sm p-4 md:p-8">
       <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6">
@@ -39,7 +49,7 @@ export function ProfileInfo({ imageUrl, name, email, birthDate, phone, registrat
           <label className="block text-sm text-gray-600 dark:text-[#ffffffd8]">Data de Nascimento</label>
           <input
             type="text"
-            value={birthDate}
+            value={formatDate(birthDate)}
             readOnly
             className="w-full p-2 rounded-lg border text-[#00000075] border-[#F0F7FF] bg-[#F0F7FF] dark:bg-[#141414] dark:text-[#ffffff94] dark:border-[#141414] text-sm md:text-base"
           />

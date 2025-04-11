@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ArrowDownCircle, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/alunos/button";
 import Sidebar from "@/components/layout/sidebar";
@@ -15,7 +15,7 @@ export default function CheckInEmocional({
   value: number;
   className?: string;
 }) {
-  const { darkMode, toggleTheme } = useTheme(); 
+  const { darkMode, toggleTheme } = useTheme();
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
@@ -27,7 +27,7 @@ export default function CheckInEmocional({
       <Sidebar />
       <div className="w-full flex flex-col items-center mt-8 px-4 lg:px-0">
         <div className="w-full flex justify-end mb-8 lg:mr-28">
-        <Button onClick={toggleTheme}>
+          <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>
@@ -89,7 +89,7 @@ export default function CheckInEmocional({
             acolhedor para todos.
           </p>
           <a
-            href=""
+            href="https://docs.google.com/forms/d/e/1FAIpQLSfG-Q-ecWsjrEOd_wz3b5fwT5vJdwFDHparoeiKLVtp3WxB3Q/viewform?usp=header"
             className="flex w-full lg:w-72 items-center gap-2 border-2 border-blue-500 rounded-full px-4 py-2 text-black font-semibold hover:bg-blue-100 transition-all dark:text-white dark:hover:bg-[#141414]"
           >
             <ArrowDownCircle className="text-blue-500" size={24} />

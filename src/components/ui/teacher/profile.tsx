@@ -103,6 +103,7 @@ export function ProfileInfo({
           <input
             type="tel"
             value={phone}
+            maxLength={11}
             readOnly
             className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed"
           />

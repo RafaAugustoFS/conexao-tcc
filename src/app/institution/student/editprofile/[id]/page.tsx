@@ -1,19 +1,27 @@
 "use client";
-import  Sidebar  from "@/components/layout/sidebarInstitution"
-import  ProfileForm  from "@/components/ui/institution/profile"
-import { Button } from "@/components/ui/alunos/button"
+import Sidebar from "@/components/layout/sidebarInstitution";
+import { Button } from "@/components/ui/alunos/button";
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Input } from "@/components/ui/institution/input";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import ModalCreate from "@/components/modals/modalCreate";
 
-
-export default function Profile({ value, className }: { value: number; className?: string }) {
+export default function Profile({
+  value,
+  className,
+}: {
+  value: number;
+  className?: string;
+}) {
   const params = useParams(); // Obtém os parâmetros da URL
   const id = params.id as string; // Extrai o ID da turma da URL
-  const { darkMode, toggleTheme } = useTheme(); 
+  const { darkMode, toggleTheme } = useTheme();
   const [nome, setName] = useState("");
   const [emailAluno, setEmail] = useState("");
   const [dataNascimentoAluno, setBirthDate] = useState("");
@@ -21,40 +29,46 @@ export default function Profile({ value, className }: { value: number; className
   const [turmaId, setTurma] = useState("");
   const [matriculaAluno, setidentifierCode] = useState("");
   const [password, setPassword] = useState("");
+  const [imageUrl, setImageUrl] = useState("")
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const formatDateForBackend = (dateString: string) => {
       const date = new Date(dateString);
-      const formattedDate = date.toISOString().replace("T", " ").substring(0, 19); // yyyy-MM-dd HH:mm:ss
+      const formattedDate = date
+        .toISOString()
+        .replace("T", " ")
+        .substring(0, 19); // yyyy-MM-dd HH:mm:ss
       return formattedDate;
     };
 
     if (!nome || !emailAluno || !dataNascimentoAluno || !telefoneAluno) {
-      alert("Preencha todos os campos obrigatórios.");
+      toast.warn("Preencha todos os campos obrigatórios.");
       return;
     }
     try {
+      setIsModalOpen(true)
       const response = await fetch(`http://localhost:3000/api/student/${id}`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          nomeAluno:nome,
+          nomeAluno: nome,
           emailAluno,
-          dataNascimentoAluno: formatDateForBackend(dataNascimentoAluno),
+          dataNascimentoAluno,
           telefoneAluno,
           turmaId,
           matriculaAluno,
-          password
+          password,
         }),
       });
 
       if (!response.ok) throw new Error("Erro ao atualizar o perfil.");
 
-      alert("✅ Perfil atualizado com sucesso!");
+      toast.success("✅ Perfil atualizado com sucesso!");
       setName("");
       setEmail("");
       setBirthDate("");
@@ -62,18 +76,18 @@ export default function Profile({ value, className }: { value: number; className
       setidentifierCode("");
       setPassword("");
     } catch (error) {
-        console.error("❌ Erro ao atualizar aluno:", error);
+      console.error("❌ Erro ao atualizar aluno:", error);
       alert("Erro ao criar perfil.");
     }
   };
 
   const getCurrentDate = () => {
     const today = new Date();
-    return today.toLocaleDateString('pt-BR', {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    return today.toLocaleDateString("pt-BR", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -84,20 +98,20 @@ export default function Profile({ value, className }: { value: number; className
 
   useEffect(() => {
     if (!id) return; // Se não houver ID, não faz a requisição
-  
+
     fetch(`http://localhost:3000/api/student/${id}`)
       .then((response) => response.json())
       .then((data) => {
+        setImageUrl(data.imageUrl)
         setName(data.nome || "");
         setEmail(data.emailAluno || "");
         setBirthDate(data.dataNascimentoAluno || "");
         setPhone(data.telefoneAluno || "");
-        setTurma(data.turmaId),
-        setidentifierCode(data.matriculaAluno)
+        setTurma(data.turmaId), setidentifierCode(data.matriculaAluno);
       })
       .catch((error) => console.error("Erro ao buscar turma:", error));
   }, [id]);
-  
+
   return (
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
       <Sidebar />
@@ -129,7 +143,11 @@ export default function Profile({ value, className }: { value: number; className
               },
               { label: "Email", state: emailAluno, setState: setEmail },
               { label: "Telefone", state: telefoneAluno, setState: setPhone },
-              { label: "Matrícula", state: matriculaAluno, setState: setidentifierCode },
+              {
+                label: "Matrícula",
+                state: matriculaAluno,
+                setState: setidentifierCode,
+              },
               { label: "Senha", state: password, setState: setPassword },
             ].map(({ label, state, setState }) => (
               <div key={label} className="space-y-2">
@@ -146,8 +164,8 @@ export default function Profile({ value, className }: { value: number; className
 
           <div className="flex justify-center">
             <Button
-              className="bg-blue-500 hover:bg-blue-600 text-white px-8"
               onClick={handleSubmit}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-8"
             >
               Editar estudante
             </Button>
@@ -155,5 +173,5 @@ export default function Profile({ value, className }: { value: number; className
         </div>
       </main>
     </div>
-  )
+  );
 }

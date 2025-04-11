@@ -89,36 +89,35 @@ const Table = () => {
 
   // Exibe a mensagem de carregamento ou erro, se houver
   if (carregando) {
-    return <div className="flex justify-center items-center p-4">Carregando...</div>
+    return <div className="flex justify-center items-center h-64">Carregando...</div>
   }
 
   if (erro) {
-    return <div className="flex justify-center items-center p-4">Erro: {erro}</div>
+    return <div className="bg-red-100 p-4 rounded text-red-700">Erro: {erro}</div>
   }
 
   return (
-    <div className="flex flex-col w-full max-w-full justify-center items-center bg-white dark:bg-black rounded-[20px] p-2 sm:p-4">
-      <div className="w-full overflow-x-auto">
-        <table className="w-full min-w-[300px] md:w-4/5 lg:w-3/4 xl:w-2/3 mx-auto border-separate border-spacing-2 sm:border-spacing-4 md:border-spacing-6 lg:border-spacing-8">
+    <div className="w-full p-4 bg-white dark:bg-black rounded-[20px]">
+      {/* Tabela para desktop */}
+      <div className="hidden md:flex overflow-x-auto md:justify-center">
+        <table className="min-w-[50%] border-separate border-spacing-4">
           <thead>
             <tr className="bg-blue-600 text-white">
-              <th className="p-1 sm:p-2 text-xs sm:text-sm md:text-base">Matéria</th>
-              <th className="p-1 sm:p-2 text-xs sm:text-sm md:text-base">1° Bim.</th>
-              <th className="p-1 sm:p-2 text-xs sm:text-sm md:text-base">2° Bim.</th>
-              <th className="p-1 sm:p-2 text-xs sm:text-sm md:text-base">3° Bim.</th>
-              <th className="p-1 sm:p-2 text-xs sm:text-sm md:text-base">4° Bim.</th>
+              <th className="p-3 text-left">Matéria</th>
+              <th className="p-3 text-center">1° Bim.</th>
+              <th className="p-3 text-center">2° Bim.</th>
+              <th className="p-3 text-center">3° Bim.</th>
+              <th className="p-3 text-center">4° Bim.</th>
             </tr>
           </thead>
           <tbody>
             {disciplinas.map((materia, index) => (
-              <tr key={index} className="odd:bg-gray-100 even:bg-gray-200">
-                <td className="p-1 sm:p-2 bg-blue-600 text-white font-semibold text-center text-xs sm:text-sm md:text-base">
-                  {materia.nomeDisciplina}
-                </td>
+              <tr key={index} className="odd:bg-gray-100 dark:odd:bg-gray-800 even:bg-gray-200 dark:even:bg-gray-700">
+                <td className="p-3 bg-blue-600 text-white font-semibold">{materia.nomeDisciplina}</td>
                 {materia.notas.map((nota, i) => (
                   <td
                     key={i}
-                    className="p-1 sm:p-2 text-center border border-transparent text-black bg-[#EAF4FF] dark:bg-[#141414] dark:text-white text-xs sm:text-sm md:text-base"
+                    className="p-3 text-center border border-transparent text-black dark:text-white bg-[#EAF4FF] dark:bg-[#141414]"
                   >
                     {nota !== null ? nota : "-"}
                   </td>
@@ -128,7 +127,32 @@ const Table = () => {
           </tbody>
         </table>
       </div>
-      <div className="mt-4">
+
+      {/* Lista para mobile */}
+      <div className="md:hidden space-y-4">
+        {disciplinas.map((materia, index) => (
+          <div key={index} className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+            <div className="bg-blue-600 text-white p-3 font-semibold">
+              {materia.nomeDisciplina}
+            </div>
+            <div className="grid grid-cols-2 gap-2 p-2">
+              {materia.notas.map((nota, i) => (
+                <div 
+                  key={i}
+                  className="bg-[#EAF4FF] dark:bg-[#141414] p-3 rounded text-center"
+                >
+                  <div className="text-sm text-gray-500 dark:text-gray-400">{i + 1}° Bim.</div>
+                  <div className="font-medium text-black dark:text-white">
+                    {nota !== null ? nota : "-"}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex justify-center mt-6">
         <DownloadButton apiBaseUrl="http://localhost:3000/api/boletim" />
       </div>
     </div>
@@ -136,4 +160,3 @@ const Table = () => {
 }
 
 export default Table
-

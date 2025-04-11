@@ -27,7 +27,7 @@ export default function User({
   value: number;
   className?: string;
 }) {
-  const { darkMode, toggleTheme } = useTheme(); 
+  const { darkMode, toggleTheme } = useTheme();
   const [docenteData, setDocenteData] = useState<TeacherProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -70,21 +70,19 @@ export default function User({
         <div className="p-4 md:p-6 lg:p-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
             <div className="w-full sm:w-auto">
-              <WelcomeUser 
-                name={docenteData?.nomeDocente || "Nao achou"} 
-                className="text-xl sm:text-2xl lg:text-3xl"
-              />
+              <WelcomeUser />
             </div>
-            <Button 
-              onClick={toggleTheme}
-            >
+            <Button onClick={toggleTheme}>
               {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </Button>
           </div>
           {docenteData && (
             <div className="text-sm sm:text-base lg:text-lg">
               <ProfileInfo
-                imageUrl={docenteData.imageUrl || "https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg?t=st=1738800543~exp=1738804143~hmac=5400a6f0c02663ed6f91ff172c490ed49dbd456d03bed9e4c98b2aed06b0dfdb&w=826"}
+                imageUrl={
+                  docenteData.imageUrl ||
+                  "https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg?t=st=1738800543~exp=1738804143~hmac=5400a6f0c02663ed6f91ff172c490ed49dbd456d03bed9e4c98b2aed06b0dfdb&w=826"
+                }
                 name={docenteData.nomeDocente}
                 email={docenteData.emailDocente}
                 birthDate={docenteData.dataNascimentoDocente}

@@ -15,13 +15,6 @@ interface Nota {
   nomeDisciplina: string
 }
 
-interface Turma {
-  disciplinaTurmas:{
-    id: number,
-    nomeDisciplina: string;
-  }
-}
-
 interface Materia {
   nomeDisciplina: string
   notas: (number | null)[] // Array de notas para cada bimestre
@@ -35,7 +28,7 @@ interface ModalProps {
   idNota?: number
   onClose: () => void
   onSave: (dados: { disciplina: string; bimestre: number; nota: number; idNota?: number }) => void
-  disciplinas: { id: number; nomeDisciplina: string }[]
+  disciplinas: string[]
 }
 
 // Componente do Modal (mantido igual)
@@ -99,12 +92,10 @@ const Modal = ({ tipo, disciplina, bimestre, notaAtual, idNota, onClose, onSave,
               >
                 <option value="">Selecione uma disciplina</option>
                 {disciplinas.map((disc) => (
-  <option key={disc.id} value={disc.nomeDisciplina}>
-    {disc.nomeDisciplina}
-  </option>
-))}
-
-
+                  <option key={disc} value={disc}>
+                    {disc}
+                  </option>
+                ))}
               </select>
             )}
           </div>
@@ -180,8 +171,6 @@ const Table = () => {
   } | null>(null)
   const [salvando, setSalvando] = useState<boolean>(false)
   const [mensagem, setMensagem] = useState<{ tipo: "sucesso" | "erro"; texto: string } | null>(null)
-  const [disciplinasDisponiveis, setDisciplinasDisponiveis] = useState<{ id: number, nomeDisciplina: string }[]>([]);
-  const [notasRaw, setNotasRaw] = useState<Nota[]>([])
 
   // Função para organizar as notas por disciplina
   const organizarNotasPorDisciplina = (notas: Nota[]): Materia[] => {
@@ -231,14 +220,11 @@ const Table = () => {
 
         const dados = await resposta.json()
 
-        setNotasRaw(dados.notas)
-
+        // Organiza as notas por disciplina
         const disciplinasOrganizadas = organizarNotasPorDisciplina(dados.notas)
+
+        // Atualiza o estado com as disciplinas e notas organizadas
         setDisciplinas(disciplinasOrganizadas)
-
-        // Aqui você já tem as disciplinas da turma
-        setDisciplinasDisponiveis(dados.turma.disciplinaTurmas)
-
       } catch (erro) {
         setErro((erro as Error).message)
       } finally {
@@ -250,27 +236,22 @@ const Table = () => {
   }, [id]) // Adicionei id como dependência para recarregar quando mudar
 
   // Função para abrir o modal de edição
-  const abrirModalEdicao = (disciplina: string, bimestre: number, nota: number | null) => {
+  const abrirModalEdicao = (disciplina: string, bimestre: number, nota: number | null, idNota?: number) => {
     if (nota === null) {
+      // Se a nota for nula, abrimos o modal de adição em vez de edição
       abrirModalAdicao(disciplina, bimestre)
       return
     }
-  
-    // Buscar o ID da nota correspondente
-    const notaEncontrada = notasRaw.find(
-      (n) => n.nomeDisciplina === disciplina && n.bimestre === bimestre
-    )
-  
+
     setNotaSelecionada({
       disciplina,
       bimestre,
       nota,
-      idNota: notaEncontrada?.idNota,
+      idNota,
     })
     setModalTipo("editar")
     setModalAberto(true)
   }
-  
 
   // Função para abrir o modal de adição
   const abrirModalAdicao = (disciplina?: string, bimestre?: number) => {
@@ -301,35 +282,27 @@ const Table = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token não encontrado");
-
-      const disciplinaSelecionada = disciplinasDisponiveis.find(
-        (d) => d.nomeDisciplina === dados.disciplina
-      )
-      
-      if (!disciplinaSelecionada) throw new Error("Disciplina não encontrada")
   
-        const endpoint = dados.idNota
-        ? `http://localhost:3000/api/note/${dados.idNota}` // endpoint de edição
-        : "http://localhost:3000/api/note"; // endpoint de criação
-      
-      const metodo = dados.idNota ? "PUT" : "POST"
-      
+      // Endpoint para a requisição POST
+      const endpoint = "http://localhost:3000/api/note";
+  
+      // Corpo da requisição no formato especificado
       const corpo = {
-        studentId: id,
-        nota: dados.nota,
-        bimestre: dados.bimestre,
-        disciplineId: disciplinaSelecionada.id,
-      }
-      
+        studentId: id, // ID do aluno
+        nota: dados.nota, // Nota
+        bimestre: dados.bimestre, // Bimestre
+        disciplineId: 4, // ID da disciplina (ajuste conforme necessário)
+      };
+  
+      // Requisição POST
       const resposta = await fetch(endpoint, {
-        method: metodo,
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(corpo),
-      })
-      
+      });
   
       if (!resposta.ok) {
         throw new Error("Falha ao salvar a nota");
@@ -406,7 +379,7 @@ const Table = () => {
                   <td
                     key={i}
                     className="p-3 text-center border border-transparent text-black dark:text-white bg-[#EAF4FF] dark:bg-[#141414] cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
-                    onClick={() => abrirModalEdicao(materia.nomeDisciplina, i + 1, nota)}
+                    onClick={() => abrirModalEdicao(materia.nomeDisciplina, i + 1, nota, undefined)}
                   >
                     {nota !== null ? nota : "-"}
                   </td>
@@ -429,7 +402,7 @@ const Table = () => {
                 <div 
                   key={i}
                   className="bg-[#EAF4FF] dark:bg-[#141414] p-3 rounded text-center cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
-                  onClick={() => abrirModalEdicao(materia.nomeDisciplina, i + 1, nota)}
+                  onClick={() => abrirModalEdicao(materia.nomeDisciplina, i + 1, nota, undefined)}
                 >
                   <div className="text-sm text-gray-500 dark:text-gray-400">{i + 1}° Bim.</div>
                   <div className="font-medium text-black dark:text-white">
@@ -441,40 +414,6 @@ const Table = () => {
           </div>
         ))}
       </div>
-
-      <div className="flex justify-center mt-6">
-        <button
-          onClick={() => abrirModalAdicao()}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-        >
-          Adicionar Nota
-        </button>
-      </div>
-
-      {/* Modal */}
-      {modalAberto && notaSelecionada && (
-        <Modal
-          tipo={modalTipo}
-          disciplina={notaSelecionada?.disciplina}
-          bimestre={notaSelecionada?.bimestre}
-          notaAtual={notaSelecionada?.nota || undefined}
-          idNota={notaSelecionada?.idNota}
-          onClose={fecharModal}
-          onSave={salvarNota}
-          disciplinas={disciplinasDisponiveis}
-        />
-      )}
-
-      {/* Mensagem de feedback */}
-      {mensagem && (
-        <div
-          className={`fixed bottom-4 right-4 p-4 rounded shadow-lg ${
-            mensagem.tipo === "sucesso" ? "bg-green-500 text-white" : "bg-red-500 text-white"
-          }`}
-        >
-          {mensagem.texto}
-        </div>
-      )}
     </div>
   )
 }

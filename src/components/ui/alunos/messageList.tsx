@@ -45,7 +45,7 @@ function MessageList({ className }: { className?: string }) {
           }
         );
   
-        if (!response.ok) throw new Error("Erro ao buscar dados do aluno");
+        if (!response.ok) throw new Error("Nenhum aviso disponível.");
   
         const data = await response.json();
         setStudentTurma(data.turma.idTurma);
@@ -68,7 +68,7 @@ function MessageList({ className }: { className?: string }) {
         );
   
         if (!reminderResponse.ok)
-          throw new Error("Erro ao buscar avisos da turma");
+          throw new Error("Nenhum aviso disponível");
   
         const reminders: Message[] = await reminderResponse.json();
   
@@ -96,7 +96,7 @@ function MessageList({ className }: { className?: string }) {
 
   return (
     <div
-      className={`bg-white dark:bg-black rounded-xl shadow-md p-3 overflow-hidden ${className}`}
+      className={`bg-white dark:bg-black rounded-xl shadow-md p-3 overflow-hidden ${className} h-[296px]`}
     >
       <div className="flex justify-between items-center mb-5">
         <h2 className="text-lg font-bold">Avisos</h2>

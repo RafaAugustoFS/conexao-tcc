@@ -80,13 +80,16 @@ export function EventSidebar() {
 
   // Format date from API (YYYY-MM-DD) to "DD - MMM YYYY"
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date
+    const [year, month, day] = dateString.split("-").map(Number);
+    const date = new Date(year, month - 1, day); // mês começa do zero
+    const dayFormatted = day; // Pegamos diretamente do split, sem confiar no Date
+    const monthFormatted = date
       .toLocaleString("pt-BR", { month: "short" })
       .replace(".", "");
-    const year = date.getFullYear();
-    return `${day} - ${month.charAt(0).toUpperCase() + month.slice(1)} ${year}`;
+    const yearFormatted = year;
+    return `${dayFormatted} - ${
+      monthFormatted.charAt(0).toUpperCase() + monthFormatted.slice(1)
+    } ${yearFormatted}`;
   };
 
   // Format time from API (HH:MM:SS) to "H A.M - (H+1) A.M"
@@ -124,7 +127,7 @@ export function EventSidebar() {
       <div
         className={`${
           isOpen ? "translate-x-0" : "translate-x-full"
-        } fixed 2xl:static right-0 z-40 w-[400px] max-md:w-[340px] h-screen dark:bg-black transition-transform duration-300 ease-in-out overflow-y-auto`}
+        } fixed 2xl:static right-0 z-40 w-[400px] max-md:w-[340px] h-screen  transition-transform duration-300 ease-in-out overflow-y-auto`}
       >
         <div className="p-4 space-y-6">
           {isLoading ? (
@@ -143,12 +146,12 @@ export function EventSidebar() {
             </div>
           ) : (
             <>
-              <div className="bg-[#FFFFFF] dark:bg-[#141414] pt-8 pl-16 pr-16 pb-8 rounded-[20px]">
+              <div className="bg-[#FFFFFF] dark:bg-black pt-8 pl-16 pr-16 pb-8 rounded-[20px]">
                 <div>
-                  <h3 className="dark:text-white text-lg font-semibold mb-2">
+                  <h3 className="dark:text-white text-lg font-semibold mb-2 max-w-56 break-words">
                     {selectedEvent?.tituloEvento || "Sobre o Evento"}
                   </h3>
-                  <p className="text-sm text-muted-foreground dark:text-[#D0CECE]">
+                  <p className="text-sm text-muted-foreground dark:text-[#D0CECE] max-w-56 break-words">
                     {selectedEvent?.descricaoEvento ||
                       "Nenhum evento selecionado"}
                   </p>
@@ -169,7 +172,7 @@ export function EventSidebar() {
                 </div>
 
                 <div>
-                  <p className="pt-4 text-sm mb-4 dark:text-[#D0CECE]">
+                  <p className="pt-4 text-sm mb-4 dark:text-[#D0CECE] max-w-56 break-words">
                     {selectedEvent?.localEvento ||
                       "Cotia SP, Senai Ricardo Lerner"}
                     <br />
@@ -178,7 +181,7 @@ export function EventSidebar() {
                 </div>
               </div>
 
-              <div className="bg-[#FFFFFF] dark:bg-[#141414] pt-8 pl-16 pr-16 pb-5 rounded-[20px]">
+              <div className="bg-[#FFFFFF] dark:bg-black pt-8 pl-16 pr-16 pb-5 rounded-[20px]">
                 <h3 className="text-lg font-semibold mb-4 dark:text-[#D0CECE]">
                   Proximos Eventos
                 </h3>
@@ -199,11 +202,11 @@ export function EventSidebar() {
                             eventColors[index % eventColors.length]
                           } rounded-full flex items-center justify-center text-white`}
                         >
-                          {new Date(event.dataEvento).getDate()}{" "}
+                          {event.dataEvento.split("-")[2]}
                           {/* Extrai o dia da data do evento */}
                         </div>
                         <div>
-                          <p className="font-medium dark:text-white">
+                          <p className="font-medium dark:text-white break-words max-w-40 max-md:max-w-28">
                             {event.tituloEvento}
                           </p>
                           <p className="text-xs text-muted-foreground dark:text-white">

@@ -12,7 +12,6 @@ import {
   Select,
 } from "@/components/ui/institution/select";
 import Sidebar from "@/components/layout/sidebarInstitution";
-import SearchInput from "@/components/ui/search";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
@@ -79,7 +78,7 @@ export default function EditClass() {
   const editarTurma = async () => {
     const payload = {
       nomeTurma,
-      anoLetivoTurma,
+      anoLetivoTurma: parseInt(anoLetivoTurma, 10),
       periodoTurma,
       capacidadeMaximaTurma: Number(capacidadeTurma),
       salaTurma: Number(salaTurma),
@@ -120,16 +119,22 @@ export default function EditClass() {
     fetch(`http://localhost:3000/api/class/teacher/disciplinas/${id}`)
       .then((response) => response.json())
       .then((data) => {
-        setNomeTurma(data.nomeTurma || "");
-        setAnoLetivoTurma(data.anoLetivoTurma || "");
-        setPeriodoTurma(data.periodoTurma || "");
-        setCapacidadeTurma(String(data.capacidadeMaximaTurma) || "");
-        setSalaTurma(String(data.salaTurma) || "");
-        setIdTeachers(data.idTeacher || []);
-        setDisciplineIds(data.disciplineId || []);
+        setNomeTurma(data.nomeTurma || "")
+        setAnoLetivoTurma(data.anoLetivoTurma || "")
+        setPeriodoTurma(data.periodoTurma || "")
+        setCapacidadeTurma(String(data.capacidadeMaximaTurma) || "")
+        setSalaTurma(String(data.salaTurma) || "")
+
+        // Extrair IDs dos professores do array teachers
+        const teacherIds = data.teachers ? data.teachers.map((teacher) => teacher.id) : []
+        setIdTeachers(teacherIds)
+
+        // Extrair IDs das disciplinas do array disciplines
+        const disciplineIds = data.disciplines ? data.disciplines.map((discipline) => discipline.id) : []
+        setDisciplineIds(disciplineIds)
       })
-      .catch((error) => console.error("Erro ao buscar turma:", error));
-  }, [id]); // 🔹 Só executa quando o ID mudar
+      .catch((error) => console.error("Erro ao buscar turma:", error))
+  }, [id]) // 🔹 Só executa quando o ID mudar
 
   return (
     <>
@@ -172,6 +177,7 @@ export default function EditClass() {
                     </label>
                     <Input
                       className="bg-blue-50 border-blue-50 dark:bg-[#141414] dark:border-[#141414] dark:text-white"
+                      maxLength={50}
                       value={nomeTurma}
                       onChange={(e) => setNomeTurma(e.target.value)}
                     />
@@ -206,7 +212,7 @@ export default function EditClass() {
                       Ano letivo
                     </label>
                     <Select
-                      value={anoLetivoTurma}
+                      value={anoLetivoTurma.toString()}
                       onChange={(value) => {
                         console.log("📆 Ano letivo atualizado:", value);
                         setAnoLetivoTurma(value);
@@ -216,9 +222,9 @@ export default function EditClass() {
                         <SelectValue placeholder="Selecione o ano" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="2025-01-01">2025</SelectItem>
-                        <SelectItem value="2024-01-01">2024</SelectItem>
-                        <SelectItem value="2023-01-01">2023</SelectItem>
+                        <SelectItem value="2025">2025</SelectItem>
+                        <SelectItem value="2024">2024</SelectItem>
+                        <SelectItem value="2023">2023</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

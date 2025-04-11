@@ -20,6 +20,7 @@ interface Professor {
 }
 
 interface StudentProfile {
+  imageUrl: string;
   nome: string;
   emailAluno: string;
   matriculaAluno: string;
