@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useEffect, useState } from "react"
 import FullCalendar from "@fullcalendar/react"
 import dayGridPlugin from "@fullcalendar/daygrid"
@@ -16,10 +15,9 @@ import { Input } from "@/components/ui/institution/input"
 import { Label } from "@/components/ui/institution/label"
 import { Textarea } from "@/components/ui/institution/textarea"
 import { Plus, Trash2, Edit, Calendar } from "lucide-react"
-//import { toast } from "@/components/ui/institution/use-toast"
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+import { ToastContainer } from "react-toastify"
 
 interface Event {
   id: number
@@ -44,7 +42,7 @@ interface EventData {
 }
 
 interface BiggerCalendarProps {
-  onEventCreated: () => void;
+  onEventCreated: () => void
 }
 
 export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarProps) {
@@ -83,11 +81,7 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
       setAllEvents(events)
     } catch (error) {
       console.error("Erro ao buscar eventos:", error)
-      // toast({
-      //   title: "Erro",
-      //   description: "Não foi possível carregar os eventos",
-      //   variant: "destructive",
-      // })
+      toast.error("Não foi possível carregar os eventos")
     } finally {
       setIsLoading(false)
     }
@@ -104,20 +98,16 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
     }
   }, [])
 
-  // Add custom CSS for the calendar title on mobile
   useEffect(() => {
     const addCustomStyles = () => {
-      // Check if the style element already exists
       let styleElement = document.getElementById("calendar-custom-styles")
 
       if (!styleElement) {
-        // Create a new style element if it doesn't exist
         styleElement = document.createElement("style")
         styleElement.id = "calendar-custom-styles"
         document.head.appendChild(styleElement)
       }
 
-      // Define the CSS rule for mobile calendar title
       const cssRule = `
         @media (max-width: 768px) {
           .fc .fc-toolbar-title {
@@ -128,7 +118,6 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
 
       styleElement.textContent = cssRule
 
-      // Adicione estilos para garantir que o modal tenha fundo branco sólido
       const modalStyles = `
         .DialogOverlay {
           background-color: rgba(0, 0, 0, 0.5) !important;
@@ -139,13 +128,11 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
         }
       `
 
-      // Adicione os estilos ao elemento de estilo existente
       styleElement.textContent += modalStyles
     }
 
     addCustomStyles()
 
-    // Clean up function to remove the style element when component unmounts
     return () => {
       const styleElement = document.getElementById("calendar-custom-styles")
       if (styleElement) {
@@ -153,6 +140,15 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
       }
     }
   }, [])
+
+  const validateDate = (dateString: string): boolean => {
+    if (!dateString) return false
+    
+    const date = new Date(dateString)
+    const year = date.getFullYear()
+    
+    return !isNaN(date.getTime()) && year >= 1900
+  }
 
   const handleEventClick = (info: any) => {
     const event = allEvents.find((e) => e.id === Number.parseInt(info.event.id))
@@ -190,6 +186,11 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
   const handleAddEvent = async () => {
     if (!selectedEvent) return
 
+    if (!validateDate(selectedEvent.dataEvento)) {
+      toast.error("Por favor, insira uma data válida posterior a 1900.")
+      return
+    }
+
     setIsLoading(true)
     try {
       const token = localStorage.getItem("token")
@@ -208,21 +209,12 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
         throw new Error("Falha ao adicionar evento")
       }
 
-      // toast({
-      //   title: "Sucesso",
-      //   description: "Evento adicionado com sucesso",
-      // })
       setOpenModal(false)
       fetchEvents()
       toast.success("Evento criado com sucesso!")
-      onEventCreated();
+      onEventCreated()
     } catch (error) {
       console.error("Erro ao adicionar evento:", error)
-      // toast({
-      //   title: "Erro",
-      //   description: "Não foi possível adicionar o evento",
-      //   variant: "destructive",
-      // })
       toast.error("Erro ao criar o evento.")
     } finally {
       setIsLoading(false)
@@ -231,6 +223,11 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
 
   const handleUpdateEvent = async () => {
     if (!selectedEvent || !selectedEvent.id) return
+
+    if (!validateDate(selectedEvent.dataEvento)) {
+      toast.error("Por favor, insira uma data válida posterior a 1900.")
+      return
+    }
 
     setIsLoading(true)
     try {
@@ -250,19 +247,12 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
         throw new Error("Falha ao atualizar evento")
       }
 
-      // toast({
-      //   title: "Sucesso",
-      //   description: "Evento atualizado com sucesso",
-      // })
       setOpenModal(false)
       fetchEvents()
+      toast.success("Evento atualizado com sucesso!")
     } catch (error) {
       console.error("Erro ao atualizar evento:", error)
-      // toast({
-      //   title: "Erro",
-      //   description: "Não foi possível atualizar o evento",
-      //   variant: "destructive",
-      // })
+      toast.error("Erro ao atualizar o evento.")
     } finally {
       setIsLoading(false)
     }
@@ -291,20 +281,13 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
         throw new Error("Falha ao excluir evento")
       }
 
-      // toast({
-      //   title: "Sucesso",
-      //   description: "Evento excluído com sucesso",
-      // })
       setOpenDeleteDialog(false)
       setOpenModal(false)
       fetchEvents()
+      toast.success("Evento excluído com sucesso!")
     } catch (error) {
       console.error("Erro ao excluir evento:", error)
-      // toast({
-      //   title: "Erro",
-      //   description: "Não foi possível excluir o evento",
-      //   variant: "destructive",
-      // })
+      toast.error("Erro ao excluir o evento.")
     } finally {
       setIsLoading(false)
     }
@@ -312,7 +295,7 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
 
   return (
     <>
-    <ToastContainer/>
+      <ToastContainer/>
       <nav className="flex justify-between mb-4 md:mb-2 border-violet-100 p-2 md:p-4">
       </nav>
       <main className="flex flex-col items-center justify-between p-2 md:p-6 lg:p-16">
@@ -350,7 +333,6 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
         </div>
       </main>
 
-      {/* Modal para adicionar/editar evento */}
       <Dialog open={openModal} onOpenChange={setOpenModal}>
         <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden bg-white shadow-lg border-0">
           <div className="bg-white p-4 border-b">
@@ -385,6 +367,7 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
                     type="date"
                     value={selectedEvent?.dataEvento || ""}
                     onChange={handleInputChange}
+                    min="1900-01-01"
                   />
                 </div>
                 <div className="grid gap-2">
@@ -497,7 +480,6 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
         </DialogContent>
       </Dialog>
 
-      {/* Diálogo de confirmação para excluir */}
       <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
         <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden bg-white shadow-lg border-0">
           <div className="bg-white p-4 border-b">
@@ -565,4 +547,3 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
     </>
   )
 }
-

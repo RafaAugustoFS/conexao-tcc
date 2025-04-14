@@ -40,32 +40,8 @@ export default function Profile({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Função para formatar a data atual no formato YYYY-MM-DD
-  const getTodayDateString = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
-  // Função para validar e atualizar a data de nascimento
+  // Função para atualizar a data de nascimento (sem validação em tempo real)
   const handleDateChange = (value: string) => {
-    if (value) {
-      const selectedDate = new Date(value);
-      const minDate = new Date("1900-01-01");
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Remove a parte de horas para comparar apenas a data
-
-      if (selectedDate < minDate) {
-        toast.warn("A data não pode ser anterior a 1900");
-        return;
-      }
-      if (selectedDate > today) {
-        toast.warn("A data não pode ser posterior ao dia atual");
-        return;
-      }
-    }
     setBirthDate(value);
   };
 
@@ -112,7 +88,7 @@ export default function Profile({
       return;
     }
 
-    // Validação da data de nascimento
+    // VALIDAÇÃO DA DATA DE NASCIMENTO (APENAS NO SUBMIT)
     if (dataNascimentoAluno) {
       const birthDate = new Date(dataNascimentoAluno);
       const minDate = new Date("1900-01-01");
@@ -275,8 +251,6 @@ export default function Profile({
                     onChange={(e) => setState(e.target.value)}
                     className="bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414]"
                     maxLength={maxLength}
-                    min={label === "Data de Nascimento" ? "1900-01-01" : undefined}
-                    max={label === "Data de Nascimento" ? getTodayDateString() : undefined}
                   />
                 </div>
               ))}

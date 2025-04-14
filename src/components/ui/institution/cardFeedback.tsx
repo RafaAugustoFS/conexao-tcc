@@ -29,7 +29,7 @@ export default function CardFeedback({ person, rote = "/", imageUrl }: CardFeedb
           <span className="text-gray-500">Foto</span>
         )}
       </div>
-      <span className="font-medium dark:text-white">{person}</span>
+      <span className="font-medium dark:text-white max-w-80 break-words">{person}</span>
       <Link href={rote}>
         <div className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
           Ver

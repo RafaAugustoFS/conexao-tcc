@@ -45,26 +45,6 @@ export default function Profile() {
     return `${year}-${month}-${day}`;
   };
 
-  // Função para validar e atualizar a data de nascimento
-  const handleDateChange = (value: string) => {
-    if (value) {
-      const selectedDate = new Date(value);
-      const minDate = new Date("1900-01-01");
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Remove a parte de horas para comparar apenas a data
-
-      if (selectedDate < minDate) {
-        toast.warn("A data não pode ser anterior a 1900");
-        return;
-      }
-      if (selectedDate > today) {
-        toast.warn("A data não pode ser posterior ao dia atual");
-        return;
-      }
-    }
-    setBirthDate(value);
-  };
-
   // Função para formatar a data para exibição
   const formatCurrentDate = (): string => {
     const today = new Date();
@@ -130,7 +110,7 @@ export default function Profile() {
       return;
     }
 
-    // Validação da data de nascimento
+    // Validação da data de nascimento (agora só ocorre no submit)
     if (dataNascimentoDocente) {
       const birthDate = new Date(dataNascimentoDocente);
       const minDate = new Date("1900-01-01");
@@ -253,7 +233,7 @@ export default function Profile() {
                   {
                     label: "Data de Nascimento",
                     state: dataNascimentoDocente,
-                    setState: handleDateChange,
+                    setState: setBirthDate, // Agora usa setBirthDate diretamente
                     type: "date",
                     min: "1900-01-01",
                     max: getTodayDateString(),

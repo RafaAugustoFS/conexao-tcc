@@ -32,43 +32,31 @@ export default function Profile({
   const [imageUrl, setImageUrl] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleDateChange = (value: string) => {
-    if (value) {
-      const selectedDate = new Date(value);
-      const minDate = new Date("1900-01-01");
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Remove a parte de horas para comparar apenas a data
+  const validateDate = (dateString: string) => {
+    if (!dateString) return true; // Se não houver data, a validação passa (ou pode retornar false se for obrigatório)
+    
+    const selectedDate = new Date(dateString);
+    const minDate = new Date("1900-01-01");
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-      if (selectedDate < minDate) {
-        toast.warn("A data não pode ser anterior a 1900");
-        return;
-      }
-      if (selectedDate > today) {
-        toast.warn("A data não pode ser posterior ao dia atual");
-        return;
-      }
+    if (selectedDate < minDate) {
+      toast.warn("A data não pode ser anterior a 1900");
+      return false;
     }
-    setBirthDate(value);
+    if (selectedDate > today) {
+      toast.warn("A data não pode ser posterior ao dia atual");
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Verifica se a data é válida
-    if (dataNascimentoAluno) {
-      const birthDate = new Date(dataNascimentoAluno);
-      const minDate = new Date("1900-01-01");
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      if (birthDate < minDate) {
-        toast.warn("A data de nascimento não pode ser anterior a 1900");
-        return;
-      }
-      if (birthDate > today) {
-        toast.warn("A data de nascimento não pode ser posterior ao dia atual");
-        return;
-      }
+    // Verifica se a data é válida apenas no submit
+    if (!validateDate(dataNascimentoAluno)) {
+      return;
     }
 
     const formatDateForBackend = (dateString: string) => {
@@ -183,7 +171,7 @@ export default function Profile({
               {
                 label: "Data de Nascimento",
                 state: dataNascimentoAluno,
-                setState: handleDateChange,
+                setState: setBirthDate,
               },
               { label: "Email", state: emailAluno, setState: setEmail },
               { label: "Telefone", state: telefoneAluno, setState: setPhone },
