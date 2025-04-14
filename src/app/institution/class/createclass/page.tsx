@@ -312,10 +312,7 @@ export default function CreateClass() {
                           }
                           className={darkMode ? "text-white" : ""}
                         />
-                        <label
-                          htmlFor={`docente-${docente.id}`}
-                          className={darkMode ? "text-white" : ""}
-                        >
+                        <label htmlFor={`docente-${docente.id}`} className="max-w-64 break-words">
                           {docente.nomeDocente}
                         </label>
                       </div>
