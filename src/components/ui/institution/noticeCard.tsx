@@ -61,7 +61,6 @@ export function NoticeCard({ onRefresh }: NoticeCardProps) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
           createdByInstitution: { id: userIdInt },
