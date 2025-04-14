@@ -49,26 +49,6 @@ export default function Profile({
     return `${year}-${month}-${day}`;
   };
 
-  // Função para validar e atualizar a data de nascimento
-  const handleDateChange = (value: string) => {
-    if (value) {
-      const selectedDate = new Date(value);
-      const minDate = new Date("1900-01-01");
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Remove a parte de horas para comparar apenas a data
-
-      if (selectedDate < minDate) {
-        toast.warn("A data não pode ser anterior a 1900");
-        return;
-      }
-      if (selectedDate > today) {
-        toast.warn("A data não pode ser posterior ao dia atual");
-        return;
-      }
-    }
-    setDataNascimentoDocente(value);
-  };
-
   // Função para formatar a data da API para o formato YYYY-MM-DD
   const formatApiDate = (apiDate: string) => {
     if (!apiDate) return "";
@@ -121,35 +101,40 @@ export default function Profile({
     );
   };
 
+  const validateDate = (dateString: string): boolean => {
+    if (!dateString) return false;
+    
+    const selectedDate = new Date(dateString);
+    const minDate = new Date("1900-01-01");
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate < minDate) {
+      toast.warn("A data de nascimento não pode ser anterior a 1900");
+      return false;
+    }
+    if (selectedDate > today) {
+      toast.warn("A data de nascimento não pode ser posterior ao dia atual");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsModalOpen(true);
-
-    // Validações
+    
+    // Validações básicas
     if (!nomeDocente || !emailDocente || !dataNascimentoDocente || !telefoneDocente || disciplineId.length === 0) {
       toast.warn("Preencha todos os campos obrigatórios.");
-      setIsModalOpen(false);
       return;
     }
 
-    // Validação da data
-    if (dataNascimentoDocente) {
-      const birthDate = new Date(dataNascimentoDocente);
-      const minDate = new Date("1900-01-01");
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      if (birthDate < minDate) {
-        toast.warn("A data de nascimento não pode ser anterior a 1900");
-        setIsModalOpen(false);
-        return;
-      }
-      if (birthDate > today) {
-        toast.warn("A data de nascimento não pode ser posterior ao dia atual");
-        setIsModalOpen(false);
-        return;
-      }
+    // Validação da data (somente no submit)
+    if (!validateDate(dataNascimentoDocente)) {
+      return;
     }
+
+    setIsModalOpen(true);
 
     try {
       const response = await fetch(`http://localhost:3000/api/teacher/${id}`, {
@@ -233,7 +218,7 @@ export default function Profile({
                 {
                   label: "Data de Nascimento",
                   state: dataNascimentoDocente,
-                  setState: handleDateChange,
+                  setState: setDataNascimentoDocente,
                   type: "date",
                   min: "1900-01-01",
                   max: getTodayDateString()

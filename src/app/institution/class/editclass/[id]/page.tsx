@@ -273,7 +273,7 @@ export default function EditClass() {
                             handleTeacherSelection(docente.id)
                           }
                         />
-                        <label htmlFor={`docente-${docente.id}`}>
+                        <label htmlFor={`docente-${docente.id}`} className="max-w-64 break-words">
                           {docente.nomeDocente}
                         </label>
                       </div>

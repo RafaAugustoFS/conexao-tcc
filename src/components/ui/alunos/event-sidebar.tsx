@@ -12,6 +12,7 @@ interface Event {
   localEvento: string;
   descricaoEvento: string;
 }
+
 // Colors to cycle through for events
 const eventColors = [
   "bg-blue-500",
@@ -38,11 +39,20 @@ export function EventSidebar() {
         }
 
         const data = await response.json();
-        setEvents(data);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Filter events to only include future or today's events
+        const futureEvents = data.filter((event: Event) => {
+          const eventDate = new Date(event.dataEvento);
+          return eventDate >= today;
+        });
 
-        // Set the first event as selected by default
-        if (data.length > 0) {
-          setSelectedEvent(data[0]);
+        setEvents(futureEvents);
+
+        // Set the first future event as selected by default
+        if (futureEvents.length > 0) {
+          setSelectedEvent(futureEvents[0]);
         }
       } catch (err) {
         console.error("Failed to fetch events:", err);
@@ -81,8 +91,8 @@ export function EventSidebar() {
   // Format date from API (YYYY-MM-DD) to "DD - MMM YYYY"
   const formatDate = (dateString: string) => {
     const [year, month, day] = dateString.split("-").map(Number);
-    const date = new Date(year, month - 1, day); // mês começa do zero
-    const dayFormatted = day; // Pegamos diretamente do split, sem confiar no Date
+    const date = new Date(year, month - 1, day);
+    const dayFormatted = day;
     const monthFormatted = date
       .toLocaleString("pt-BR", { month: "short" })
       .replace(".", "");
@@ -92,9 +102,8 @@ export function EventSidebar() {
     } ${yearFormatted}`;
   };
 
-  // Format time from API (HH:MM:SS) to "H A.M - (H+1) A.M"
+  // Format time from API (HH:MM:SS) to "HH:MM"
   const formatTime = (timeString: string) => {
-    // Just return the HH:MM part of the time
     return timeString.substring(0, 5);
   };
 
@@ -127,7 +136,7 @@ export function EventSidebar() {
       <div
         className={`${
           isOpen ? "translate-x-0" : "translate-x-full"
-        } fixed 2xl:static right-0 z-40 w-[400px] max-md:w-[340px] h-screen  transition-transform duration-300 ease-in-out overflow-y-auto`}
+        } fixed 2xl:static right-0 z-40 w-[400px] max-md:w-[340px] h-screen transition-transform duration-300 ease-in-out overflow-y-auto`}
       >
         <div className="p-4 space-y-6">
           {isLoading ? (
@@ -183,7 +192,7 @@ export function EventSidebar() {
 
               <div className="bg-[#FFFFFF] dark:bg-black pt-8 pl-16 pr-16 pb-5 rounded-[20px]">
                 <h3 className="text-lg font-semibold mb-4 dark:text-[#D0CECE]">
-                  Proximos Eventos
+                  Próximos Eventos
                 </h3>
                 <div className="space-y-3">
                   {events.length > 0 ? (
@@ -203,7 +212,6 @@ export function EventSidebar() {
                           } rounded-full flex items-center justify-center text-white`}
                         >
                           {event.dataEvento.split("-")[2]}
-                          {/* Extrai o dia da data do evento */}
                         </div>
                         <div>
                           <p className="font-medium dark:text-white break-words max-w-40 max-md:max-w-28">
@@ -218,7 +226,7 @@ export function EventSidebar() {
                     ))
                   ) : (
                     <p className="text-center text-muted-foreground dark:text-[#D0CECE]">
-                      Nenhum evento encontrado
+                      Nenhum evento futuro encontrado
                     </p>
                   )}
                 </div>
