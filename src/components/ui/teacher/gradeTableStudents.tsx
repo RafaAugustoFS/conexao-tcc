@@ -1,56 +1,86 @@
-"use client"
+"use client";
 
-import { jwtDecode } from "jwt-decode"
-import type React from "react"
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
-import { Check, X } from "lucide-react"
+import { jwtDecode } from "jwt-decode";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { Check, X } from "lucide-react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 // Tipos para as notas e as matérias
 interface Nota {
-  idNota: number
-  nota: number
-  bimestre: number
-  status: string
-  nomeDisciplina: string
+  idNota: number;
+  nota: number;
+  bimestre: number;
+  status: string;
+  nomeDisciplina: string;
+}
+
+interface Turma {
+  disciplinaTurmas: {
+    id: number;
+    nomeDisciplina: string;
+  };
 }
 
 interface Materia {
-  nomeDisciplina: string
-  notas: (number | null)[] // Array de notas para cada bimestre
+  nomeDisciplina: string;
+  notas: (number | null)[]; // Array de notas para cada bimestre
 }
 
 interface ModalProps {
-  tipo: "editar" | "adicionar"
-  disciplina?: string
-  bimestre?: number
-  notaAtual?: number
-  idNota?: number
-  onClose: () => void
-  onSave: (dados: { disciplina: string; bimestre: number; nota: number; idNota?: number }) => void
-  disciplinas: string[]
+  tipo: "editar" | "adicionar";
+  disciplina?: string;
+  bimestre?: number;
+  notaAtual?: number;
+  idNota?: number;
+  onClose: () => void;
+  onSave: (dados: {
+    disciplina: string;
+    bimestre: number;
+    nota: number;
+    idNota?: number;
+  }) => void;
+  disciplinas: { id: number; nomeDisciplina: string }[];
 }
 
 // Componente do Modal (mantido igual)
-const Modal = ({ tipo, disciplina, bimestre, notaAtual, idNota, onClose, onSave, disciplinas }: ModalProps) => {
-  const [novaDisciplina, setNovaDisciplina] = useState(disciplina || "")
-  const [novoBimestre, setNovoBimestre] = useState(bimestre || 1)
-  const [novaNota, setNovaNota] = useState(notaAtual !== undefined ? notaAtual.toString() : "")
-  const [erro, setErro] = useState<string | null>(null)
+const Modal = ({
+  tipo,
+  disciplina,
+  bimestre,
+  notaAtual,
+  idNota,
+  onClose,
+  onSave,
+  disciplinas,
+}: ModalProps) => {
+  const [novaDisciplina, setNovaDisciplina] = useState(disciplina || "");
+  const [novoBimestre, setNovoBimestre] = useState(bimestre || 1);
+  const [novaNota, setNovaNota] = useState(
+    notaAtual !== undefined ? notaAtual.toString() : ""
+  );
+  const [erro, setErro] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // Validação
     if (!novaDisciplina) {
-      setErro("Selecione uma disciplina")
-      return
+      setErro("Selecione uma disciplina");
+      return;
     }
 
-    const notaNumero = Number.parseFloat(novaNota)
+    if (isNaN(novoBimestre) || novoBimestre < 1 || novoBimestre > 4) {
+      setErro("O bimestre deve estar entre 1 e 4");
+    }
+
+    const notaNumero = Number.parseFloat(novaNota);
     if (isNaN(notaNumero) || notaNumero < 0 || notaNumero > 10) {
-      setErro("A nota deve ser um número entre 0 e 10")
-      return
+      setErro("A nota deve ser um número entre 0 e 10");
+      return;
     }
 
     // Enviar dados
@@ -59,8 +89,8 @@ const Modal = ({ tipo, disciplina, bimestre, notaAtual, idNota, onClose, onSave,
       bimestre: novoBimestre,
       nota: notaNumero,
       idNota: idNota,
-    })
-  }
+    });
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -77,13 +107,19 @@ const Modal = ({ tipo, disciplina, bimestre, notaAtual, idNota, onClose, onSave,
           </button>
         </div>
 
-        {erro && <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{erro}</div>}
+        {erro && (
+          <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{erro}</div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Disciplina</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Disciplina
+            </label>
             {tipo === "editar" ? (
-              <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded">{novaDisciplina}</div>
+              <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded">
+                {novaDisciplina}
+              </div>
             ) : (
               <select
                 value={novaDisciplina}
@@ -92,8 +128,8 @@ const Modal = ({ tipo, disciplina, bimestre, notaAtual, idNota, onClose, onSave,
               >
                 <option value="">Selecione uma disciplina</option>
                 {disciplinas.map((disc) => (
-                  <option key={disc} value={disc}>
-                    {disc}
+                  <option key={disc.id} value={disc.nomeDisciplina}>
+                    {disc.nomeDisciplina}
                   </option>
                 ))}
               </select>
@@ -101,13 +137,19 @@ const Modal = ({ tipo, disciplina, bimestre, notaAtual, idNota, onClose, onSave,
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bimestre</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Bimestre
+            </label>
             {tipo === "editar" ? (
-              <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded">{novoBimestre}º Bimestre</div>
+              <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded">
+                {novoBimestre}º Bimestre
+              </div>
             ) : (
               <select
                 value={novoBimestre}
-                onChange={(e) => setNovoBimestre(Number.parseInt(e.target.value))}
+                onChange={(e) =>
+                  setNovoBimestre(Number.parseInt(e.target.value))
+                }
                 className="w-full p-2 border border-gray-300 dark:border-gray-400 rounded bg-white dark:bg-black text-gray-900 dark:text-white"
               >
                 <option value={1}>1º Bimestre</option>
@@ -119,11 +161,11 @@ const Modal = ({ tipo, disciplina, bimestre, notaAtual, idNota, onClose, onSave,
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nota</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Nota
+            </label>
             <input
               type="number"
-              min="0"
-              max="10"
               step="0.1"
               value={novaNota}
               onChange={(e) => setNovaNota(e.target.value)}
@@ -151,107 +193,126 @@ const Modal = ({ tipo, disciplina, bimestre, notaAtual, idNota, onClose, onSave,
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const Table = () => {
   // Estado para armazenar as disciplinas e notas
-  const [disciplinas, setDisciplinas] = useState<Materia[]>([])
-  const params = useParams()
-  const id = params.id as string
-  const [carregando, setCarregando] = useState<boolean>(true)
-  const [erro, setErro] = useState<string | null>(null)
-  const [modalAberto, setModalAberto] = useState<boolean>(false)
-  const [modalTipo, setModalTipo] = useState<"editar" | "adicionar">("adicionar")
+  const [disciplinas, setDisciplinas] = useState<Materia[]>([]);
+  const params = useParams();
+  const id = params.id as string;
+  const [carregando, setCarregando] = useState<boolean>(true);
+  const [erro, setErro] = useState<string | null>(null);
+  const [modalAberto, setModalAberto] = useState<boolean>(false);
+  const [modalTipo, setModalTipo] = useState<"editar" | "adicionar">(
+    "adicionar"
+  );
   const [notaSelecionada, setNotaSelecionada] = useState<{
-    disciplina: string
-    bimestre: number
-    nota: number | null
-    idNota?: number
-  } | null>(null)
-  const [salvando, setSalvando] = useState<boolean>(false)
-  const [mensagem, setMensagem] = useState<{ tipo: "sucesso" | "erro"; texto: string } | null>(null)
+    disciplina: string;
+    bimestre: number;
+    nota: number | null;
+    idNota?: number;
+  } | null>(null);
+  const [salvando, setSalvando] = useState<boolean>(false);
+  const [mensagem, setMensagem] = useState<{
+    tipo: "sucesso" | "erro";
+    texto: string;
+  } | null>(null);
+  const [disciplinasDisponiveis, setDisciplinasDisponiveis] = useState<
+    { id: number; nomeDisciplina: string }[]
+  >([]);
+  const [notasRaw, setNotasRaw] = useState<Nota[]>([]);
 
   // Função para organizar as notas por disciplina
   const organizarNotasPorDisciplina = (notas: Nota[]): Materia[] => {
-    const disciplinasMap: { [key: string]: (number | null)[] } = {}
+    const disciplinasMap: { [key: string]: (number | null)[] } = {};
 
     // Organiza as notas por disciplina e bimestre
     notas.forEach((nota) => {
-      const { nomeDisciplina, bimestre, nota: valorNota } = nota
+      const { nomeDisciplina, bimestre, nota: valorNota } = nota;
 
       // Inicializa a disciplina se não existir no mapa
       if (!disciplinasMap[nomeDisciplina]) {
-        disciplinasMap[nomeDisciplina] = [null, null, null, null] // Inicializa os bimestres como nulos
+        disciplinasMap[nomeDisciplina] = [null, null, null, null]; // Inicializa os bimestres como nulos
       }
 
       // Corrige a posição do bimestre (0 para o 1° bimestre, 1 para o 2°, etc.)
-      const indiceBimestre = bimestre - 1
+      const indiceBimestre = bimestre - 1;
 
       // Adiciona a nota no bimestre correspondente (0 a 3)
-      disciplinasMap[nomeDisciplina][indiceBimestre] = valorNota
-    })
+      disciplinasMap[nomeDisciplina][indiceBimestre] = valorNota;
+    });
 
     // Converte o mapa de disciplinas para um array de Materia
     return Object.keys(disciplinasMap).map((nomeDisciplina) => ({
       nomeDisciplina,
       notas: disciplinasMap[nomeDisciplina],
-    }))
-  }
+    }));
+  };
 
   // Faz a requisição para buscar as notas quando o componente for montado
   useEffect(() => {
     const buscarNotas = async () => {
       try {
-        const token = localStorage.getItem("token")
-        if (!token) throw new Error("Token não encontrado")
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Token não encontrado");
 
         // 2. Decodifica o token para obter o ID do usuário
-        const decoded: any = jwtDecode(token)
-        const userId = decoded?.sub // Supondo que o token contenha { id: 123 }
-        if (!userId) throw new Error("ID do usuário não encontrado no token")
+        const decoded: any = jwtDecode(token);
+        const userId = decoded?.sub; // Supondo que o token contenha { id: 123 }
+        if (!userId) throw new Error("ID do usuário não encontrado no token");
 
         // Requisição para a API
-        const resposta = await fetch(`http://localhost:3000/api/student/${id}`)
+        const resposta = await fetch(`http://localhost:3000/api/student/${id}`);
 
         if (!resposta.ok) {
-          throw new Error("Falha ao buscar os dados")
+          throw new Error("Falha ao buscar os dados");
         }
 
-        const dados = await resposta.json()
+        const dados = await resposta.json();
 
-        // Organiza as notas por disciplina
-        const disciplinasOrganizadas = organizarNotasPorDisciplina(dados.notas)
+        setNotasRaw(dados.notas);
 
-        // Atualiza o estado com as disciplinas e notas organizadas
-        setDisciplinas(disciplinasOrganizadas)
+        const disciplinasOrganizadas = organizarNotasPorDisciplina(dados.notas);
+        setDisciplinas(disciplinasOrganizadas);
+
+        // Aqui você já tem as disciplinas da turma
+        setDisciplinasDisponiveis(dados.turma.disciplinaTurmas);
       } catch (erro) {
-        setErro((erro as Error).message)
+        setErro((erro as Error).message);
       } finally {
-        setCarregando(false)
+        setCarregando(false);
       }
-    }
+    };
 
-    buscarNotas()
-  }, [id]) // Adicionei id como dependência para recarregar quando mudar
+    buscarNotas();
+  }, [id]); // Adicionei id como dependência para recarregar quando mudar
 
   // Função para abrir o modal de edição
-  const abrirModalEdicao = (disciplina: string, bimestre: number, nota: number | null, idNota?: number) => {
+  const abrirModalEdicao = (
+    disciplina: string,
+    bimestre: number,
+    nota: number | null
+  ) => {
     if (nota === null) {
-      // Se a nota for nula, abrimos o modal de adição em vez de edição
-      abrirModalAdicao(disciplina, bimestre)
-      return
+      abrirModalAdicao(disciplina, bimestre);
+      return;
     }
+
+    // Buscar o ID da nota correspondente
+    const notaEncontrada = notasRaw.find(
+      (n) => n.nomeDisciplina === disciplina && n.bimestre === bimestre
+    );
 
     setNotaSelecionada({
       disciplina,
       bimestre,
       nota,
-      idNota,
-    })
-    setModalTipo("editar")
-    setModalAberto(true)
-  }
+      idNota: notaEncontrada?.idNota,
+    });
+    setModalTipo("editar");
+    setModalAberto(true);
+  };
 
   // Função para abrir o modal de adição
   const abrirModalAdicao = (disciplina?: string, bimestre?: number) => {
@@ -262,59 +323,75 @@ const Table = () => {
             bimestre,
             nota: null,
           }
-        : null,
-    )
-    setModalTipo("adicionar")
-    setModalAberto(true)
-  }
+        : null
+    );
+    setModalTipo("adicionar");
+    setModalAberto(true);
+  };
 
   // Função para fechar o modal
   const fecharModal = () => {
-    setModalAberto(false)
-    setNotaSelecionada(null)
+    setModalAberto(false);
+    setNotaSelecionada(null);
     // Limpa a mensagem após fechar o modal
-    setTimeout(() => setMensagem(null), 300)
-  }
+    setTimeout(() => setMensagem(null), 300);
+  };
 
   // Função para salvar a nota (criar ou editar)
-  const salvarNota = async (dados: { disciplina: string; bimestre: number; nota: number; idNota?: number }) => {
+  const salvarNota = async (dados: {
+    disciplina: string;
+    bimestre: number;
+    nota: number;
+    idNota?: number;
+  }) => {
     setSalvando(true);
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token não encontrado");
-  
-      // Endpoint para a requisição POST
-      const endpoint = "http://localhost:3000/api/note";
-  
-      // Corpo da requisição no formato especificado
+
+      const disciplinaSelecionada = disciplinasDisponiveis.find(
+        (d) => d.nomeDisciplina === dados.disciplina
+      );
+
+      if (!disciplinaSelecionada) throw new Error("Disciplina não encontrada");
+
+      const endpoint = dados.idNota
+        ? `http://localhost:3000/api/note/${dados.idNota}` // endpoint de edição
+        : "http://localhost:3000/api/note"; // endpoint de criação
+
+      const metodo = dados.idNota ? "PUT" : "POST";
+
       const corpo = {
-        studentId: id, // ID do aluno
-        nota: dados.nota, // Nota
-        bimestre: dados.bimestre, // Bimestre
-        disciplineId: 4, // ID da disciplina (ajuste conforme necessário)
+        studentId: id,
+        nota: dados.nota,
+        bimestre: dados.bimestre,
+        disciplineId: disciplinaSelecionada.id,
       };
-  
-      // Requisição POST
+
       const resposta = await fetch(endpoint, {
-        method: "POST",
+        method: metodo,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(corpo),
       });
-  
-      if (!resposta.ok) {
-        throw new Error("Falha ao salvar a nota");
+
+      if (!resposta.ok && resposta.status === 409) {
+        toast.warn("Já existe uma nota para este aluno, disciplina e bimestre.");
+        return;
       }
-  
+
       // Atualiza a lista de notas
       const novasDisciplinas = [...disciplinas];
-      const indiceDisciplina = novasDisciplinas.findIndex((d) => d.nomeDisciplina === dados.disciplina);
-  
+      const indiceDisciplina = novasDisciplinas.findIndex(
+        (d) => d.nomeDisciplina === dados.disciplina
+      );
+
       if (indiceDisciplina >= 0) {
         // Atualiza a nota na disciplina existente
-        novasDisciplinas[indiceDisciplina].notas[dados.bimestre - 1] = dados.nota;
+        novasDisciplinas[indiceDisciplina].notas[dados.bimestre - 1] =
+          dados.nota;
       } else {
         // Cria uma nova disciplina
         const novaDisciplina: Materia = {
@@ -324,132 +401,146 @@ const Table = () => {
         novaDisciplina.notas[dados.bimestre - 1] = dados.nota;
         novasDisciplinas.push(novaDisciplina);
       }
-  
+
       setDisciplinas(novasDisciplinas);
-      setMensagem({
-        tipo: "sucesso",
-        texto: `Nota ${dados.idNota ? "atualizada" : "adicionada"} com sucesso!`,
-      });
-  
-      // Fecha o modal após um breve delay para mostrar a mensagem de sucesso
-      setTimeout(() => {
-        fecharModal();
-      }, 1500);
+      toast.success(`Nota ${dados.idNota ? "atualizada" : "adicionada"} com sucesso!`);
+
+      fecharModal();
     } catch (erro) {
-      setMensagem({
-        tipo: "erro",
-        texto: (erro as Error).message,
-      });
-    } finally {
+      toast.error("Erro ao atribuir nota.");
+    }finally {
       setSalvando(false);
     }
   };
 
   // Lista de todas as disciplinas disponíveis (para o dropdown)
-  const todasDisciplinas = disciplinas.map((d) => d.nomeDisciplina)
+  const todasDisciplinas = disciplinas.map((d) => d.nomeDisciplina);
 
   // Exibe a mensagem de carregamento ou erro, se houver
   if (carregando) {
-    return <div className="flex justify-center items-center h-64">Carregando...</div>
+    return (
+      <div className="flex justify-center items-center h-64">Carregando...</div>
+    );
   }
 
   if (erro) {
-    return <div className="bg-red-100 p-4 rounded text-red-700">Erro: {erro}</div>
+    return (
+      <div className="bg-red-100 p-4 rounded text-red-700">Erro: {erro}</div>
+    );
   }
 
   return (
-    <div className="w-full p-4 bg-white dark:bg-black rounded-[20px]">
-      {/* Tabela para desktop */}
-      <div className="hidden md:flex overflow-x-auto md:justify-center">
-        <table className="min-w-[50%] border-separate border-spacing-4">
-          <thead>
-            <tr className="bg-blue-600 text-white">
-              <th className="p-3 text-left">Matéria</th>
-              <th className="p-3 text-center">1° Bim.</th>
-              <th className="p-3 text-center">2° Bim.</th>
-              <th className="p-3 text-center">3° Bim.</th>
-              <th className="p-3 text-center">4° Bim.</th>
-            </tr>
-          </thead>
-          <tbody>
-            {disciplinas.map((materia, index) => (
-              <tr key={index} className="odd:bg-gray-100 dark:odd:bg-gray-800 even:bg-gray-200 dark:even:bg-gray-700">
-                <td className="p-3 bg-blue-600 text-white font-semibold">{materia.nomeDisciplina}</td>
-                {materia.notas.map((nota, i) => (
-                  <td
-                    key={i}
-                    className="p-3 text-center border border-transparent text-black dark:text-white bg-[#EAF4FF] dark:bg-[#141414] cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
-                    onClick={() => abrirModalEdicao(materia.nomeDisciplina, i + 1, nota, undefined)}
-                  >
-                    {nota !== null ? nota : "-"}
-                  </td>
-                ))}
+    <>
+      <ToastContainer />
+      <div className="w-full p-4 bg-white dark:bg-black rounded-[20px]">
+        {/* Tabela para desktop */}
+        <div className="hidden md:flex overflow-x-auto md:justify-center">
+          <table className="min-w-[50%] border-separate border-spacing-4">
+            <thead>
+              <tr className="bg-blue-600 text-white">
+                <th className="p-3 text-left">Matéria</th>
+                <th className="p-3 text-center">1° Bim.</th>
+                <th className="p-3 text-center">2° Bim.</th>
+                <th className="p-3 text-center">3° Bim.</th>
+                <th className="p-3 text-center">4° Bim.</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Lista para mobile */}
-      <div className="md:hidden space-y-4">
-        {disciplinas.map((materia, index) => (
-          <div key={index} className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
-            <div className="bg-blue-600 text-white p-3 font-semibold">
-              {materia.nomeDisciplina}
-            </div>
-            <div className="grid grid-cols-2 gap-2 p-2">
-              {materia.notas.map((nota, i) => (
-                <div 
-                  key={i}
-                  className="bg-[#EAF4FF] dark:bg-[#141414] p-3 rounded text-center cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
-                  onClick={() => abrirModalEdicao(materia.nomeDisciplina, i + 1, nota, undefined)}
+            </thead>
+            <tbody>
+              {disciplinas.map((materia, index) => (
+                <tr
+                  key={index}
+                  className="odd:bg-gray-100 dark:odd:bg-gray-800 even:bg-gray-200 dark:even:bg-gray-700"
                 >
-                  <div className="text-sm text-gray-500 dark:text-gray-400">{i + 1}° Bim.</div>
-                  <div className="font-medium text-black dark:text-white">
-                    {nota !== null ? nota : "-"}
-                  </div>
-                </div>
+                  <td className="p-3 bg-blue-600 text-white font-semibold">
+                    {materia.nomeDisciplina}
+                  </td>
+                  {materia.notas.map((nota, i) => (
+                    <td
+                      key={i}
+                      className="p-3 text-center border border-transparent text-black dark:text-white bg-[#EAF4FF] dark:bg-[#141414] cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
+                      onClick={() =>
+                        abrirModalEdicao(materia.nomeDisciplina, i + 1, nota)
+                      }
+                    >
+                      {nota !== null ? nota : "-"}
+                    </td>
+                  ))}
+                </tr>
               ))}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="flex justify-center mt-6">
-        <button
-          onClick={() => abrirModalAdicao()}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-        >
-          Adicionar Nota
-        </button>
-      </div>
-
-      {/* Modal */}
-      {modalAberto && (
-        <Modal
-          tipo={modalTipo}
-          disciplina={notaSelecionada?.disciplina}
-          bimestre={notaSelecionada?.bimestre}
-          notaAtual={notaSelecionada?.nota || undefined}
-          idNota={notaSelecionada?.idNota}
-          onClose={fecharModal}
-          onSave={salvarNota}
-          disciplinas={todasDisciplinas}
-        />
-      )}
-
-      {/* Mensagem de feedback */}
-      {mensagem && (
-        <div
-          className={`fixed bottom-4 right-4 p-4 rounded shadow-lg ${
-            mensagem.tipo === "sucesso" ? "bg-green-500 text-white" : "bg-red-500 text-white"
-          }`}
-        >
-          {mensagem.texto}
+            </tbody>
+          </table>
         </div>
-      )}
-    </div>
-  )
-}
 
-export default Table
+        {/* Lista para mobile */}
+        <div className="md:hidden space-y-4">
+          {disciplinas.map((materia, index) => (
+            <div
+              key={index}
+              className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden"
+            >
+              <div className="bg-blue-600 text-white p-3 font-semibold">
+                {materia.nomeDisciplina}
+              </div>
+              <div className="grid grid-cols-2 gap-2 p-2">
+                {materia.notas.map((nota, i) => (
+                  <div
+                    key={i}
+                    className="bg-[#EAF4FF] dark:bg-[#141414] p-3 rounded text-center cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
+                    onClick={() =>
+                      abrirModalEdicao(materia.nomeDisciplina, i + 1, nota)
+                    }
+                  >
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      {i + 1}° Bim.
+                    </div>
+                    <div className="font-medium text-black dark:text-white">
+                      {nota !== null ? nota : "-"}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={() => abrirModalAdicao()}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+          >
+            Adicionar Nota
+          </button>
+        </div>
+
+        {/* Modal */}
+        {modalAberto && (modalTipo === "adicionar" || notaSelecionada) && (
+          <Modal
+            tipo={modalTipo}
+            disciplina={notaSelecionada?.disciplina}
+            bimestre={notaSelecionada?.bimestre}
+            notaAtual={notaSelecionada?.nota || undefined}
+            idNota={notaSelecionada?.idNota}
+            onClose={fecharModal}
+            onSave={salvarNota}
+            disciplinas={disciplinasDisponiveis}
+          />
+        )}
+
+        {/* Mensagem de feedback */}
+        {mensagem && (
+          <div
+            className={`fixed bottom-4 right-4 p-4 rounded shadow-lg ${
+              mensagem.tipo === "sucesso"
+                ? "bg-green-500 text-white"
+                : "bg-red-500 text-white"
+            }`}
+          >
+            {mensagem.texto}
+          </div>
+        )}
+      </div>
+    </>
+  );
+};
+
+export default Table;
