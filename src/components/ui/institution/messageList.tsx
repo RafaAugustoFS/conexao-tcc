@@ -41,21 +41,10 @@ function MessageList({ className }: { className?: string }) {
             new Date(a.horarioSistema).getTime()
         );
 
-        const updatedMessages = reminders
-          .filter((message) => {
-            const messageDate = new Date(message.horarioSistema).getTime();
-            const sevenDaysAgo = Date.now() - 168 * 60 * 60 * 1000;
-            return messageDate >= sevenDaysAgo;
-          })
-          .sort(
-            (a, b) =>
-              new Date(b.horarioSistema).getTime() -
-              new Date(a.horarioSistema).getTime()
-          )
-          .map((message, index) => ({
-            ...message,
-            color: avatarColors[index % avatarColors.length],
-          }));
+        const updatedMessages = reminders.map((message, index) => ({
+          ...message,
+          color: avatarColors[index % avatarColors.length], // Alternando cores
+        }));
 
         setMessages(updatedMessages);
       } catch (err: any) {

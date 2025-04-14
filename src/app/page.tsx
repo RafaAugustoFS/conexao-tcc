@@ -59,7 +59,6 @@ export default function LoginPage() {
         } else {
           console.log("Erro no professor!");
           toast.error("Matrícula ou senha incorreta!");
-          setIsLoading(false);
         }
       } catch (error) {
         console.error("Erro ao enviar os dados:", error);
@@ -95,7 +94,6 @@ export default function LoginPage() {
         } else {
           console.log("Erro no aluno!");
           toast.error("Matrícula ou senha incorreta!");
-          setIsLoading(false);
         }
       } catch (error) {
         console.error("Erro ao enviar os dados:", error);
@@ -131,7 +129,6 @@ export default function LoginPage() {
         } else {
           console.log("Erro!");
           toast.error("Matrícula ou senha incorreta!");
-          setIsLoading(false);
         }
       } catch (error) {
         console.error("Erro ao enviar os dados:", error);
