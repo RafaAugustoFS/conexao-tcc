@@ -207,9 +207,10 @@ export default function CreateClass() {
                         <SelectValue placeholder="Selecione o período" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Manhã">Manhã</SelectItem>
-                        <SelectItem value="Tarde">Tarde</SelectItem>
-                        <SelectItem value="Noite">Noite</SelectItem>
+                        <SelectItem value="Vespertino">Vespertino</SelectItem>
+                        <SelectItem value="Matutino">Matutino</SelectItem>
+                        <SelectItem value="Noturno">Noturno</SelectItem>
+                        <SelectItem value="Integral">Integral</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
