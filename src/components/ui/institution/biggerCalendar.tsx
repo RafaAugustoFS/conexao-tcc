@@ -54,6 +54,13 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
   const [isEditing, setIsEditing] = useState(false)
   const isMobile = useMediaQuery("(max-width: 768px)")
 
+  // Função para obter a data de "antes de ontem" (2 dias atrás)
+  const getBeforeYesterdayDate = () => {
+    const date = new Date()
+    date.setDate(date.getDate() - 2)
+    return date
+  }
+
   const fetchEvents = async () => {
     setIsLoading(true)
     try {
@@ -150,6 +157,16 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
     return !isNaN(date.getTime()) && year >= 1900
   }
 
+  const isBeforeBeforeYesterday = (dateString: string): boolean => {
+    const beforeYesterday = getBeforeYesterdayDate()
+    beforeYesterday.setHours(0, 0, 0, 0) // Remove a parte de horas para comparar apenas a data
+    
+    const inputDate = new Date(dateString)
+    inputDate.setHours(0, 0, 0, 0)
+    
+    return inputDate < beforeYesterday
+  }
+
   const handleEventClick = (info: any) => {
     const event = allEvents.find((e) => e.id === Number.parseInt(info.event.id))
     if (event) {
@@ -167,6 +184,12 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
   }
 
   const handleDateClick = (info: any) => {
+    // Verifica se a data clicada é anterior a "antes de ontem"
+    if (isBeforeBeforeYesterday(info.dateStr)) {
+      toast.error("Não é possível criar eventos em datas anteriores a " + getBeforeYesterdayDate().toLocaleDateString('pt-BR'))
+      return
+    }
+
     setSelectedEvent({
       tituloEvento: "",
       dataEvento: info.dateStr,
@@ -188,6 +211,11 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
 
     if (!validateDate(selectedEvent.dataEvento)) {
       toast.error("Por favor, insira uma data válida posterior a 1900.")
+      return
+    }
+
+    if (isBeforeBeforeYesterday(selectedEvent.dataEvento)) {
+      toast.error("Não é possível agendar eventos para datas anteriores a " + getBeforeYesterdayDate().toLocaleDateString('pt-BR'))
       return
     }
 
@@ -226,6 +254,11 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
 
     if (!validateDate(selectedEvent.dataEvento)) {
       toast.error("Por favor, insira uma data válida posterior a 1900.")
+      return
+    }
+
+    if (isBeforeBeforeYesterday(selectedEvent.dataEvento)) {
+      toast.error("Não é possível atualizar eventos para datas anteriores a " + getBeforeYesterdayDate().toLocaleDateString('pt-BR'))
       return
     }
 
@@ -326,6 +359,9 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
                 day: "Dia",
                 list: "Lista",
               }}
+              validRange={{
+                start: getBeforeYesterdayDate() // Permite datas a partir de "antes de ontem"
+              }}
               eventClick={handleEventClick}
               dateClick={handleDateClick}
             />
@@ -367,7 +403,7 @@ export default function ResponsiveCalendar({ onEventCreated }: BiggerCalendarPro
                     type="date"
                     value={selectedEvent?.dataEvento || ""}
                     onChange={handleInputChange}
-                    min="1900-01-01"
+                    min={getBeforeYesterdayDate().toISOString().split('T')[0]}
                   />
                 </div>
                 <div className="grid gap-2">

@@ -39,3 +39,7 @@ e {
   width: 100px;
   height: 75px;
 }
+
+.fc-col-header-cell {
+  @apply dark:text-black;
+}
