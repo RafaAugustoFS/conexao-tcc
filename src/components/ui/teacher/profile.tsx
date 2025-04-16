@@ -36,7 +36,7 @@ export function ProfileInfo({
   };
 
   return (
-    <div className="bg-white dark:bg-black rounded-lg p-4 sm:p-6 lg:p-8 text-sm sm:text-base">
+    <div className="bg-white dark:bg-black rounded-lg p-1 text-sm sm:text-base">
       <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
         <div className="flex-shrink-0">
           <Image
