@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 interface ProfileInfoProps {
-  imageUrl: string;
+  imageUrl?: string;
   name: string;
   email: string;
   birthDate: string;
@@ -39,13 +39,17 @@ export function ProfileInfo({
     <div className="bg-white dark:bg-black rounded-lg p-1 text-sm sm:text-base">
       <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
         <div className="flex-shrink-0">
-          <Image
-            src={imageUrl}
-            width={80}
-            height={80}
-            className="rounded-full w-16 h-16 sm:w-20 sm:h-20"
-            alt="Foto de perfil"
-          />
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              width={80}
+              height={80}
+              className="rounded-full w-16 h-16 md:w-20 md:h-20"
+              alt="Foto de perfil"
+            />
+          ) : (
+            <span className="text-gray-500">Foto</span>
+          )}
         </div>
         <div className="mt-2 sm:mt-0">
           <h2 className="text-xl sm:text-2xl font-semibold text-black dark:text-white">
