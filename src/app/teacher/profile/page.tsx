@@ -9,7 +9,7 @@ import { jwtDecode } from "jwt-decode";
 import { useTheme } from "@/components/ThemeProvider";
 
 interface TeacherProfile {
-  imageUrl: string;
+  imageUrl?: string;
   nomeDocente: string;
   emailDocente: string;
   dataNascimentoDocente: string;
@@ -79,10 +79,7 @@ export default function User({
           {docenteData && (
             <div className="text-sm sm:text-base lg:text-lg">
               <ProfileInfo
-                imageUrl={
-                  docenteData.imageUrl ||
-                  "https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg?t=st=1738800543~exp=1738804143~hmac=5400a6f0c02663ed6f91ff172c490ed49dbd456d03bed9e4c98b2aed06b0dfdb&w=826"
-                }
+                imageUrl={docenteData.imageUrl}
                 name={docenteData.nomeDocente}
                 email={docenteData.emailDocente}
                 birthDate={docenteData.dataNascimentoDocente}

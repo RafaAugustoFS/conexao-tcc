@@ -50,3 +50,4 @@ npm install @radix-ui/react-toast --force
 npm install @radix-ui/react-label --force
 npm install @radix-ui/react-dialog --force
 npm install react-toastify --force
+npm install react-loading-skeleton --force

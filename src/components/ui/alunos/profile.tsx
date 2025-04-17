@@ -1,15 +1,22 @@
-import Image from "next/image"
+import Image from "next/image";
 
 interface ProfileInfoProps {
-  imageUrl: string
-  name: string
-  email: string
-  birthDate: string
-  phone: string
-  registrationNumber: string
+  imageUrl: string;
+  name: string;
+  email: string;
+  birthDate: string;
+  phone: string;
+  registrationNumber: string;
 }
 
-export function ProfileInfo({ imageUrl, name, email, birthDate, phone, registrationNumber }: ProfileInfoProps) {
+export function ProfileInfo({
+  imageUrl,
+  name,
+  email,
+  birthDate,
+  phone,
+  registrationNumber,
+}: ProfileInfoProps) {
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
@@ -23,21 +30,29 @@ export function ProfileInfo({ imageUrl, name, email, birthDate, phone, registrat
   return (
     <div className="bg-white dark:bg-black rounded-lg shadow-sm p-4 md:p-8">
       <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6">
-        <Image
-          src={imageUrl}
-          width={80}
-          height={80}
-          className="rounded-full w-16 h-16 md:w-20 md:h-20"
-          alt="Foto de perfil"
-        />
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            width={80}
+            height={80}
+            className="rounded-full w-16 h-16 md:w-20 md:h-20"
+            alt="Foto de perfil"
+          />
+        ) : (
+          <span className="text-gray-500">Foto</span>
+        )}
         <div className="text-center md:text-left">
-          <h2 className="text-xl md:text-2xl font-semibold text-black dark:text-white">{name}</h2>
+          <h2 className="text-xl md:text-2xl font-semibold text-black dark:text-white">
+            {name}
+          </h2>
           <p className="text-gray-500 text-sm md:text-base">{email}</p>
         </div>
       </div>
       <div className="mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <div className="space-y-2">
-          <label className="block text-sm text-gray-600 dark:text-[#ffffffd8]">Nome Completo</label>
+          <label className="block text-sm text-gray-600 dark:text-[#ffffffd8]">
+            Nome Completo
+          </label>
           <input
             type="text"
             value={name}
@@ -46,7 +61,9 @@ export function ProfileInfo({ imageUrl, name, email, birthDate, phone, registrat
           />
         </div>
         <div className="space-y-2">
-          <label className="block text-sm text-gray-600 dark:text-[#ffffffd8]">Data de Nascimento</label>
+          <label className="block text-sm text-gray-600 dark:text-[#ffffffd8]">
+            Data de Nascimento
+          </label>
           <input
             type="text"
             value={formatDate(birthDate)}
@@ -55,7 +72,9 @@ export function ProfileInfo({ imageUrl, name, email, birthDate, phone, registrat
           />
         </div>
         <div className="space-y-2">
-          <label className="block text-sm text-gray-600 dark:text-[#ffffffd8]">Email</label>
+          <label className="block text-sm text-gray-600 dark:text-[#ffffffd8]">
+            Email
+          </label>
           <input
             type="email"
             value={email}
@@ -64,7 +83,9 @@ export function ProfileInfo({ imageUrl, name, email, birthDate, phone, registrat
           />
         </div>
         <div className="space-y-2">
-          <label className="block text-sm text-gray-600 dark:text-[#ffffffd8]">Telefone</label>
+          <label className="block text-sm text-gray-600 dark:text-[#ffffffd8]">
+            Telefone
+          </label>
           <input
             type="tel"
             value={phone}
@@ -73,7 +94,9 @@ export function ProfileInfo({ imageUrl, name, email, birthDate, phone, registrat
           />
         </div>
         <div className="space-y-2">
-          <label className="block text-sm text-gray-600 dark:text-[#ffffffd8]">Nº Matrícula</label>
+          <label className="block text-sm text-gray-600 dark:text-[#ffffffd8]">
+            Nº Matrícula
+          </label>
           <input
             type="text"
             value={registrationNumber}

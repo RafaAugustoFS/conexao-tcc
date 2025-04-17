@@ -18,7 +18,7 @@ export default function Event() {
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414] ">
       <Sidebar />
       <main className="flex-1">
-        <div className="p-8">
+        <div className="p-2">
           <div className="flex items-center justify-between mb-8">
             <div className="w-full flex justify-end mb-8 mr-10">
               <Button onClick={toggleTheme}>
@@ -28,7 +28,7 @@ export default function Event() {
           </div>
         </div>
 
-        <div className="max-w-[800px]  mx-auto bg-white  rounded-[20px] p-1 dark:bg-black">
+        <div className="max-w-[800px]  max-h-[720px] mx-auto bg-white  rounded-[20px] p-1 dark:bg-black">
           <BiggerCalendar />
         </div>
       </main>

@@ -48,7 +48,6 @@ const EngagementChartGlobal: React.FC = () => {
         },
       })
 
-      if (!resposta.ok) throw new Error("Falha ao buscar os dados")
 
       const dados: FeedbackData = await resposta.json()
 
