@@ -21,12 +21,11 @@ export default function Ocurrence() {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token não encontrado");
 
-      const decoded: any = jwtDecode(token); // Decodificação do JWT
-      const userId = decoded?.sub; // Extraindo o id do usuário do token
+      const decoded: any = jwtDecode(token);
+      const userId = decoded?.sub;
       if (!userId) throw new Error("ID do usuário não encontrado no token");
 
-      // Convertendo o userId para número inteiro
-      const userIdInt = parseInt(userId, 10); // Base 10 para decimal
+      const userIdInt = parseInt(userId, 10);
       if (isNaN(userIdInt))
         throw new Error("ID do usuário não é um número válido");
 
@@ -39,7 +38,7 @@ export default function Ocurrence() {
           },
           body: JSON.stringify({
             createdBy: {
-              id: userIdInt, // Enviando o ID do professor como parte de um objeto Teacher
+              id: userIdInt,
             },
             conteudo: feedback,
           }),
@@ -51,7 +50,7 @@ export default function Ocurrence() {
       }
 
       toast.success("Feedback escrito enviado com sucesso!");
-      setFeedback(""); // Limpa o campo de feedback após o envio
+      setFeedback("");
     } catch (error) {
       console.error("Erro ao enviar feedback:", error);
       toast.error("Erro ao enviar feedback.");
@@ -73,13 +72,13 @@ export default function Ocurrence() {
           placeholder="Digite seu feedback..."
           value={feedback}
           onChange={(e) => setFeedback(e.target.value)}
-          className="w-full p-3 border rounded-md bg-blue-50 dark:bg-[#141414] border-[#F0F7FF] focus:ring focus:ring-blue-200 mb-4 dark:text-white dark:border-[#141414]"
+          className="w-full p-3 border rounded-md bg-blue-50 dark:bg-[#141414] border-[#F0F7FF] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-4 dark:text-white dark:border-gray-700"
         />
 
         <div className="flex space-x-4">
           <button
             onClick={enviarFeedback}
-            className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Enviar
           </button>
