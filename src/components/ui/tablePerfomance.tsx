@@ -18,7 +18,7 @@ interface FeedbackData {
 interface ChartData {
   name: string;
   value: number;
-  fullName: string; // Adicionado para armazenar o nome completo
+  fullName: string;
 }
 
 interface Creator {
@@ -39,19 +39,13 @@ const EngagementChart: React.FC = () => {
   const [selectedCreatorName, setSelectedCreatorName] = useState<string | null>(null);
   const [chartWidth, setChartWidth] = useState<number>(0);
 
-  // Monitorar o tamanho da janela
   useEffect(() => {
     const handleResize = () => {
       setChartWidth(window.innerWidth);
     };
 
-    // Definir largura inicial
     handleResize();
-
-    // Adicionar listener para redimensionamento
     window.addEventListener("resize", handleResize);
-
-    // Limpar listener ao desmontar
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -151,7 +145,6 @@ const EngagementChart: React.FC = () => {
 
       const normalizedValues = normalizeData(values);
 
-      // Definir nomes completos e abreviados para cada categoria
       const categories = [
         { tiny: "Eng", short: "Eng", full: "Engajamento" },
         { tiny: "Dis", short: "Disp", full: "Disposição" },
@@ -160,10 +153,9 @@ const EngagementChart: React.FC = () => {
         { tiny: "Cmp", short: "Comp", full: "Comportamento" },
       ];
 
-      // Formata os dados para o gráfico com nomes completos e abreviados
       const formattedData = categories.map((category, index) => ({
         name: chartWidth < 350 ? category.tiny : chartWidth < 600 ? category.short : category.full,
-        fullName: category.full, // Nome completo para o tooltip
+        fullName: category.full,
         value: normalizedValues[index],
       }));
 
@@ -191,18 +183,16 @@ const EngagementChart: React.FC = () => {
     fetchData();
   }, [bimestre, selectedCreator, studentId, chartWidth]);
 
-  // Componente de tooltip personalizado
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      const dataPoint = payload[0].payload;
-      return (
-        <div className="bg-white dark:bg-gray-800 p-2 border border-gray-200 dark:border-gray-700 rounded shadow-md">
-          <p className="font-semibold">{dataPoint.fullName}</p>
-          <p>Valor: {payload[0].value.toFixed(2)}</p>
-        </div>
-      );
-    }
-    return null;
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (!active || !payload || payload.length === 0) return null;
+    
+    const dataPoint = payload[0].payload;
+    return (
+      <div className="bg-white dark:bg-gray-800 p-2 border border-gray-200 dark:border-gray-700 rounded shadow-md">
+        <p className="font-semibold">{dataPoint.fullName}</p>
+        <p>Valor: {payload[0].value.toFixed(2)}</p>
+      </div>
+    );
   };
 
   if (loading) return <div>Carregando...</div>;
@@ -218,11 +208,10 @@ const EngagementChart: React.FC = () => {
               setSelectedCreator(selectedId);
               setSelectedCreatorName(selectedCreator ? selectedCreator.nomeDocente : null);
             }}
+            value={selectedCreator ? String(selectedCreator) : ""}
           >
             <SelectTrigger className="w-full sm:w-[200px]">
-              <SelectValue placeholder="Selecione o Criador">
-                {selectedCreatorName || "Selecione o Criador"}
-              </SelectValue>
+              <SelectValue placeholder="Selecione o Criador" />
             </SelectTrigger>
             <SelectContent>
               {creators.map((creator) => (
@@ -244,18 +233,14 @@ const EngagementChart: React.FC = () => {
         </div>
       </div>
 
-      {selectedCreatorName && (
-        <div className="mb-4 text-gray-700 dark:text-white">
-          Docente: <strong>{selectedCreatorName}</strong>
-        </div>
-      )}
+      {}
 
       {error ? (
         <div className="text-red-500 mb-4 flex items-center">
           <span className="material-icons mr-2">error</span>
           {error}
         </div>
-      ) : (
+      ) : data.length > 0 ? (
         <div className="h-[350px] w-full overflow-hidden">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
@@ -281,15 +266,18 @@ const EngagementChart: React.FC = () => {
                 width={chartWidth < 400 ? 25 : 35}
                 tick={{ fontSize: chartWidth < 400 ? 10 : 12 }}
               />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ paddingTop: 10 }} />
+              <Tooltip 
+                content={<CustomTooltip />}
+                cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }}
+              />
               <Bar dataKey="value" fill="#3182CE" />
             </BarChart>
           </ResponsiveContainer>
         </div>
-      )}
-      {data.length === 0 && !loading && (
-        <div className="text-center text-gray-500 mt-4">Nenhum feedback disponível para o bimestre selecionado.</div>
+      ) : (
+        <div className="text-center text-gray-500 mt-4">
+          Nenhum feedback disponível para o bimestre selecionado.
+        </div>
       )}
     </div>
   );
