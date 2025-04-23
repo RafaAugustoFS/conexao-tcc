@@ -64,33 +64,27 @@ export default function User({
   }, [darkMode]);
 
   return (
-    <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
+    <div className="flex flex-col md:flex-row min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
       <Sidebar />
-      <main className="flex-1">
-        <div className="p-4 md:p-6 lg:p-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
-            <div className="w-full sm:w-auto">
-              <WelcomeUser />
-            </div>
-            <Button onClick={toggleTheme}>
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </Button>
-          </div>
-          {docenteData && (
-            <div className="text-sm sm:text-base lg:text-lg">
-              <ProfileInfo
-                imageUrl={docenteData.imageUrl}
-                name={docenteData.nomeDocente}
-                email={docenteData.emailDocente}
-                birthDate={docenteData.dataNascimentoDocente}
-                phone={docenteData.telefoneDocente}
-                registrationNumber={docenteData.identifierCode}
-                classes={docenteData.classes}
-                password={""}
-              />
-            </div>
-          )}
+      <main className="flex-1 p-4 md:p-8 overflow-auto">
+        <div className="flex flex-row items-start md:items-center justify-between mb-6 md:mb-8 gap-4">
+          <WelcomeUser />
+          <Button onClick={toggleTheme}>
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </Button>
         </div>
+        {docenteData && (
+          <ProfileInfo
+            imageUrl={docenteData.imageUrl}
+            name={docenteData.nomeDocente}
+            email={docenteData.emailDocente}
+            birthDate={docenteData.dataNascimentoDocente}
+            phone={docenteData.telefoneDocente}
+            registrationNumber={docenteData.identifierCode}
+            classes={docenteData.classes}
+            password={""}
+          />
+        )}
       </main>
     </div>
   );
