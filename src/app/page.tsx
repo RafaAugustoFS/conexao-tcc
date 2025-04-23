@@ -11,9 +11,11 @@ import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { useTheme } from "@/components/ThemeProvider";
+import { Button } from "@/components/ui/alunos/button";
 
 export default function LoginPage() {
-  const [isDark, setIsDark] = useState(false);
+  const { darkMode, toggleTheme } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [identifierCode, setIdentifierCode] = useState("");
   const [password, setPassword] = useState("");
@@ -145,16 +147,14 @@ export default function LoginPage() {
     <>
       <ToastContainer />
       <main
-        className={`min-h-screen w-full ${
-          isDark ? "dark bg-[#141414]" : "bg-gray-50"
-        }`}
+        className={`min-h-screen w-full ${darkMode ? "dark" : ""}`}
       >
         <div className="container mx-auto px-4 2xl:px-28 py-8 flex min-h-screen relative">
           <div className="flex flex-col lg:flex-row items-center justify-between w-full gap-4 md:gap-8 z-10">
             <div className="w-full lg:w-1/2 space-y-4 md:space-y-6 text-center lg:text-left mb-8 lg:mb-0">
               <h1
                 className={`text-3xl sm:text-4xl md:text-5xl font-bold ${
-                  isDark ? "text-white" : "text-gray-900"
+                  darkMode ? "text-white" : "text-gray-900"
                 }`}
               >
                 Bem-vindo ao <br />
@@ -162,7 +162,7 @@ export default function LoginPage() {
               </h1>
               <p
                 className={`text-base sm:text-lg ${
-                  isDark ? "text-gray-300" : "text-gray-600"
+                  darkMode ? "text-gray-300" : "text-gray-600"
                 } max-w-md mx-auto lg:mx-0`}
               >
                 Acompanhe seu desempenho, receba notificações e explore recursos
@@ -172,19 +172,14 @@ export default function LoginPage() {
 
             <div className="w-full lg:w-1/2 flex flex-col items-center z-10">
               <div className="w-full flex justify-end mb-8">
-                <button
-                  onClick={() => setIsDark(!isDark)}
-                  className={`p-2 rounded-full ${
-                    isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
-                  } shadow-lg`}
-                >
-                  {isDark ? <Moon size={24} /> : <Sun size={24} />}
-                </button>
+              <Button onClick={toggleTheme}>
+                          {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                        </Button>
               </div>
 
               <div
                 className={`w-full max-w-md p-6 sm:p-8 rounded-2xl shadow-xl ${
-                  isDark ? "bg-black" : "bg-white"
+                  darkMode ? "bg-black" : "bg-white"
                 }`}
               >
                 <form className="space-y-6" onSubmit={handleSubmit}>
@@ -195,7 +190,7 @@ export default function LoginPage() {
                       value={identifierCode}
                       onChange={(e) => setIdentifierCode(e.target.value)}
                       className={`w-full px-4 py-3 rounded-lg ${
-                        isDark ? "bg-[#141414] text-white" : "bg-gray-50"
+                        darkMode ? "bg-[#141414] text-white" : "bg-gray-50"
                       } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     />
                   </div>
@@ -206,14 +201,14 @@ export default function LoginPage() {
                       onChange={(event) => setPassword(event.target.value)}
                       placeholder="••••••••"
                       className={`w-full px-4 py-3 rounded-lg ${
-                        isDark ? "bg-[#141414] text-white" : "bg-gray-50"
+                        darkMode ? "bg-[#141414] text-white" : "bg-gray-50"
                       } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className={`absolute right-3 top-1/2 -translate-y-1/2 ${
-                        isDark ? "text-gray-400" : "text-gray-600"
+                        darkMode ? "text-gray-400" : "text-gray-600"
                       }`}
                     >
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -223,7 +218,7 @@ export default function LoginPage() {
                     <a
                       href="#"
                       className={`text-sm ${
-                        isDark
+                        darkMode
                           ? "text-gray-300 hover:text-white"
                           : "text-gray-600 hover:text-gray-900"
                       }`}
