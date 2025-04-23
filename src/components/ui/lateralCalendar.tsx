@@ -71,12 +71,8 @@ export default function LateralCalendar() {
         <div className="max-w-md mx-auto p-4">
           {/* Botão de Notificação */}
           <div className="flex items-center justify-between mb-6">
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="flex items-center space-x-2"
-            >
+        
               
-            </button>
           </div>
           <Calendar />
           <EventList />
