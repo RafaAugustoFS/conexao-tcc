@@ -149,7 +149,7 @@ export default function LoginPage() {
           isDark ? "dark bg-[#141414]" : "bg-gray-50"
         }`}
       >
-        <div className="container mx-auto px-4 py-8 flex min-h-screen relative">
+        <div className="container mx-auto px-4 2xl:px-28 py-8 flex min-h-screen relative">
           <div className="flex flex-col lg:flex-row items-center justify-between w-full gap-4 md:gap-8 z-10">
             <div className="w-full lg:w-1/2 space-y-4 md:space-y-6 text-center lg:text-left mb-8 lg:mb-0">
               <h1

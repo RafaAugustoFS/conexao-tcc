@@ -222,7 +222,7 @@ const EngagementChart: React.FC = () => {
             </SelectContent>
           </Select>
         </div>
-        <div className="w-full sm:w-auto">
+        <div className="w-full sm:w-44">
           <SmallSelect
             aria-label="Selecione o Bimestre"
             selectedType={selectedType}
