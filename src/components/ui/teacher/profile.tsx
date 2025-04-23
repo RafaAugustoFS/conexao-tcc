@@ -34,23 +34,21 @@ export function ProfileInfo({
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
-
   return (
-    <div className="bg-white dark:bg-black rounded-lg p-1 text-sm sm:text-base">
-      <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
-        <div className="flex-shrink-0">
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              width={80}
-              height={80}
-              className="rounded-full w-16 h-16 md:w-20 md:h-20"
-              alt="Foto de perfil"
-            />
-          ) : (
-            <span className="text-gray-500">Foto</span>
-          )}
-        </div>
+    <div className="bg-white dark:bg-black rounded-lg shadow-sm p-4 md:p-8">
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6">
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            width={80}
+            height={80}
+            className="rounded-full w-16 h-16 md:w-20 md:h-20"
+            alt="Foto de perfil"
+          />
+        ) : (
+          <span className="text-gray-500">Foto</span>
+        )}
+
         <div className="mt-2 sm:mt-0">
           <h2 className="text-xl sm:text-2xl font-semibold text-black dark:text-white">
             {name}
@@ -69,7 +67,7 @@ export function ProfileInfo({
             type="text"
             value={name}
             readOnly
-            className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed"
+            className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed focus:outline-none"
           />
         </div>
 
@@ -82,7 +80,7 @@ export function ProfileInfo({
             type="text"
             value={formatDate(birthDate)}
             readOnly
-            className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed"
+            className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed focus:outline-none"
           />
         </div>
 
@@ -95,7 +93,7 @@ export function ProfileInfo({
             type="email"
             value={email}
             readOnly
-            className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed"
+            className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed focus:outline-none"
           />
         </div>
 
@@ -109,7 +107,7 @@ export function ProfileInfo({
             value={phone}
             maxLength={11}
             readOnly
-            className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed"
+            className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed focus:outline-none"
           />
         </div>
 
@@ -122,7 +120,7 @@ export function ProfileInfo({
             type="text"
             value={registrationNumber}
             readOnly
-            className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed"
+            className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed focus:outline-none"
           />
         </div>
 

@@ -75,15 +75,7 @@ export default function LateralCalendar() {
               onClick={() => setIsModalOpen(true)}
               className="flex items-center space-x-2"
             >
-              <div className="w-8 h-8">
-                <Image
-                  src={Notification}
-                  alt="Notification bell"
-                  width={32}
-                  height={32}
-                  className="w-full h-full object-contain"
-                />
-              </div>
+              
             </button>
           </div>
           <Calendar />

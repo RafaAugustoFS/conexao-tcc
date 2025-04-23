@@ -57,7 +57,7 @@ export function ProfileInfo({
             type="text"
             value={name}
             readOnly
-            className="w-full p-2 rounded-lg border text-[#00000075] border-[#F0F7FF] bg-[#F0F7FF] dark:bg-[#141414] dark:text-[#ffffff94] dark:border-[#141414] text-sm md:text-base"
+            className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed focus:outline-none"
           />
         </div>
         <div className="space-y-2">
@@ -68,7 +68,7 @@ export function ProfileInfo({
             type="text"
             value={formatDate(birthDate)}
             readOnly
-            className="w-full p-2 rounded-lg border text-[#00000075] border-[#F0F7FF] bg-[#F0F7FF] dark:bg-[#141414] dark:text-[#ffffff94] dark:border-[#141414] text-sm md:text-base"
+            className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed focus:outline-none"
           />
         </div>
         <div className="space-y-2">
@@ -79,7 +79,7 @@ export function ProfileInfo({
             type="email"
             value={email}
             readOnly
-            className="w-full p-2 rounded-lg border text-[#00000075] border-[#F0F7FF] bg-[#F0F7FF] dark:bg-[#141414] dark:text-[#ffffff94] dark:border-[#141414] text-sm md:text-base"
+            className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed focus:outline-none"
           />
         </div>
         <div className="space-y-2">
@@ -90,7 +90,7 @@ export function ProfileInfo({
             type="tel"
             value={phone}
             readOnly
-            className="w-full p-2 rounded-lg border text-[#00000075] border-[#F0F7FF] bg-[#F0F7FF] dark:bg-[#141414] dark:text-[#ffffff94] dark:border-[#141414] text-sm md:text-base"
+            className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed focus:outline-none"
           />
         </div>
         <div className="space-y-2">
@@ -101,7 +101,7 @@ export function ProfileInfo({
             type="text"
             value={registrationNumber}
             readOnly
-            className="w-full p-2 rounded-lg border text-[#00000075] border-[#F0F7FF] bg-[#F0F7FF] dark:bg-[#141414] dark:text-[#ffffff94] dark:border-[#141414] text-sm md:text-base"
+            className="w-full p-2 text-sm sm:text-base rounded-lg border text-gray-700 border-blue-100 bg-blue-50 dark:bg-[#141414] dark:text-white dark:border-[#141414] cursor-not-allowed focus:outline-none"
           />
         </div>
       </div>
