@@ -1,4 +1,4 @@
-"use client";
+"use client"; // Indica que este é um componente do lado do cliente no Next.js
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/institution/buttonSubmit";
@@ -20,19 +20,22 @@ import { ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 export default function CreateClass() {
-  const [docentes, setDocentes] = useState([]);
-  const [disciplinas, setDisciplinas] = useState([]);
-  const [nomeTurma, setNomeTurma] = useState("");
-  const [anoLetivoTurma, setAnoLetivoTurma] = useState("");
-  const [periodoTurma, setPeriodoTurma] = useState("");
-  const [capacidadeTurma, setCapacidadeTurma] = useState("");
-  const [salaTurma, setSalaTurma] = useState("");
-  const [disciplineId, setDisciplineIds] = useState([]);
-  const [idTeacher, setIdTeachers] = useState([]);
+  // Estados para armazenar os dados do formulário e seleções
+  const [docentes, setDocentes] = useState([]); // Lista de professores
+  const [disciplinas, setDisciplinas] = useState([]); // Lista de disciplinas
+  const [nomeTurma, setNomeTurma] = useState(""); // Nome da turma
+  const [anoLetivoTurma, setAnoLetivoTurma] = useState(""); // Ano letivo
+  const [periodoTurma, setPeriodoTurma] = useState(""); // Período (matutino/vespertino/etc)
+  const [capacidadeTurma, setCapacidadeTurma] = useState(""); // Capacidade máxima
+  const [salaTurma, setSalaTurma] = useState(""); // Número da sala
+  const [disciplineId, setDisciplineIds] = useState([]); // IDs das disciplinas selecionadas
+  const [idTeacher, setIdTeachers] = useState([]); // IDs dos professores selecionados
+
+  // Hooks para tema e roteamento
   const { darkMode, toggleTheme } = useTheme();
   const router = useRouter();
 
-  // Buscar docentes
+  // Efeito para buscar a lista de professores ao carregar o componente
   useEffect(() => {
     fetch("http://localhost:3000/api/teacher")
       .then((response) => response.json())
@@ -40,7 +43,7 @@ export default function CreateClass() {
       .catch((error) => console.error("Erro ao buscar docentes:", error));
   }, []);
 
-  // Buscar disciplinas
+  // Efeito para buscar a lista de disciplinas ao carregar o componente
   useEffect(() => {
     fetch("http://localhost:3000/api/discipline")
       .then((response) => response.json())
@@ -48,35 +51,38 @@ export default function CreateClass() {
       .catch((error) => console.error("Erro ao buscar disciplinas:", error));
   }, []);
 
-  // Aplicar o tema ao carregar a página
+  // Efeito para aplicar o tema ao carregar a página
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
-  // Função para lidar com a seleção de professores
+  // Função para lidar com a seleção/deseleção de professores
   const handleTeacherSelection = (id) => {
     setIdTeachers((prev) =>
       prev.includes(id) ? prev.filter((tid) => tid !== id) : [...prev, id]
     );
   };
 
-  // Função para lidar com a seleção de disciplinas
+  // Função para lidar com a seleção/deseleção de disciplinas
   const handleDisciplineSelection = (id) => {
     setDisciplineIds((prev) =>
       prev.includes(id) ? prev.filter((did) => did !== id) : [...prev, id]
     );
   };
 
+  // Função principal para criar uma nova turma
   const criarTurma = async () => {
     const token = localStorage.getItem("token");
 
+    // Verifica se o token JWT existe
     if (!token) {
       console.error("❌ Token JWT não encontrado!");
       toast.warn("Usuário não autenticado. Faça login novamente.");
       return;
     }
 
+    // Validação dos campos obrigatórios
     if (
       !nomeTurma ||
       !anoLetivoTurma ||
@@ -89,17 +95,19 @@ export default function CreateClass() {
       return;
     }
 
+    // Preparação do payload para a API
     const payload = {
       nomeTurma,
-      anoLetivoTurma: parseInt(anoLetivoTurma, 10),
+      anoLetivoTurma: parseInt(anoLetivoTurma, 10), // Converte para número
       periodoTurma,
       capacidadeMaximaTurma: capacidadeTurma,
       salaTurma,
-      idTeacher,
-      disciplineId,
+      idTeacher, // IDs dos professores selecionados
+      disciplineId, // IDs das disciplinas selecionadas
     };
 
     try {
+      // Chamada para a API para criar a turma
       const response = await fetch("http://localhost:3000/api/class", {
         method: "POST",
         headers: {
@@ -108,69 +116,79 @@ export default function CreateClass() {
         },
         body: JSON.stringify(payload),
       });
+      
+      // Verifica se a resposta foi bem-sucedida
       if (!response.ok) {
         throw new Error("Erro ao criar a turma.");
       }
 
+      // Feedback de sucesso para o usuário
       toast.success("Turma criada com sucesso!");
 
+      // Redireciona após 2 segundos
       setTimeout(() => {
         router.push("/institution/class");
-      }, 2000); // Aguarda 2 segundos antes de mudar a página
+      }, 2000);
     } catch (error) {
       console.error("❌ Erro ao criar turma:", error);
       console.log(payload);
 
+      // Feedback de erro para o usuário
       toast.error("Erro ao criar turma.");
     }
   };
 
+  // Renderização do componente
   return (
     <>
+      {/* Container para as notificações toast */}
       <ToastContainer />
+      
+      {/* Estrutura principal da página */}
       <div
         className={`flex flex-row ${
           darkMode ? "bg-[#141414]" : "bg-[#F0F7FF]"
         } min-h-screen`}
       >
+        {/* Barra lateral */}
         <Sidebar />
+        
+        {/* Conteúdo principal */}
         <main className="flex-1 p-8">
           <div className="p-8">
+            {/* Cabeçalho */}
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h1
-                  className={`text-2xl font-bold ${
-                    darkMode ? "text-blue-500" : "text-blue-500"
-                  }`}
-                >
+                <h1 className={`text-2xl font-bold ${
+                  darkMode ? "text-blue-500" : "text-blue-500"
+                }`}>
                   Criar Nova Turma
                 </h1>
-                <p
-                  className={`text-sm ${
-                    darkMode ? "text-gray-400" : "text-gray-500"
-                  }`}
-                >
+                <p className={`text-sm ${
+                  darkMode ? "text-gray-400" : "text-gray-500"
+                }`}>
                   Preencha os campos abaixo para criar uma nova turma.
                 </p>
               </div>
+              {/* Botão para alternar entre tema claro/escuro */}
               <Button onClick={toggleTheme}>
                 {darkMode ? <Sun size={20} /> : <Moon size={20} />}
               </Button>
             </div>
 
-            <div
-              className={`container mx-auto p-6 space-y-6 max-w-5xl ${
-                darkMode ? "bg-black text-white" : "bg-white text-black"
-              } rounded-3xl`}
-            >
+            {/* Formulário para criação de turma */}
+            <div className={`container mx-auto p-6 space-y-6 max-w-5xl ${
+              darkMode ? "bg-black text-white" : "bg-white text-black"
+            } rounded-3xl`}>
+              {/* Primeira linha de campos */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Coluna esquerda */}
                 <div className="space-y-4">
+                  {/* Campo para nome da turma */}
                   <div>
-                    <label
-                      className={`text-sm ${
-                        darkMode ? "text-gray-400" : "text-muted-foreground"
-                      }`}
-                    >
+                    <label className={`text-sm ${
+                      darkMode ? "text-gray-400" : "text-muted-foreground"
+                    }`}>
                       Nome da turma
                     </label>
                     <Input
@@ -185,12 +203,11 @@ export default function CreateClass() {
                     />
                   </div>
 
+                  {/* Seletor de período */}
                   <div>
-                    <label
-                      className={`text-sm ${
-                        darkMode ? "text-gray-400" : "text-muted-foreground"
-                      }`}
-                    >
+                    <label className={`text-sm ${
+                      darkMode ? "text-gray-400" : "text-muted-foreground"
+                    }`}>
                       Período
                     </label>
                     <Select
@@ -216,13 +233,13 @@ export default function CreateClass() {
                   </div>
                 </div>
 
+                {/* Coluna direita */}
                 <div className="space-y-4">
+                  {/* Seletor de ano letivo */}
                   <div>
-                    <label
-                      className={`text-sm ${
-                        darkMode ? "text-gray-400" : "text-muted-foreground"
-                      }`}
-                    >
+                    <label className={`text-sm ${
+                      darkMode ? "text-gray-400" : "text-muted-foreground"
+                    }`}>
                       Ano letivo
                     </label>
                     <Select
@@ -242,19 +259,16 @@ export default function CreateClass() {
                         className={darkMode ? "bg-[#2D2D2D] text-white" : ""}
                       >
                         <SelectItem value="2025">2025</SelectItem>
-                        <SelectItem value="2024">2024</SelectItem>
-                        <SelectItem value="2023">2023</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
+                  {/* Campos de capacidade e sala */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label
-                        className={`text-sm ${
-                          darkMode ? "text-gray-400" : "text-muted-foreground"
-                        }`}
-                      >
+                      <label className={`text-sm ${
+                        darkMode ? "text-gray-400" : "text-muted-foreground"
+                      }`}>
                         Capacidade máxima
                       </label>
                       <Input
@@ -269,11 +283,9 @@ export default function CreateClass() {
                       />
                     </div>
                     <div>
-                      <label
-                        className={`text-sm ${
-                          darkMode ? "text-gray-400" : "text-muted-foreground"
-                        }`}
-                      >
+                      <label className={`text-sm ${
+                        darkMode ? "text-gray-400" : "text-muted-foreground"
+                      }`}>
                         N° da sala
                       </label>
                       <Input
@@ -290,13 +302,13 @@ export default function CreateClass() {
                 </div>
               </div>
 
+              {/* Seleção de professores e disciplinas */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Lista de professores */}
                 <div>
-                  <h3
-                    className={`text-sm ${
-                      darkMode ? "text-gray-400" : "text-muted-foreground"
-                    } mb-4`}
-                  >
+                  <h3 className={`text-sm ${
+                    darkMode ? "text-gray-400" : "text-muted-foreground"
+                  } mb-4`}>
                     Seleção de docentes
                   </h3>
                   <div className="space-y-3">
@@ -321,12 +333,11 @@ export default function CreateClass() {
                   </div>
                 </div>
 
+                {/* Lista de disciplinas */}
                 <div>
-                  <h3
-                    className={`text-sm ${
-                      darkMode ? "text-gray-400" : "text-muted-foreground"
-                    } mb-4`}
-                  >
+                  <h3 className={`text-sm ${
+                    darkMode ? "text-gray-400" : "text-muted-foreground"
+                  } mb-4`}>
                     Seleção de disciplinas
                   </h3>
                   <div className="space-y-3">
@@ -355,6 +366,7 @@ export default function CreateClass() {
                 </div>
               </div>
 
+              {/* Botão para submeter o formulário */}
               <div className="flex justify-center">
                 <Button
                   className="bg-blue-500 hover:bg-blue-600 text-white px-8"

@@ -1,5 +1,6 @@
-"use client";
+"use client"; // Indica que este é um componente do lado do cliente no Next.js
 
+// Importações de componentes e bibliotecas
 import { Button } from "@/components/ui/institution/buttonSubmit";
 import { Checkbox } from "@/components/ui/institution/checkbox";
 import { Input } from "@/components/ui/institution/input";
@@ -21,27 +22,33 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 
+// Componente principal para edição de turmas
 export default function EditClass() {
-  const params = useParams(); // Obtém os parâmetros da URL
-  const id = params.id as string; // Extrai o ID da turma da URL
-  const [docentes, setDocentes] = useState([]);
-  const [disciplinas, setDisciplinas] = useState([]);
-  const [nomeTurma, setNomeTurma] = useState("");
-  const [anoLetivoTurma, setAnoLetivoTurma] = useState("");
-  const [periodoTurma, setPeriodoTurma] = useState("");
-  const [capacidadeTurma, setCapacidadeTurma] = useState("");
-  const [salaTurma, setSalaTurma] = useState("");
-  const { darkMode, toggleTheme } = useTheme();
-  const [disciplineIds, setDisciplineIds] = useState([]);
-  const [idTeachers, setIdTeachers] = useState([]); // 🔹 Agora é um array
-  const router = useRouter();
+  // Obtém os parâmetros da URL
+  const params = useParams();
+  // Extrai o ID da turma da URL
+  const id = params.id as string;
+  
+  // Estados para armazenar dados
+  const [docentes, setDocentes] = useState([]); // Lista de professores
+  const [disciplinas, setDisciplinas] = useState([]); // Lista de disciplinas
+  const [nomeTurma, setNomeTurma] = useState(""); // Nome da turma
+  const [anoLetivoTurma, setAnoLetivoTurma] = useState(""); // Ano letivo
+  const [periodoTurma, setPeriodoTurma] = useState(""); // Período (matutino/vespertino)
+  const [capacidadeTurma, setCapacidadeTurma] = useState(""); // Capacidade máxima
+  const [salaTurma, setSalaTurma] = useState(""); // Número da sala
+  const { darkMode, toggleTheme } = useTheme(); // Tema (claro/escuro)
+  const [disciplineIds, setDisciplineIds] = useState([]); // IDs das disciplinas selecionadas
+  const [idTeachers, setIdTeachers] = useState([]); // IDs dos professores selecionados
+  const router = useRouter(); // Router para navegação
 
+  // Efeito para aplicar o tema ao carregar o componente
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
-  // Buscar docentes
+  // Buscar lista de professores da API
   useEffect(() => {
     fetch("http://localhost:3000/api/teacher")
       .then((response) => response.json())
@@ -49,7 +56,7 @@ export default function EditClass() {
       .catch((error) => console.error("Erro ao buscar docentes:", error));
   }, []);
 
-  // Buscar disciplinas
+  // Buscar lista de disciplinas da API
   useEffect(() => {
     fetch("http://localhost:3000/api/discipline")
       .then((response) => response.json())
@@ -57,25 +64,27 @@ export default function EditClass() {
       .catch((error) => console.error("Erro ao buscar disciplinas:", error));
   }, []);
 
-  // Função para lidar com a seleção de professores
+  // Função para lidar com a seleção/deseleção de professores
   const handleTeacherSelection = (id) => {
     setIdTeachers((prev) => {
       return prev.includes(id)
-        ? prev.filter((tid) => tid !== id)
-        : [...prev, id];
+        ? prev.filter((tid) => tid !== id) // Remove se já estiver selecionado
+        : [...prev, id]; // Adiciona se não estiver selecionado
     });
   };
 
-  // 🔹 Função para lidar com a seleção de disciplinas
+  // Função para lidar com a seleção/deseleção de disciplinas
   const handleDisciplineSelection = (id) => {
     setDisciplineIds((prev) => {
       return prev.includes(id)
-        ? prev.filter((did) => did !== id)
-        : [...prev, id];
+        ? prev.filter((did) => did !== id) // Remove se já estiver selecionada
+        : [...prev, id]; // Adiciona se não estiver selecionada
     });
   };
 
+  // Função para enviar os dados atualizados da turma para a API
   const editarTurma = async () => {
+    // Prepara o payload com os dados da turma
     const payload = {
       nomeTurma,
       anoLetivoTurma: parseInt(anoLetivoTurma, 10),
@@ -87,6 +96,7 @@ export default function EditClass() {
     };
 
     try {
+      // Faz a requisição PUT para a API
       const response = await fetch(
         `http://localhost:3000/api/class/${params.id}`,
         {
@@ -104,6 +114,7 @@ export default function EditClass() {
         throw new Error("Erro ao atualizar a turma.");
       }
 
+      // Exibe mensagem de sucesso e redireciona após 2 segundos
       toast.success("Turma atualizada com sucesso!");
       setTimeout(() => {
         router.push("/institution/class");
@@ -113,63 +124,74 @@ export default function EditClass() {
       toast.error("Erro ao atualizar turma.");
     }
   };
+
+  // Efeito para carregar os dados da turma quando o ID muda
   useEffect(() => {
     if (!id) return; // Se não houver ID, não faz a requisição
 
+    // Busca os dados da turma, professores e disciplinas associadas
     fetch(`http://localhost:3000/api/class/teacher/disciplinas/${id}`)
       .then((response) => response.json())
       .then((data) => {
-        setNomeTurma(data.nomeTurma || "")
-        setAnoLetivoTurma(data.anoLetivoTurma || "")
-        setPeriodoTurma(data.periodoTurma || "")
-        setCapacidadeTurma(String(data.capacidadeMaximaTurma) || "")
-        setSalaTurma(String(data.salaTurma) || "")
+        // Preenche os estados com os dados da turma
+        setNomeTurma(data.nomeTurma || "");
+        setAnoLetivoTurma(data.anoLetivoTurma || "");
+        setPeriodoTurma(data.periodoTurma || "");
+        setCapacidadeTurma(String(data.capacidadeMaximaTurma) || "");
+        setSalaTurma(String(data.salaTurma) || "");
 
-        // Extrair IDs dos professores do array teachers
-        const teacherIds = data.teachers ? data.teachers.map((teacher) => teacher.id) : []
-        setIdTeachers(teacherIds)
+        // Extrai IDs dos professores associados à turma
+        const teacherIds = data.teachers ? data.teachers.map((teacher) => teacher.id) : [];
+        setIdTeachers(teacherIds);
 
-        // Extrair IDs das disciplinas do array disciplines
-        const disciplineIds = data.disciplines ? data.disciplines.map((discipline) => discipline.id) : []
-        setDisciplineIds(disciplineIds)
+        // Extrai IDs das disciplinas associadas à turma
+        const disciplineIds = data.disciplines ? data.disciplines.map((discipline) => discipline.id) : [];
+        setDisciplineIds(disciplineIds);
       })
-      .catch((error) => console.error("Erro ao buscar turma:", error))
-  }, [id]) // 🔹 Só executa quando o ID mudar
+      .catch((error) => console.error("Erro ao buscar turma:", error));
+  }, [id]); // Executa apenas quando o ID muda
 
+  // Renderização do componente
   return (
     <>
+      {/* Container para mensagens toast */}
       <ToastContainer />
+      {/* Container principal com fundo condicional (claro/escuro) */}
       <div
         className={`flex flex-row ${
           darkMode ? "bg-[#141414]" : "bg-[#F0F7FF]"
         } min-h-screen`}
       >
+        {/* Sidebar */}
         <Sidebar />
+        {/* Conteúdo principal */}
         <main className="flex-1 p-8">
           <div className="p-8">
+            {/* Cabeçalho */}
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h1
-                  className={`text-2xl font-bold ${
-                    darkMode ? "text-blue-500" : "text-blue-500"
-                  }`}
-                >
+                <h1 className={`text-2xl font-bold ${
+                  darkMode ? "text-blue-500" : "text-blue-500"
+                }`}>
                   Editar Turma
                 </h1>
-                <p
-                  className={`text-sm ${
-                    darkMode ? "text-gray-400" : "text-gray-500"
-                  }`}
-                >
+                <p className={`text-sm ${
+                  darkMode ? "text-gray-400" : "text-gray-500"
+                }`}>
                   Preencha os campos abaixo para editar a turma.
                 </p>
               </div>
+              {/* Botão para alternar tema */}
               <Button onClick={toggleTheme}>
                 {darkMode ? <Sun size={20} /> : <Moon size={20} />}
               </Button>
             </div>
+
+            {/* Formulário de edição */}
             <div className="container mx-auto p-6 space-y-6 max-w-5xl h-1/2 bg-[#ffffff] rounded-3xl dark:bg-black">
+              {/* Grid com campos básicos da turma */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Coluna 1: Nome e Período */}
                 <div className="space-y-4">
                   <div>
                     <label className="text-sm text-muted-foreground dark:text-gray-400">
@@ -207,6 +229,7 @@ export default function EditClass() {
                   </div>
                 </div>
 
+                {/* Coluna 2: Ano letivo, capacidade e sala */}
                 <div className="space-y-4">
                   <div>
                     <label className="text-sm text-muted-foreground dark:text-gray-400">
@@ -224,8 +247,6 @@ export default function EditClass() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="2025">2025</SelectItem>
-                        <SelectItem value="2024">2024</SelectItem>
-                        <SelectItem value="2023">2023</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -256,7 +277,9 @@ export default function EditClass() {
                 </div>
               </div>
 
+              {/* Grid para seleção de professores e disciplinas */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Lista de professores */}
                 <div>
                   <h3 className="text-sm text-muted-foreground mb-4">
                     Seleção de docentes
@@ -282,6 +305,7 @@ export default function EditClass() {
                   </div>
                 </div>
 
+                {/* Lista de disciplinas */}
                 <div>
                   <h3 className="text-sm text-muted-foreground mb-4">
                     Seleção de disciplinas
@@ -308,6 +332,7 @@ export default function EditClass() {
                 </div>
               </div>
 
+              {/* Botão de submit */}
               <div className="flex justify-center">
                 <Button
                   className="bg-blue-500 hover:bg-blue-600 text-white px-8"

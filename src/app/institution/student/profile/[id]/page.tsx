@@ -1,4 +1,5 @@
 "use client";
+// Importações de componentes e bibliotecas
 import Sidebar from "@/components/layout/sidebarInstitution";
 import { ProfileInfo } from "@/components/ui/alunos/profile";
 import { Button } from "@/components/ui/alunos/button";
@@ -12,6 +13,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
+// Interface para definir a estrutura dos dados do estudante
 interface StudentProfile {
   imageUrl: string;
   nome: string;
@@ -21,6 +23,7 @@ interface StudentProfile {
   matriculaAluno: string;
 }
 
+// Componente principal da página de perfil do estudante
 export default function User({
   value,
   className,
@@ -28,6 +31,7 @@ export default function User({
   value: number;
   className?: string;
 }) {
+  // Hooks para gerenciar estado e roteamento
   const params = useParams();
   const { darkMode, toggleTheme } = useTheme();
   const id = params.id as string; // Extrai o ID da turma da URL
@@ -40,7 +44,7 @@ export default function User({
   );
   const router = useRouter();
 
-  // Função de buscar os dados do estudante
+  // Função para buscar os dados do estudante na API
   const fetchStudentData = async () => {
     try {
       const response = await fetch(`http://localhost:3000/api/student/${id}`);
@@ -48,14 +52,15 @@ export default function User({
         throw new Error("Não foi possível carregar os dados do estudante");
 
       const data = await response.json();
-      setStudentData(data); // Setando os dados do estudante
+      setStudentData(data); // Atualiza o estado com os dados do estudante
     } catch (err: any) {
-      setError(err.message); // Tratamento de erro
+      setError(err.message); // Armazena mensagem de erro caso ocorra
     } finally {
-      setLoading(false); // Finalizando o carregamento
+      setLoading(false); // Finaliza o estado de carregamento
     }
   };
 
+  // Função para deletar um estudante
   const deleteStudent = async (id: string) => {
     try {
       const response = await fetch(`http://localhost:3000/api/student/${id}`, {
@@ -63,6 +68,7 @@ export default function User({
       });
       if (!response.ok) throw new Error("Erro ao excluir o estudante");
 
+      // Limpa os estados após exclusão bem-sucedida
       setStudentData(null);
       setIsModalOpen(false);
       setSelectedStudentId(null);
@@ -71,26 +77,30 @@ export default function User({
     }
   };
 
-  // Chama a função de fetch quando o componente for montado
+  // Efeito para carregar os dados do estudante quando o componente é montado
   useEffect(() => {
-    fetchStudentData(); // Chamando a função para carregar os dados
+    fetchStudentData();
   }, []);
 
+  // Função para abrir o modal de confirmação de exclusão
   const handleDeleteClick = (id: string) => {
     setSelectedStudentId(id);
     setIsModalOpen(true);
   };
 
+  // Função para confirmar a exclusão do estudante
   const confirmDelete = () => {
     if (selectedStudentId) {
       deleteStudent(selectedStudentId);
       toast.success("Aluno deletado com sucesso!");
+      // Redireciona para a página de turmas após 2 segundos
       setTimeout(() => {
         router.push("/institution/class");
       }, 2000);
     }
   };
 
+  // Efeito para aplicar o tema escuro/claro
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
@@ -98,17 +108,23 @@ export default function User({
 
   return (
     <>
+      {/* Container para exibir notificações toast */}
       <ToastContainer />
       <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
+        {/* Componente da barra lateral */}
         <Sidebar />
         <main className="flex-1">
           <div className="p-8">
+            {/* Botão para alternar entre temas claro/escuro */}
             <div className="flex items-center justify-end mb-8 w-full">
               <Button onClick={toggleTheme}>
                 {darkMode ? <Sun size={20} /> : <Moon size={20} />}
               </Button>
             </div>
+            
+            {/* Container principal com informações do estudante */}
             <div className="bg-white dark:bg-black rounded-lg shadow-sm p-3">
+              {/* Exibe as informações do estudante se os dados estiverem disponíveis */}
               {studentData && (
                 <ProfileInfo
                   imageUrl={
@@ -122,6 +138,8 @@ export default function User({
                   registrationNumber={studentData.matriculaAluno}
                 />
               )}
+              
+              {/* Botões de ação (editar e excluir) */}
               <div className="w-full flex flex-row justify-end space-x-4 pr-8">
                 <Link href={`../editprofile/${id}`}>
                   <button className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600">
@@ -135,6 +153,8 @@ export default function User({
                   <Trash size={20} />
                 </button>
               </div>
+              
+              {/* Link para ver mais informações (feedback) */}
               <div className="flex justify-center w-full">
                 <Link
                   className="text-[#4184ff] hover:underline"
@@ -146,10 +166,12 @@ export default function User({
             </div>
           </div>
         </main>
+        
+        {/* Modal de confirmação para exclusão */}
         <DeleteModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onConfirm={confirmDelete} // Só exclui quando confirmar
+          onConfirm={confirmDelete}
         />
       </div>
     </>

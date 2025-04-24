@@ -1,5 +1,6 @@
-"use client";
+"use client"; // Indica que este é um componente do lado do cliente
 
+// Importações de bibliotecas e componentes
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/alunos/button";
@@ -10,12 +11,14 @@ import FloatingButton from "@/components/ui/institution/FloatingButton";
 import { useTheme } from "@/components/ThemeProvider";
 import Link from "next/link";
 
+// Interface para definir a estrutura de um estudante
 interface Student {
   id: number;
   nomeAluno: string;
   identifierCode: number;
 }
 
+// Componente principal da página de estudantes
 export default function StudentsPage({
   value,
   className,
@@ -23,26 +26,32 @@ export default function StudentsPage({
   value: number;
   className?: string;
 }) {
+  // Obtém os parâmetros da URL
   const params = useParams();
   const id = params.id as string;
-  const [estudante, setEstudante] = useState<Student[]>([]);
-  const { darkMode, toggleTheme } = useTheme();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const studentsPerPage = 10;
 
+  // Estados do componente
+  const [estudante, setEstudante] = useState<Student[]>([]); // Lista de estudantes
+  const { darkMode, toggleTheme } = useTheme(); // Tema dark/light
+  const [loading, setLoading] = useState(true); // Estado de carregamento
+  const [error, setError] = useState<string | null>(null); // Mensagem de erro
+  const [search, setSearch] = useState(""); // Termo de busca
+  const [currentPage, setCurrentPage] = useState(1); // Página atual
+  const studentsPerPage = 10; // Número de estudantes por página
+
+  // Efeito para buscar os estudantes quando o ID muda
   useEffect(() => {
     if (!id) return;
 
     const fetchStudents = async () => {
       try {
+        // Faz a requisição para a API
         const response = await fetch(
           `http://localhost:3000/api/class/students/${id}`
         );
         if (!response.ok) throw new Error("Erro ao buscar alunos");
         const data = await response.json();
+        // Atualiza a lista de estudantes, garantindo que seja um array
         setEstudante(Array.isArray(data.students) ? data.students : []);
       } catch (err: any) {
         setError(err.message);
@@ -54,16 +63,19 @@ export default function StudentsPage({
     fetchStudents();
   }, [id]);
 
+  // Filtra os estudantes com base no termo de busca
   const filteredStudents = estudante.filter((student) =>
     student.nomeAluno.toLowerCase().includes(search.toLowerCase())
   );
 
+  // Calcula o total de páginas e os estudantes a serem exibidos na página atual
   const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
   const displayedStudents = filteredStudents.slice(
     (currentPage - 1) * studentsPerPage,
     currentPage * studentsPerPage
   );
 
+  // Reseta a página atual quando o termo de busca muda
   useEffect(() => {
     setCurrentPage(1);
   }, [search]);
@@ -72,14 +84,21 @@ export default function StudentsPage({
     <div
       className={`min-h-screen bg-[#F0F7FF] flex flex-row dark:bg-[#141414]`}
     >
+      {/* Barra lateral */}
       <Sidebar />
+      
+      {/* Conteúdo principal */}
       <div className="w-full flex flex-col items-center mt-4 md:mt-8 px-4">
+        {/* Botão para alternar entre tema dark/light */}
         <div className="w-full flex justify-end mb-4 md:mb-8 md:mr-28">
           <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>
+
+        {/* Container principal da lista de estudantes */}
         <div className="w-full md:w-[85%] mx-auto p-4 border dark:border-black rounded-lg bg-white rounded-3xl dark:bg-black mb-4">
+          {/* Campo de busca */}
           <div className="relative w-full md:max-w-md mx-auto flex justify-center items-center mb-4 md:mb-6">
             <SearchInput
               placeholder="Buscar aluno..."
@@ -87,6 +106,8 @@ export default function StudentsPage({
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
+
+          {/* Tabela de estudantes */}
           <div className="overflow-x-auto overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
             {loading ? (
               <p>Carregando...</p>
@@ -112,6 +133,7 @@ export default function StudentsPage({
                     </tr>
                   </thead>
                   <tbody>
+                    {/* Mapeia os estudantes a serem exibidos */}
                     {displayedStudents.map((student) => (
                       <tr key={student.id} className="border border-blue-500">
                         <td className="p-2 border border-blue-500 dark:text-[#8A8A8A]">
@@ -143,6 +165,8 @@ export default function StudentsPage({
               </div>
             )}
           </div>
+
+          {/* Paginação */}
           {totalPages > 1 && (
             <div className="flex justify-center mt-4 md:mt-6 flex-wrap">
               {Array.from({ length: totalPages }, (_, i) => (
@@ -162,6 +186,8 @@ export default function StudentsPage({
           )}
         </div>
       </div>
+
+      {/* Botão flutuante para adicionar novo estudante */}
       <FloatingButton rote={`../../student/createStudent/${id}`} />
     </div>
   );
