@@ -1,22 +1,25 @@
-"use client";
-import { useEffect, useState } from "react";
-import { Moon, Sun } from "lucide-react";
-import { Button } from "@/components/ui/alunos/button";
-import Sidebar from "@/components/layout/sidebarTeacher";
-import SearchInput from "@/components/ui/search";
-import { useParams } from "next/navigation";
-import Link from "next/link";
-import { useTheme } from "@/components/ThemeProvider";
-import Image from "next/image";
+"use client"; // Indica que este é um componente do lado do cliente no Next.js
 
+import { useEffect, useState } from "react";
+import { Moon, Sun } from "lucide-react"; // Ícones para tema claro/escuro
+import { Button } from "@/components/ui/alunos/button"; // Componente de botão personalizado
+import Sidebar from "@/components/layout/sidebarTeacher"; // Barra lateral do professor
+import SearchInput from "@/components/ui/search"; // Componente de busca
+import { useParams } from "next/navigation"; // Hook para acessar parâmetros da URL
+import Link from "next/link"; // Componente para navegação
+import { useTheme } from "@/components/ThemeProvider"; // Contexto do tema
+import Image from "next/image"; // Componente de imagem otimizada
+
+// Interface para definir a estrutura de um aluno
 interface Student {
   id: number;
   nomeAluno: string;
   identifierCode: number;
-  imageUrl?: string;
-  status?: string;
+  imageUrl?: string; // URL da imagem do aluno (opcional)
+  status?: string; // Status do aluno (ativo/inativo)
 }
 
+// Componente principal da lista de alunos do professor
 export default function TeacherList({
   value,
   className,
@@ -24,31 +27,38 @@ export default function TeacherList({
   value: number;
   className?: string;
 }) {
+  // Obtém os parâmetros da URL
   const params = useParams();
-  const id = params.id as string;
-  const [students, setStudents] = useState<Student[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const studentsPerPage = 6;
-  const { darkMode, toggleTheme } = useTheme();
+  const id = params.id as string; // ID da turma vindo da URL
 
+  // Estados do componente
+  const [students, setStudents] = useState<Student[]>([]); // Lista de alunos
+  const [loading, setLoading] = useState(true); // Estado de carregamento
+  const [error, setError] = useState<string | null>(null); // Mensagem de erro
+  const [search, setSearch] = useState(""); // Termo de busca
+  const [currentPage, setCurrentPage] = useState(1); // Página atual da paginação
+  const studentsPerPage = 6; // Número de alunos por página
+  const { darkMode, toggleTheme } = useTheme(); // Controle do tema
+
+  // Reseta a página atual quando o termo de busca muda
   useEffect(() => {
     setCurrentPage(1);
   }, [search]);
 
+  // Busca os alunos quando o ID da turma muda
   useEffect(() => {
     if (!id) return;
 
     const fetchStudents = async () => {
       try {
         setLoading(true);
+        // Faz requisição para a API
         const response = await fetch(
           `http://localhost:3000/api/class/students/${id}`
         );
         if (!response.ok) throw new Error("Erro ao buscar alunos");
         const data = await response.json();
+        // Garante que students seja sempre um array
         setStudents(Array.isArray(data.students) ? data.students : []);
       } catch (err: any) {
         setError(err.message);
@@ -60,22 +70,31 @@ export default function TeacherList({
     fetchStudents();
   }, [id]);
 
+  // Filtra alunos com base no termo de busca
   const filteredStudents = students.filter((student) =>
     student.nomeAluno.toLowerCase().includes(search.toLowerCase())
   );
 
+  // Calcula o total de páginas para paginação
   const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
+  
+  // Obtém os alunos a serem exibidos na página atual
   const displayedStudents = filteredStudents.slice(
     (currentPage - 1) * studentsPerPage,
     currentPage * studentsPerPage
   );
 
+  // Exibe mensagem de erro se houver
   if (error) return <div className="p-4 text-red-500">Erro: {error}</div>;
 
   return (
     <div className="min-h-screen bg-[#F0F7FF] flex dark:bg-[#141414]">
+      {/* Barra lateral */}
       <Sidebar />
+      
+      {/* Conteúdo principal */}
       <div className="w-full flex flex-col items-center mt-8">
+        {/* Botão para alternar tema */}
         <div className="w-full flex justify-end mb-8 mr-28">
           <Button 
             onClick={toggleTheme}
@@ -86,7 +105,9 @@ export default function TeacherList({
           </Button>
         </div>
 
+        {/* Container principal */}
         <div className="container mx-auto p-8 rounded-3xl bg-white dark:bg-black dark:border-black w-[85%] space-y-6">
+          {/* Campo de busca */}
           <div className="relative w-full max-w-md mx-auto">
             <SearchInput
               placeholder="Digite o nome do aluno..."
@@ -96,8 +117,10 @@ export default function TeacherList({
             />
           </div>
 
+          {/* Lista de alunos */}
           <div className="p-8 flex flex-col">
             {loading ? (
+              // Placeholder de carregamento
               <div className="grid grid-cols-3 gap-6 max-md:grid-cols-2">
                 {[...Array(6)].map((_, index) => (
                   <div key={index} className="flex flex-col items-center p-4 rounded-lg shadow-md bg-[#F0F7FF] dark:bg-[#141414]">
@@ -109,6 +132,7 @@ export default function TeacherList({
               </div>
             ) : (
               <>
+                {/* Grid de alunos */}
                 <div className="grid grid-cols-3 gap-6 max-md:grid-cols-2">
                   {displayedStudents.map((student) => (
                     <Link
@@ -116,7 +140,9 @@ export default function TeacherList({
                       href={`/teacher/feedback/studentsFeedback/studentProfile/${student.id}`}
                       passHref
                     >
+                      {/* Card do aluno */}
                       <div className="flex flex-col items-center p-4 rounded-lg shadow-md bg-[#F0F7FF] dark:bg-[#141414] dark:text-white border-[#F0F7FF] dark:border-[#141414] cursor-pointer hover:shadow-lg transition-shadow">
+                        {/* Avatar do aluno */}
                         <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-full mb-2 flex items-center justify-center overflow-hidden">
                           {student.imageUrl ? (
                             <Image
@@ -130,7 +156,9 @@ export default function TeacherList({
                             <span className="text-gray-500 dark:text-gray-400">Foto</span>
                           )}
                         </div>
+                        {/* Nome do aluno */}
                         <span className="font-medium">{student.nomeAluno}</span>
+                        {/* Status do aluno */}
                         <span className={`mt-1 ${
                           student.status === "inactive" 
                             ? "text-gray-500 dark:text-gray-400" 
@@ -143,6 +171,7 @@ export default function TeacherList({
                   ))}
                 </div>
 
+                {/* Paginação */}
                 {totalPages > 1 && (
                   <div className="flex justify-center mt-6">
                     {Array.from({ length: totalPages }, (_, i) => (
