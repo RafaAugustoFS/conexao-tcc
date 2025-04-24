@@ -1,5 +1,6 @@
 "use client";
 
+// Importações de componentes e bibliotecas
 import Sidebar from "@/components/layout/sidebarInstitution";
 import { Button } from "@/components/ui/institution/buttonSubmit";
 import { useEffect, useState } from "react";
@@ -15,11 +16,13 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
+// Interface para definir a estrutura de uma turma
 interface Turma {
   id: number;
   nomeTurma: string;
 }
 
+// Componente principal de perfil para criação de aluno
 export default function Profile({
   value,
   className,
@@ -27,14 +30,18 @@ export default function Profile({
   value: number;
   className?: string;
 }) {
+  // Obtém parâmetros da URL
   const params = useParams();
   const id = params.id as string;
 
+  // Estados para os campos do formulário
   const [nomeAluno, setName] = useState("");
   const [emailAluno, setEmail] = useState("");
   const [dataNascimentoAluno, setBirthDate] = useState("");
   const [telefoneAluno, setPhone] = useState("");
   const [turma, setTurma] = useState("");
+  
+  // Estados para tema e imagem
   const { darkMode, toggleTheme } = useTheme();
   const [imageUrl, setImagemPerfil] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,6 +52,7 @@ export default function Profile({
     setBirthDate(value);
   };
 
+  // Manipulador de mudança de imagem
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("Evento detectado!");
 
@@ -56,6 +64,7 @@ export default function Profile({
     const file = event.target.files[0];
     console.log("Arquivo selecionado:", file);
 
+    // Lê o arquivo e converte para URL de dados
     const reader = new FileReader();
     reader.onloadend = () => {
       if (typeof reader.result === "string") {
@@ -66,11 +75,12 @@ export default function Profile({
     reader.readAsDataURL(file);
   };
 
+  // Função para submeter o formulário
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Validações de email e telefone
+    // Funções de validação
     const validateEmail = (email: string) => {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return regex.test(email);
@@ -107,6 +117,7 @@ export default function Profile({
       }
     }
 
+    // Validações de email e telefone
     if (!validateEmail(emailAluno)) {
       toast.warn("Por favor, insira um email válido.");
       setIsSubmitting(false);
@@ -119,6 +130,7 @@ export default function Profile({
       return;
     }
 
+    // Verifica se o usuário está autenticado
     const token = localStorage.getItem("token");
     if (!token) {
       toast.warn("Usuário não autenticado. Faça login novamente.");
@@ -128,6 +140,7 @@ export default function Profile({
 
     try {
       setIsModalOpen(true);
+      // Requisição para criar o aluno
       const response = await fetch("http://localhost:3000/api/student", {
         method: "POST",
         headers: {
@@ -146,6 +159,7 @@ export default function Profile({
 
       if (!response.ok) throw new Error("Erro ao criar o perfil.");
 
+      // Feedback de sucesso e limpeza dos campos
       toast.success("Perfil criado com sucesso!");
       setName("");
       setEmail("");
@@ -161,6 +175,7 @@ export default function Profile({
     }
   };
 
+  // Função para obter a data atual formatada
   const getCurrentDate = () => {
     const today = new Date();
     return today.toLocaleDateString("pt-BR", {
@@ -171,12 +186,13 @@ export default function Profile({
     });
   };
 
-  // Aplicar o tema ao carregar a página
+  // Efeito para aplicar o tema ao carregar a página
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
+  // Efeito para buscar informações da turma
   useEffect(() => {
     fetch(`http://localhost:3000/api/class/teacher/disciplinas/${id}`)
       .then((response) => response.json())
@@ -184,12 +200,20 @@ export default function Profile({
       .catch((error) => console.error("Erro ao buscar turma:", error));
   }, []);
 
+  // Renderização do componente
   return (
     <>
+      {/* Container para notificações toast */}
       <ToastContainer />
+      
+      {/* Layout principal */}
       <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
+        {/* Barra lateral */}
         <Sidebar />
+        
+        {/* Conteúdo principal */}
         <main className="flex-1 p-8">
+          {/* Cabeçalho */}
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className={`text-2xl font-bold ${darkMode ? "text-blue-500" : "text-blue-500"}`}>
@@ -199,12 +223,15 @@ export default function Profile({
                 Preencha os campos abaixo para criar uma novo aluno.
               </p>
             </div>
+            {/* Botão para alternar entre tema claro/escuro */}
             <Button onClick={toggleTheme}>
               {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </Button>
           </div>
 
+          {/* Formulário de criação de aluno */}
           <div className="container mx-auto p-6 space-y-6 max-w-5xl bg-white dark:bg-black rounded-3xl">
+            {/* Upload de imagem */}
             <div className="flex flex-col items-center gap-4">
               <Image
                 src={imageUrl || User}
@@ -217,6 +244,7 @@ export default function Profile({
               <InputImage onChange={handleImageChange} />
             </div>
 
+            {/* Campos do formulário */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[
                 {
@@ -256,6 +284,7 @@ export default function Profile({
               ))}
             </div>
 
+            {/* Botão de submissão */}
             <div className="flex justify-center">
               <Button
                 className="bg-blue-500 hover:bg-blue-600 text-white px-8"
@@ -266,6 +295,8 @@ export default function Profile({
               </Button>
             </div>
           </div>
+          
+          {/* Modal de carregamento */}
           <ModalCreate
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}

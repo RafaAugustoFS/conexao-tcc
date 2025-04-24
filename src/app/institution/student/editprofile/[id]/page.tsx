@@ -1,4 +1,5 @@
 "use client";
+// Importações de componentes e bibliotecas
 import Sidebar from "@/components/layout/sidebarInstitution";
 import { Button } from "@/components/ui/alunos/button";
 import { ButtonEdit } from "@/components/ui/institution/buttonEdit";
@@ -13,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import ModalCreate from "@/components/modals/modalCreate";
 
+// Componente principal de perfil do aluno
 export default function Profile({
   value,
   className,
@@ -20,9 +22,12 @@ export default function Profile({
   value: number;
   className?: string;
 }) {
+  // Obtenção dos parâmetros da URL e configuração do tema
   const params = useParams();
   const id = params.id as string;
   const { darkMode, toggleTheme } = useTheme();
+
+  // Estados para os campos do formulário
   const [nome, setName] = useState("");
   const [emailAluno, setEmail] = useState("");
   const [dataNascimentoAluno, setBirthDate] = useState("");
@@ -32,6 +37,7 @@ export default function Profile({
   const [imageUrl, setImageUrl] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Função para validar a data de nascimento
   const validateDate = (dateString: string) => {
     if (!dateString) return true; // Se não houver data, a validação passa (ou pode retornar false se for obrigatório)
     
@@ -51,6 +57,7 @@ export default function Profile({
     return true;
   };
 
+  // Função para lidar com o envio do formulário
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -59,6 +66,7 @@ export default function Profile({
       return;
     }
 
+    // Formata a data para o formato esperado pelo backend
     const formatDateForBackend = (dateString: string) => {
       const date = new Date(dateString);
       const formattedDate = date
@@ -68,6 +76,7 @@ export default function Profile({
       return formattedDate;
     };
 
+    // Validação dos campos obrigatórios
     if (!nome || !emailAluno || !dataNascimentoAluno || !telefoneAluno) {
       toast.warn("Preencha todos os campos obrigatórios.");
       return;
@@ -75,6 +84,7 @@ export default function Profile({
 
     try {
       setIsModalOpen(true);
+      // Requisição para atualizar os dados do aluno
       const response = await fetch(`http://localhost:3000/api/student/${id}`, {
         method: "PUT",
         headers: {
@@ -92,6 +102,7 @@ export default function Profile({
 
       if (!response.ok) throw new Error("Erro ao atualizar o perfil.");
 
+      // Feedback de sucesso e limpeza dos campos
       toast.success("✅ Perfil atualizado com sucesso!");
       setName("");
       setEmail("");
@@ -104,6 +115,7 @@ export default function Profile({
     }
   };
 
+  // Função para obter a data atual formatada
   const getCurrentDate = () => {
     const today = new Date();
     return today.toLocaleDateString("pt-BR", {
@@ -114,6 +126,7 @@ export default function Profile({
     });
   };
 
+  // Função para obter a data atual no formato YYYY-MM-DD
   const getTodayDateString = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -122,11 +135,13 @@ export default function Profile({
     return `${year}-${month}-${day}`;
   };
 
+  // Efeito para aplicar o tema escuro/claro
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
+  // Efeito para carregar os dados do aluno quando o ID muda
   useEffect(() => {
     if (!id) return;
 
@@ -144,10 +159,15 @@ export default function Profile({
       .catch((error) => console.error("Erro ao buscar turma:", error));
   }, [id]);
 
+  // Renderização do componente
   return (
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
+      {/* Sidebar */}
       <Sidebar />
+      
+      {/* Conteúdo principal */}
       <main className="flex-1 p-8">
+        {/* Cabeçalho com título, data e botão de tema */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold dark:text-white">Editar aluno</h1>
           <p className="text-gray-500">{getCurrentDate()}</p>
@@ -156,7 +176,9 @@ export default function Profile({
           </Button>
         </div>
 
+        {/* Container do formulário */}
         <div className="container mx-auto p-6 space-y-6 max-w-5xl bg-white dark:bg-black rounded-3xl">
+          {/* Imagem do perfil */}
           <Image
             src="https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-855.jpg"
             alt="Profile"
@@ -165,6 +187,7 @@ export default function Profile({
             className="rounded-full"
           />
 
+          {/* Grid de inputs do formulário */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 dark:text-gray-400">
             {[
               { label: "Nome Completo", state: nome, setState: setName },
@@ -195,6 +218,7 @@ export default function Profile({
             ))}
           </div>
 
+          {/* Botão de submit */}
           <div className="flex justify-center">
             <ButtonEdit
               onClick={handleSubmit}
@@ -204,6 +228,7 @@ export default function Profile({
             </ButtonEdit>
           </div>
         </div>
+        {/* Container para notificações toast */}
         <ToastContainer />
       </main>
     </div>
