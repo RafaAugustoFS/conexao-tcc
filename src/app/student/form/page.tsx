@@ -1,5 +1,6 @@
 "use client";
 
+// Importações de bibliotecas e componentes
 import { useEffect } from "react";
 import { ArrowDownCircle, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/alunos/button";
@@ -8,6 +9,7 @@ import checklist from "../../../assets/images/checklist.png";
 import Image from "next/image";
 import { useTheme } from "@/components/ThemeProvider";
 
+// Componente principal do Check-in Emocional
 export default function CheckInEmocional({
   value,
   className,
@@ -15,11 +17,15 @@ export default function CheckInEmocional({
   value: number;
   className?: string;
 }) {
+  // Gerenciamento do tema (claro/escuro)
   const { darkMode, toggleTheme } = useTheme();
+
+  // Efeito para aplicar o tema selecionado
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
+
   return (
     <div
       className={`min-h-screen bg-[#F0F7FF] flex flex-col lg:flex-row dark:bg-[#141414]`}
@@ -48,7 +54,6 @@ export default function CheckInEmocional({
           <h1 className="text-[#0077FF] font-bold text-[24px]">
             Por que preencher este formulário?
           </h1>
-
           <div className="flex flex-row gap-4 lg:gap-8 items-center">
             <Image src={checklist} alt="#" width={20} height={20} priority />
             <p className="text-[16px] lg:text-[20px] dark:text-[#ffffff]">
@@ -72,7 +77,6 @@ export default function CheckInEmocional({
               empatia e seriedade.
             </p>
           </div>
-
           <h1 className="text-[#0077FF] font-bold text-[24px]">
             Importante lembrar:
           </h1>
@@ -91,6 +95,8 @@ export default function CheckInEmocional({
           <a
             href="https://docs.google.com/forms/d/e/1FAIpQLSfG-Q-ecWsjrEOd_wz3b5fwT5vJdwFDHparoeiKLVtp3WxB3Q/viewform?usp=header"
             className="flex w-full lg:w-72 items-center gap-2 border-2 border-blue-500 rounded-full px-4 py-2 text-black font-semibold hover:bg-blue-100 transition-all dark:text-white dark:hover:bg-[#141414]"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <ArrowDownCircle className="text-blue-500" size={24} />
             <span>Acesse o formulário aqui.</span>

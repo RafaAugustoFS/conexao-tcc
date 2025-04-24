@@ -1,6 +1,6 @@
-// pages/index.tsx
-
 "use client";
+
+// Importações de componentes
 import { ProfileCard } from "@/components/ui/alunos/profile-card";
 import Sidebar from "@/components/layout/sidebar";
 import { useEffect, useState } from "react";
@@ -9,8 +9,9 @@ import { Moon, Sun } from "lucide-react";
 import EngagementChart from "@/components/ui/alunos/chartFeedback";
 import { useTheme } from "@/components/ThemeProvider";
 import CardPerson from "@/components/ui/alunos/cardFeedbackStudent";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
+// Interface para dados do professor
 interface Professor {
   id: number;
   nomeDocente: string;
@@ -19,6 +20,7 @@ interface Professor {
   telefoneDocente: string;
 }
 
+// Interface para perfil do aluno
 interface StudentProfile {
   imageUrl: string;
   nome: string;
@@ -27,6 +29,7 @@ interface StudentProfile {
 }
 
 export default function Home() {
+  // Estados do componente
   const [currentPage, setCurrentPage] = useState(1);
   const [teachers, setTeachers] = useState<Professor[]>([]);
   const [studentData, setStudentData] = useState<StudentProfile | null>(null);
@@ -35,19 +38,24 @@ export default function Home() {
   const { darkMode, toggleTheme } = useTheme();
   const studentsPerPage = 6;
 
-  // Função para buscar os dados do estudante
+  // Busca os dados da api
   const fetchStudentData = async () => {
     try {
+      // Obtém o token JWT do localStorage
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token não encontrado");
 
+      // Decodifica o token para obter o ID do usuário
       const decoded: any = jwtDecode(token);
       const id = decoded?.sub;
       if (!id) throw new Error("ID do usuário não encontrado no token");
 
+      // Faz a requisição para a API
       const response = await fetch(`http://localhost:3000/api/student/${id}`);
-      if (!response.ok) throw new Error("Não foi possível carregar os dados do estudante");
+      if (!response.ok)
+        throw new Error("Não foi possível carregar os dados do estudante");
 
+      // Atualiza os dados do aluno no estado
       const data = await response.json();
       setStudentData(data);
     } catch (err: any) {
@@ -57,7 +65,7 @@ export default function Home() {
     }
   };
 
-  // Função para buscar os professores da API
+  // Efeito para carregar a lista de professores quando o componente é montado
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
@@ -72,11 +80,12 @@ export default function Home() {
     fetchTeachers();
   }, []);
 
-  // Chama a função de fetch quando o componente for montado
+  // Efeito para carregar os dados do aluno quando o componente é montado
   useEffect(() => {
     fetchStudentData();
   }, []);
 
+  // Efeito para aplicar o tema selecionado
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("theme", darkMode ? "dark" : "light");
@@ -89,10 +98,10 @@ export default function Home() {
     currentPage * studentsPerPage
   );
 
+  // Renderização do componente
   return (
     <div className="min-h-screen bg-[#F0F7FF] dark:bg-[#141414] flex flex-row border dark:border-black">
       <Sidebar />
-
       <div className="container mx-auto p-4">
         <div className="w-full flex flex-row justify-end">
           <Button onClick={toggleTheme}>
@@ -101,7 +110,11 @@ export default function Home() {
         </div>
         <div className="flex justify-end pb-4"></div>
         <div className="space-y-6 bg-[#FFFFFF] dark:bg-black dark:text-[#ffffffd8] p-8 rounded-2xl max-h-[800px] overflow-y-auto pr scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 dark:scrollbar-track-black">
-          <ProfileCard studentData={studentData} loading={loading} error={error} />
+          <ProfileCard
+            studentData={studentData}
+            loading={loading}
+            error={error}
+          />
           <EngagementChart />
           <h1 className="text-[#0077FF] font-bold text-[20px] lg:text-[24px] pt-[20px]">
             A importância do seu feedback
@@ -118,10 +131,8 @@ export default function Home() {
             em suas respostas, pois sua opinião contribui para um ambiente de
             aprendizado cada vez melhor para todos!
           </p>
-          {/* Exibir os professores usando o CardPerson */}
           <div className="pt-10">
             <CardPerson persons={displayedTeachers} />
-            {/* Paginação */}
             {totalPages > 1 && (
               <div className="flex justify-center mt-6">
                 {Array.from({ length: totalPages }, (_, i) => (
