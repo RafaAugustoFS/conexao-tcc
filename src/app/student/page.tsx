@@ -1,5 +1,6 @@
 "use client";
 
+// Importações de componentes e bibliotecas
 import Chart from "@/components/ui/alunos/chart";
 import { Card, CardContent } from "@/components/ui/alunos/card";
 import GradeCard from "@/components/ui/alunos/gradeCard";
@@ -12,39 +13,52 @@ import { Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { MediaCard } from "@/components/ui/alunos/mediaCard";
-import { useTheme } from "@/components/ThemeProvider"; // Importe o hook useTheme
+import { useTheme } from "@/components/ThemeProvider";
 
 export default function Dashboard() {
-  const { darkMode, toggleTheme } = useTheme(); // Use o hook useTheme
+  // Estados do componente
+  const { darkMode, toggleTheme } = useTheme();
   const [studentName, setStudentName] = useState<string>("Aluno");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [media, setMedia] = useState<number>(0);
 
-  // Buscar dados do aluno
+  /**
+   * Efeito para buscar os dados do aluno ao montar o componente
+   */
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
+        // 1. Obtém o token JWT do localStorage
         const token = localStorage.getItem("token");
         if (!token) throw new Error("Token não encontrado");
 
+        // 2. Decodifica o token para obter o ID do usuário
         const decoded: any = jwtDecode(token);
         const userId = decoded?.sub;
         if (!userId) throw new Error("ID do usuário não encontrado no token");
 
-        const response = await fetch(`http://localhost:3000/api/student/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        // 3. Faz requisição para a API
+        const response = await fetch(
+          `http://localhost:3000/api/student/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
+        // 4. Verifica se a resposta foi bem sucedida
         if (!response.ok) throw new Error("Erro ao buscar dados do aluno");
 
+        // 5. Atualiza o nome do aluno
         const data = await response.json();
         setStudentName(data.nome || "Aluno");
       } catch (err: any) {
+        // 6. Tratamento de erros
         setError(err.message || "Erro ao buscar nome do aluno");
       } finally {
+        // 7. Finaliza o carregamento
         setLoading(false);
       }
     };
@@ -52,11 +66,15 @@ export default function Dashboard() {
     fetchStudentData();
   }, []);
 
-  // Função para atualizar a média
+  /**
+   * Função para atualizar a média do aluno
+   * @param novaMedia - Novo valor da média
+   */
   const atualizarMedia = (novaMedia: number) => {
     setMedia(novaMedia);
   };
 
+  // Renderização do componente
   return (
     <div
       className={`flex ${
@@ -65,14 +83,11 @@ export default function Dashboard() {
     >
       <Sidebar />
       <main className="flex-1 pl-6 pb-6 pr-6 pt-2">
-        {/* Botão de Modo Escuro */}
         <div className="flex justify-end">
           <Button onClick={toggleTheme}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </Button>
         </div>
-
-        {/* Mensagem de Boas-Vindas */}
         <div className="flex flex-row items-center">
           {loading ? (
             <span>Carregando...</span>
@@ -82,8 +97,6 @@ export default function Dashboard() {
             <WelcomeMessage name={studentName} />
           )}
         </div>
-
-        {/* Cartões de Média e Notas */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           <Card>
             <CardContent>
@@ -91,8 +104,6 @@ export default function Dashboard() {
               <Chart valorAtual={media} />
             </CardContent>
           </Card>
-
-          {/* Cartão de Notas */}
           <Card>
             <CardContent>
               <div className="flex flex-row justify-center">
@@ -101,16 +112,12 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
-
-        {/* Lista de Mensagens */}
         <div className="mt-4 w-full">
           <div className="rounded-xl">
             <MessageList />
           </div>
         </div>
       </main>
-
-      {/* Barra lateral direita */}
       <LateralCalendar />
     </div>
   );
