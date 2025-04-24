@@ -1,21 +1,25 @@
-"use client";
-import Sidebar from "@/components/layout/sidebarTeacher";
-import { ProfileInfo } from "@/components/ui/alunos/profile";
-import { Button } from "@/components/ui/alunos/button";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "@/components/ThemeProvider";
+"use client"; // Indica que este é um componente do lado do cliente (Next.js)
 
+// Importações de componentes e bibliotecas
+import Sidebar from "@/components/layout/sidebarTeacher"; // Barra lateral do professor
+import { ProfileInfo } from "@/components/ui/alunos/profile"; // Componente de perfil do aluno
+import { Button } from "@/components/ui/alunos/button"; // Componente de botão personalizado
+import { useEffect, useState } from "react"; // Hooks do React
+import { useParams } from "next/navigation"; // Hook para acessar parâmetros da rota
+import { Moon, Sun } from "lucide-react"; // Ícones de lua e sol (tema claro/escuro)
+import { useTheme } from "@/components/ThemeProvider"; // Gerenciador de tema
+
+// Interface que define a estrutura dos dados do aluno
 interface StudentProfile {
-  imageUrl?: string;
-  nome: string;
-  emailAluno: string;
-  dataNascimentoAluno: string;
-  telefoneAluno: string;
-  matriculaAluno: string;
+  imageUrl?: string; // URL da foto (opcional)
+  nome: string; // Nome completo do aluno
+  emailAluno: string; // E-mail do aluno
+  dataNascimentoAluno: string; // Data de nascimento
+  telefoneAluno: string; // Número de telefone
+  matriculaAluno: string; // Número de matrícula
 }
 
+// Componente principal da página de perfil do aluno
 export default function User({
   value,
   className,
@@ -23,45 +27,72 @@ export default function User({
   value: number;
   className?: string;
 }) {
+  // Obtém os parâmetros da URL
   const params = useParams();
+  
+  // Configurações de tema (claro/escuro)
   const { darkMode, toggleTheme } = useTheme();
-  const id = params.id as string; // Extrai o ID da turma da URL
-  const [studentData, setStudentData] = useState<StudentProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  
+  // Extrai o ID do aluno da URL
+  const id = params.id as string;
+  
+  // Estados do componente
+  const [studentData, setStudentData] = useState<StudentProfile | null>(null); // Dados do aluno
+  const [loading, setLoading] = useState(true); // Estado de carregamento
+  const [error, setError] = useState<string | null>(null); // Mensagens de erro
 
-  // Função de buscar os dados do estudante
+  /**
+   * Função assíncrona para buscar os dados do aluno na API
+   */
   const fetchStudentData = async () => {
     try {
+      // Faz a requisição para a API
       const response = await fetch(`http://localhost:3000/api/student/${id}`);
-      if (!response.ok)
+      
+      // Verifica se a resposta foi bem-sucedida
+      if (!response.ok) {
         throw new Error("Não foi possível carregar os dados do estudante");
+      }
 
+      // Converte a resposta para JSON
       const data = await response.json();
-      setStudentData(data); // Setando os dados do estudante
+      
+      // Atualiza os dados do aluno no estado
+      setStudentData(data);
     } catch (err: any) {
-      setError(err.message); // Tratamento de erro
+      // Em caso de erro, armazena a mensagem de erro
+      setError(err.message);
     } finally {
-      setLoading(false); // Finalizando o carregamento
+      // Finaliza o estado de carregamento
+      setLoading(false);
     }
   };
 
-  // Chama a função de fetch quando o componente for montado
+  // Efeito que executa ao montar o componente
   useEffect(() => {
-    fetchStudentData(); // Chamando a função para carregar os dados
-  }, []);
+    fetchStudentData(); // Busca os dados do aluno
+  }, []); // Array de dependências vazio = executa apenas uma vez
 
+  // Renderização do componente
   return (
     <div className="flex min-h-screen bg-[#F0F7FF] dark:bg-[#141414]">
+      {/* Componente da barra lateral */}
       <Sidebar />
+      
+      {/* Conteúdo principal */}
       <main className="flex-1">
         <div className="p-8">
+          {/* Container do botão de tema (superior direito) */}
           <div className="flex items-center justify-end mb-8 w-full">
             <Button onClick={toggleTheme}>
+              {/* Alterna entre ícones de sol/lua conforme o tema */}
               {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </Button>
           </div>
+          
+          {/* Container do perfil do aluno */}
           <div className="bg-white dark:bg-black rounded-lg shadow-sm p-3">
+            {/* Renderização condicional - mostra os dados se estiverem disponíveis */}
             {studentData && (
               <ProfileInfo
                 imageUrl={studentData.imageUrl}
