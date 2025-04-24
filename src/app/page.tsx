@@ -146,9 +146,7 @@ export default function LoginPage() {
   return (
     <>
       <ToastContainer />
-      <main
-        className={`min-h-screen w-full ${darkMode ? "dark" : ""}`}
-      >
+      <main className={`min-h-screen w-full ${darkMode ? "dark" : ""}`}>
         <div className="container mx-auto px-4 2xl:px-28 py-8 flex min-h-screen relative">
           <div className="flex flex-col lg:flex-row items-center justify-between w-full gap-4 md:gap-8 z-10">
             <div className="w-full lg:w-1/2 space-y-4 md:space-y-6 text-center lg:text-left mb-8 lg:mb-0">
@@ -172,9 +170,9 @@ export default function LoginPage() {
 
             <div className="w-full lg:w-1/2 flex flex-col items-center z-10">
               <div className="w-full flex justify-end mb-8">
-              <Button onClick={toggleTheme}>
-                          {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-                        </Button>
+                <Button onClick={toggleTheme}>
+                  {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                </Button>
               </div>
 
               <div
@@ -196,12 +194,12 @@ export default function LoginPage() {
                   </div>
                   <div className="relative">
                     <input
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(event) => setPassword(event.target.value)}
-                      placeholder="••••••••"
+                      type="text"
+                      placeholder="Matrícula"
                       className={`w-full px-4 py-3 rounded-lg ${
-                        darkMode ? "bg-[#141414] text-white" : "bg-gray-50"
+                        darkMode
+                          ? "bg-[#1E1E1E] text-white [color-scheme:dark]"
+                          : "bg-gray-50 text-gray-900"
                       } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     />
                     <button
