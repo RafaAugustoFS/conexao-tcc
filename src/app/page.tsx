@@ -1,7 +1,7 @@
 "use client";
 
+// Importações de bibliotecas e componentes
 import type React from "react";
-
 import { useState } from "react";
 import { Sun, Moon, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -15,6 +15,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/alunos/button";
 
 export default function LoginPage() {
+    // Estados e hooks
   const { darkMode, toggleTheme } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [identifierCode, setIdentifierCode] = useState("");
@@ -22,6 +23,10 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  /**
+   * Função para lidar com o envio do formulário de login
+   * @param event - Evento de submissão do formulário
+   */
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
@@ -121,7 +126,7 @@ export default function LoginPage() {
           console.log(data);
           const token = data.token;
           if (token) {
-            localStorage.setItem("token", token); // Armazena o token no localStorage
+            localStorage.setItem("token", token); 
             Cookies.set("token", token, { path: "/" });
             console.log("Token gerado com sucesso!");
             router.push("/institution");
