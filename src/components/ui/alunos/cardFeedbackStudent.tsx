@@ -79,7 +79,7 @@ export default function CardFeedback({ persons = [] }: CardFeedbackProps) {
       };
 
       const response = await fetch(
-        "http://localhost:3000/api/feedbackStudent",
+        "https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/feedbackStudent",
         {
           method: "POST",
           headers: {

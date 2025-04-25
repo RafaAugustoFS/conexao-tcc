@@ -40,7 +40,7 @@ export function NoticeCard({ onRefresh }: NoticeCardProps) {
       if (!userId) throw new Error("ID do usuário não encontrado no token");
 
       const response = await fetch(
-        `http://localhost:3000/api/teacher/${userId}`
+        `https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/teacher/${userId}`
       );
       if (!response.ok)
         throw new Error("Não foi possível carregar os dados do estudante");
@@ -75,7 +75,7 @@ export function NoticeCard({ onRefresh }: NoticeCardProps) {
       if (isNaN(userIdInt))
         throw new Error("ID do usuário não é um número válido");
 
-      const response = await fetch("http://localhost:3000/api/reminder", {
+      const response = await fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/reminder", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

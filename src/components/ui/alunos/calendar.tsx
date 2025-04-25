@@ -32,7 +32,7 @@ export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/event");
+        const response = await fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/event");
         if (!response.ok) {
           throw new Error("Erro ao buscar eventos");
         }

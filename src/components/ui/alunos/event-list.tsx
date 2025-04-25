@@ -13,7 +13,7 @@ export function EventList({ className }: EventListProps) {
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const response = await fetch("http://localhost:3000/api/event");
+        const response = await fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/event");
         const data: Event[] = await response.json();
 
         const today = new Date().toISOString().split("T")[0];

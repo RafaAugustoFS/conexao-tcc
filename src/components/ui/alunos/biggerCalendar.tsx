@@ -22,7 +22,7 @@ export default function ResponsiveCalendar() {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch("http://localhost:3000/api/event")
+      const response = await fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/event")
       const data = await response.json()
       const events = data.map((event: any) => ({
         id: event.id,

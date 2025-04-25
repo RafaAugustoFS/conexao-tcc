@@ -30,7 +30,7 @@ export default function Ocurrence() {
         throw new Error("ID do usuário não é um número válido");
 
       const response = await fetch(
-        "http://localhost:3000/api/teacher/student",
+        "https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/teacher/student",
         {
           method: "POST",
           headers: {

@@ -37,7 +37,7 @@ function MessageList({ className }: { className?: string }) {
 
         // 2️⃣ Buscar os avisos da turma
         const reminderResponse = await fetch(
-          `http://localhost:3000/api/reminder/teacher/${userId}`,
+          `https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/reminder/teacher/${userId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

@@ -61,7 +61,7 @@ const GradeCard: React.FC = () => {
       const decoded: any = jwtDecode(token)
       const userId = decoded?.sub || "1" // Fallback para "1" se não encontrar o ID no token
 
-      const response = await fetch(`http://localhost:3000/api/student/${userId}`, {
+      const response = await fetch(`https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/student/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

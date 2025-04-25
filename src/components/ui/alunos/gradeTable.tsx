@@ -64,7 +64,7 @@ const Table = () => {
         if (!userId) throw new Error("ID do usuário não encontrado no token")
 
         // Requisição para a API
-        const resposta = await fetch(`http://localhost:3000/api/student/${userId}`)
+        const resposta = await fetch(`https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/student/${userId}`)
 
         if (!resposta.ok) {
           throw new Error("Falha ao buscar os dados")
@@ -153,7 +153,7 @@ const Table = () => {
       </div>
 
       <div className="flex justify-center mt-6">
-        <DownloadButton apiBaseUrl="http://localhost:3000/api/boletim" />
+        <DownloadButton apiBaseUrl="https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/boletim" />
       </div>
     </div>
   )
