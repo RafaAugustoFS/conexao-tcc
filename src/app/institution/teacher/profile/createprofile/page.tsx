@@ -66,7 +66,7 @@ export default function Profile() {
   // Efeito para carregar as disciplinas ao montar o componente
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:3000/api/discipline")
+    fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/discipline")
       .then((response) => response.json())
       .then((data: Disciplina[]) => {
         setDisciplinas(data);
@@ -169,7 +169,7 @@ export default function Profile() {
       setIsModalOpen(true); // Abre o modal de carregamento
       
       // Envia os dados para a API
-      const response = await fetch("http://localhost:3000/api/teacher", {
+      const response = await fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/teacher", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

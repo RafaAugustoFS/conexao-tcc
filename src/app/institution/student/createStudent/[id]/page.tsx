@@ -141,7 +141,7 @@ export default function Profile({
     try {
       setIsModalOpen(true);
       // Requisição para criar o aluno
-      const response = await fetch("http://localhost:3000/api/student", {
+      const response = await fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/student", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -194,7 +194,7 @@ export default function Profile({
 
   // Efeito para buscar informações da turma
   useEffect(() => {
-    fetch(`http://localhost:3000/api/class/teacher/disciplinas/${id}`)
+    fetch(`https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/class/teacher/disciplinas/${id}`)
       .then((response) => response.json())
       .then((data) => setTurma(data))
       .catch((error) => console.error("Erro ao buscar turma:", error));

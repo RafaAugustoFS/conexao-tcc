@@ -1,7 +1,7 @@
 "use client";
 
-// Importações de bibliotecas e componentes
 import type React from "react";
+
 import { useState } from "react";
 import { Sun, Moon, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -15,7 +15,6 @@ import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/alunos/button";
 
 export default function LoginPage() {
-    // Estados e hooks
   const { darkMode, toggleTheme } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [identifierCode, setIdentifierCode] = useState("");
@@ -23,10 +22,6 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  /**
-   * Função para lidar com o envio do formulário de login
-   * @param event - Evento de submissão do formulário
-   */
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
@@ -38,7 +33,7 @@ export default function LoginPage() {
     if (identifierCode.startsWith("p")) {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/teacher/login",
+          "https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/teacher/login",
           {
             method: "POST",
             headers: {
@@ -74,7 +69,7 @@ export default function LoginPage() {
     } else if (identifierCode.startsWith("a")) {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/student/login",
+          "https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/student/login",
           {
             method: "POST",
             headers: {
@@ -110,7 +105,7 @@ export default function LoginPage() {
     } else {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/institution/login",
+          "https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/institution/login",
           {
             method: "POST",
             headers: {
@@ -126,7 +121,7 @@ export default function LoginPage() {
           console.log(data);
           const token = data.token;
           if (token) {
-            localStorage.setItem("token", token); 
+            localStorage.setItem("token", token); // Armazena o token no localStorage
             Cookies.set("token", token, { path: "/" });
             console.log("Token gerado com sucesso!");
             router.push("/institution");
@@ -199,8 +194,10 @@ export default function LoginPage() {
                   </div>
                   <div className="relative">
                     <input
-                      type="text"
-                      placeholder="Matrícula"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Senha"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       className={`w-full px-4 py-3 rounded-lg ${
                         darkMode
                           ? "bg-[#1E1E1E] text-white [color-scheme:dark]"
@@ -216,18 +213,6 @@ export default function LoginPage() {
                     >
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
-                  </div>
-                  <div className="flex justify-end">
-                    <a
-                      href="#"
-                      className={`text-sm ${
-                        darkMode
-                          ? "text-gray-300 hover:text-white"
-                          : "text-gray-600 hover:text-gray-900"
-                      }`}
-                    >
-                      Recover Password?
-                    </a>
                   </div>
                   <button
                     type="submit"

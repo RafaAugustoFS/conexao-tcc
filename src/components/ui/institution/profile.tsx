@@ -30,7 +30,7 @@ export default function ProfileForm() {
 
   // Buscar docentes
   useEffect(() => {
-    fetch("http://localhost:3000/api/teacher")
+    fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/teacher")
       .then((response) => response.json())
       .then((data) => setDocentes(data))
       .catch((error) => console.error("Erro ao buscar docentes:", error));
@@ -38,7 +38,7 @@ export default function ProfileForm() {
 
   // Buscar disciplinas
   useEffect(() => {
-    fetch("http://localhost:3000/api/disciplina")
+    fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/disciplina")
       .then((response) => response.json())
       .then((data) => setDisciplinas(data))
       .catch((error) => console.error("Erro ao buscar disciplinas:", error));
@@ -104,7 +104,7 @@ export default function ProfileForm() {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/teacher", {
+      const response = await fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/teacher", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

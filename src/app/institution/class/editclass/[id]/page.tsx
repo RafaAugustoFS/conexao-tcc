@@ -50,7 +50,7 @@ export default function EditClass() {
 
   // Buscar lista de professores da API
   useEffect(() => {
-    fetch("http://localhost:3000/api/teacher")
+    fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/teacher")
       .then((response) => response.json())
       .then((data) => setDocentes(data))
       .catch((error) => console.error("Erro ao buscar docentes:", error));
@@ -58,7 +58,7 @@ export default function EditClass() {
 
   // Buscar lista de disciplinas da API
   useEffect(() => {
-    fetch("http://localhost:3000/api/discipline")
+    fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/discipline")
       .then((response) => response.json())
       .then((data) => setDisciplinas(data))
       .catch((error) => console.error("Erro ao buscar disciplinas:", error));
@@ -98,7 +98,7 @@ export default function EditClass() {
     try {
       // Faz a requisição PUT para a API
       const response = await fetch(
-        `http://localhost:3000/api/class/${params.id}`,
+        `https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/class/${params.id}`,
         {
           method: "PUT",
           headers: {
@@ -130,7 +130,7 @@ export default function EditClass() {
     if (!id) return; // Se não houver ID, não faz a requisição
 
     // Busca os dados da turma, professores e disciplinas associadas
-    fetch(`http://localhost:3000/api/class/teacher/disciplinas/${id}`)
+    fetch(`https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/class/teacher/disciplinas/${id}`)
       .then((response) => response.json())
       .then((data) => {
         // Preenche os estados com os dados da turma

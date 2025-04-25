@@ -37,7 +37,7 @@ export default function CreateClass() {
 
   // Efeito para buscar a lista de professores ao carregar o componente
   useEffect(() => {
-    fetch("http://localhost:3000/api/teacher")
+    fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/teacher")
       .then((response) => response.json())
       .then((data) => setDocentes(data))
       .catch((error) => console.error("Erro ao buscar docentes:", error));
@@ -45,7 +45,7 @@ export default function CreateClass() {
 
   // Efeito para buscar a lista de disciplinas ao carregar o componente
   useEffect(() => {
-    fetch("http://localhost:3000/api/discipline")
+    fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/discipline")
       .then((response) => response.json())
       .then((data) => setDisciplinas(data))
       .catch((error) => console.error("Erro ao buscar disciplinas:", error));
@@ -108,7 +108,7 @@ export default function CreateClass() {
 
     try {
       // Chamada para a API para criar a turma
-      const response = await fetch("http://localhost:3000/api/class", {
+      const response = await fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/class", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

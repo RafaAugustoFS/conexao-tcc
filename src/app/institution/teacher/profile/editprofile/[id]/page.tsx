@@ -64,7 +64,7 @@ export default function Profile({
   // Effect to fetch available disciplines on component mount
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:3000/api/discipline")
+    fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/discipline")
       .then((response) => response.json())
       .then((data: Disciplina[]) => {
         setDisciplinas(data);
@@ -82,7 +82,7 @@ export default function Profile({
     if (!id) return;
 
     setLoading(true);
-    fetch(`http://localhost:3000/api/teacher/${id}`)
+    fetch(`https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/teacher/${id}`)
       .then((response) => response.json())
       .then((data) => {
         setImageUrl(data.imageUrl);
@@ -147,7 +147,7 @@ export default function Profile({
 
     try {
       // API call to update teacher data
-      const response = await fetch(`http://localhost:3000/api/teacher/${id}`, {
+      const response = await fetch(`https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/teacher/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

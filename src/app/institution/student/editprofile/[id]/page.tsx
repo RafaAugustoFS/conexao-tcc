@@ -85,7 +85,7 @@ export default function Profile({
     try {
       setIsModalOpen(true);
       // Requisição para atualizar os dados do aluno
-      const response = await fetch(`http://localhost:3000/api/student/${id}`, {
+      const response = await fetch(`https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/student/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -145,7 +145,7 @@ export default function Profile({
   useEffect(() => {
     if (!id) return;
 
-    fetch(`http://localhost:3000/api/student/${id}`)
+    fetch(`https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/student/${id}`)
       .then((response) => response.json())
       .then((data) => {
         setImageUrl(data.imageUrl);
