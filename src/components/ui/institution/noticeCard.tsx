@@ -27,7 +27,7 @@ export function NoticeCard({ onRefresh }: NoticeCardProps) {
   // Função de buscar as turmas
   const fetchClasses = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/class");
+      const response = await fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/class");
       if (!response.ok) throw new Error("Não foi possível carregar as turmas");
       const dataClasses = await response.json();
       setClasses(dataClasses);
@@ -57,7 +57,7 @@ export function NoticeCard({ onRefresh }: NoticeCardProps) {
       if (isNaN(userIdInt))
         throw new Error("ID do usuário não é um número válido");
 
-      const response = await fetch("http://localhost:3000/api/reminder", {
+      const response = await fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/reminder", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

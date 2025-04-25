@@ -47,7 +47,7 @@ export default function User({
   // Função para buscar os dados do estudante na API
   const fetchStudentData = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/student/${id}`);
+      const response = await fetch(`https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/student/${id}`);
       if (!response.ok)
         throw new Error("Não foi possível carregar os dados do estudante");
 
@@ -63,7 +63,7 @@ export default function User({
   // Função para deletar um estudante
   const deleteStudent = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/student/${id}`, {
+      const response = await fetch(`https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/student/${id}`, {
         method: "DELETE",
       });
       if (!response.ok) throw new Error("Erro ao excluir o estudante");
