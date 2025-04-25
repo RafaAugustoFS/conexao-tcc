@@ -83,7 +83,7 @@ const EngagementChart: React.FC = () => {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token não encontrado");
 
-      const resposta = await fetch("http://localhost:3000/api/teacher", {
+      const resposta = await fetch("https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/teacher", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -107,7 +107,7 @@ const EngagementChart: React.FC = () => {
 
       if (!studentId) throw new Error("ID do aluno não encontrado na URL");
 
-      const resposta = await fetch(`http://localhost:3000/api/student/feedback/${studentId}`, {
+      const resposta = await fetch(`https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/student/feedback/${studentId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -13,7 +13,7 @@ export function OccurrencesTable() {
   useEffect(() => {
     if (id) {
       // Faz a requisição à API
-      fetch(`http://localhost:3000/api/feedbackteacher/student/${id}`)
+      fetch(`https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/feedbackteacher/student/${id}`)
         .then(response => response.json())
         .then(data => setFeedback(data))
         .catch(error => console.error('Erro ao buscar feedback:', error));

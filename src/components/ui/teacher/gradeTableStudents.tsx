@@ -263,7 +263,7 @@ const Table = () => {
         if (!userId) throw new Error("ID do usuário não encontrado no token");
 
         // Requisição para a API
-        const resposta = await fetch(`http://localhost:3000/api/student/${id}`);
+        const resposta = await fetch(`https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/student/${id}`);
 
         if (!resposta.ok) {
           throw new Error("Falha ao buscar os dados");
@@ -356,8 +356,8 @@ const Table = () => {
       if (!disciplinaSelecionada) throw new Error("Disciplina não encontrada");
 
       const endpoint = dados.idNota
-        ? `http://localhost:3000/api/note/${dados.idNota}` // endpoint de edição
-        : "http://localhost:3000/api/note"; // endpoint de criação
+        ? `https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/note/${dados.idNota}` // endpoint de edição
+        : "https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/note"; // endpoint de criação
 
       const metodo = dados.idNota ? "PUT" : "POST";
 

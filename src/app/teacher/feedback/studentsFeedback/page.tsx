@@ -54,7 +54,7 @@ export default function TeacherList({
 
     const fetchStudents = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/class/students/${id}`);
+        const response = await fetch(`https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/class/students/${id}`);
         if (!response.ok) throw new Error("Erro ao buscar alunos");
         const data = await response.json();
         // Garante que os alunos sejam sempre um array

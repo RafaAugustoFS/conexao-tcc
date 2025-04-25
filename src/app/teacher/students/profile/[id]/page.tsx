@@ -47,7 +47,7 @@ export default function User({
   const fetchStudentData = async () => {
     try {
       // Faz a requisição para a API
-      const response = await fetch(`http://localhost:3000/api/student/${id}`);
+      const response = await fetch(`https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/student/${id}`);
       
       // Verifica se a resposta foi bem-sucedida
       if (!response.ok) {

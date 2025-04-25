@@ -52,7 +52,7 @@ export default function Event() {
 
         // Faz requisição para API local para obter dados do aluno
         const response = await fetch(
-          `http://localhost:3000/api/student/${userId}`,
+          `https://backendona-amfeefbna8ebfmbj.eastus2-01.azurewebsites.net/api/student/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
