@@ -8,7 +8,7 @@
     ],
     "build": {
       "env": {
-        "NPM_FLAGS": "--legacy-peer-deps"
-      }
+      "NPM_FLAGS": "--force"
+    }
     }
   }
