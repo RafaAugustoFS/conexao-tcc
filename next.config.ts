@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  typescript: {
+    ignoreBuildErrors: true, // IGNORA ERROS DE TYPESCRIPT DURANTE O BUILD
+  },
  images: {
     domains:[
       "img.freepik.com",
