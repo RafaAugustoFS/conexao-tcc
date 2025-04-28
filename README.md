@@ -51,4 +51,3 @@ npm install @radix-ui/react-label --force
 npm install @radix-ui/react-dialog --force
 npm install react-toastify --force
 npm install react-loading-skeleton --force
-echo "legacy-peer-deps=true" > .npmrc
