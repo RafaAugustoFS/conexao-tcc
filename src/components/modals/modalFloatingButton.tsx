@@ -9,9 +9,10 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+  const [selectedTime, setSelectedTime] = useState("");
   if (!isOpen) return null;
 
-  const [selectedTime, setSelectedTime] = useState("");
+ 
   const timeSlots = [
     "09:00 às 11:00",
     "11:00 às 13:00",
